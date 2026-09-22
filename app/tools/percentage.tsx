@@ -30,6 +30,13 @@ export default function PercentageToolScreen() {
   const [first, setFirst] = useState("");
   const [second, setSecond] = useState("");
 
+  const changeMode = (next: Mode) => {
+    if (next === mode) return;
+    setMode(next);
+    setFirst("");
+    setSecond("");
+  };
+
   const modes = [
     { id: "of" as const, label: copy.percentage.of },
     { id: "ratio" as const, label: copy.percentage.ratio },
@@ -117,7 +124,7 @@ export default function PercentageToolScreen() {
       guideId="percentage"
     >
       <ToolSection theme={resolvedTheme}>
-        <ChoiceRow options={modes} value={mode} onChange={setMode} theme={resolvedTheme} />
+        <ChoiceRow options={modes} value={mode} onChange={changeMode} theme={resolvedTheme} />
         <ToolField
           label={labels[0]}
           value={first}
