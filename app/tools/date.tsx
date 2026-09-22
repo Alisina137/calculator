@@ -133,7 +133,7 @@ export default function DateToolScreen() {
           value={dateA}
           onChangeText={setDateA}
           placeholder="سال/ماه/روز"
-          keyboardType="number-pad"
+          keyboardType="default"
           theme={resolvedTheme}
         />
 
@@ -143,7 +143,7 @@ export default function DateToolScreen() {
             value={dateB}
             onChangeText={setDateB}
             placeholder="سال/ماه/روز"
-            keyboardType="number-pad"
+            keyboardType="default"
             theme={resolvedTheme}
           />
         ) : (
@@ -153,7 +153,7 @@ export default function DateToolScreen() {
               value={amount}
               onChangeText={setAmount}
               placeholder="0"
-              keyboardType="number-pad"
+              keyboardType="default"
               theme={resolvedTheme}
             />
             <ChoiceRow
