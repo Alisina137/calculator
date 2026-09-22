@@ -9,8 +9,13 @@ export function normalizeDigits(input: string): string {
     .map((character) => {
       const persianIndex = persian.indexOf(character);
       if (persianIndex >= 0) return latin[persianIndex];
+
       const arabicIndex = arabicIndic.indexOf(character);
       if (arabicIndex >= 0) return latin[arabicIndex];
+
+      if (character === "٫") return ".";
+      if (character === "٬") return ",";
+
       return character;
     })
     .join("");
@@ -23,7 +28,10 @@ export function displayDigits(input: string, style: NumeralStyle): string {
   return [...normalized]
     .map((character) => {
       const index = latin.indexOf(character);
-      return index >= 0 ? persian[index] : character;
+      if (index >= 0) return persian[index];
+      if (character === ".") return "٫";
+      if (character === ",") return "٬";
+      return character;
     })
     .join("");
 }
