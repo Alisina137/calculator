@@ -113,7 +113,9 @@ export default function PercentageToolScreen() {
       ? ["30%", "1000"]
       : mode === "ratio"
         ? ["30", "100"]
-        : ["1000", "1300"];
+        : mode === "decrease"
+          ? ["1000", "700"]
+          : ["1000", "1300"];
 
   return (
     <ToolScreen
