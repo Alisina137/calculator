@@ -36,11 +36,11 @@ import { colorsFor } from "@/theme/colors";
 import { displayDigits } from "@/utils/numerals";
 
 const standardRows = [
-  ["AC", "⌫", "%", "÷"],
+  ["AC", "=", "%", "÷"],
   ["7", "8", "9", "×"],
   ["4", "5", "6", "−"],
   ["1", "2", "3", "+"],
-  ["±", "0", ".", "="]
+  ["±", "0", ".", "⌫"]
 ];
 
 const styledOperatorKeys = new Set(["AC", "⌫", "%", "÷", "×", "−", "+"]);
