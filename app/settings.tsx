@@ -141,7 +141,9 @@ function OptionRow<T extends string>({
               }
             ]}
           >
-            <Text style={[styles.optionText, { color: selected ? colors.primary : colors.text }]}>{label}</Text>
+            <Text style={[styles.optionText, { color: selected ? colors.primary : colors.text }]}>
+              {selected ? `✓ ${label}` : label}
+            </Text>
           </Pressable>
         );
       })}
