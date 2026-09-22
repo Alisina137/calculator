@@ -125,6 +125,7 @@ export default function AgeToolScreen() {
       subtitle={copy.age.subtitle}
       theme={resolvedTheme}
       guide={toolGuidance(language, "age")}
+      guideId="age"
     >
       <ToolSection title={copy.age.calendarType} theme={resolvedTheme}>
         <ChoiceRow
