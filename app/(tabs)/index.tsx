@@ -336,6 +336,29 @@ export default function CalculatorScreen() {
           </Text>
 
           <View style={styles.headerActions}>
+            {scientificMode ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t(language, "basicMode")}
+                onPress={() => setScientificMode(false)}
+                style={({ pressed }) => [
+                  styles.simpleModeButton,
+                  {
+                    backgroundColor: pressed ? colors.key : colors.primarySoft,
+                    borderColor: colors.primary
+                  }
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.simpleModeButtonText,
+                    { color: colors.primary }
+                  ]}
+                >
+                  {t(language, "basicMode")}
+                </Text>
+              </Pressable>
+            ) : null}
             {settingsButton}
           </View>
         </View>
@@ -574,6 +597,19 @@ const styles = StyleSheet.create({
     width: 3,
     height: 3,
     borderRadius: 2
+  },
+  simpleModeButton: {
+    minHeight: 36,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  simpleModeButtonText: {
+    fontSize: 13,
+    fontWeight: "800",
+    writingDirection: "rtl"
   },
   settingsButton: {
     width: 40,
