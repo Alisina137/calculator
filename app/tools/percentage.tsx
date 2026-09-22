@@ -101,6 +101,13 @@ export default function PercentageToolScreen() {
         ? [copy.percentage.part, copy.percentage.total]
         : [copy.percentage.initial, copy.percentage.next];
 
+  const placeholders =
+    mode === "of"
+      ? ["30%", "1000"]
+      : mode === "ratio"
+        ? ["30", "100"]
+        : ["1000", "1300"];
+
   return (
     <ToolScreen
       title={t(language, "percentage")}
@@ -115,14 +122,14 @@ export default function PercentageToolScreen() {
           label={labels[0]}
           value={first}
           onChangeText={setFirst}
-          placeholder="0"
+          placeholder={placeholders[0]}
           theme={resolvedTheme}
         />
         <ToolField
           label={labels[1]}
           value={second}
           onChangeText={setSecond}
-          placeholder="0"
+          placeholder={placeholders[1]}
           theme={resolvedTheme}
         />
       </ToolSection>
