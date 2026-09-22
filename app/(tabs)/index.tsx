@@ -389,7 +389,11 @@ export default function CalculatorScreen() {
                             backgroundColor:
                               key === "ANGLE" ? colors.primarySoft : colors.key,
                             borderColor: "transparent",
-                            opacity: pressed ? 0.65 : 1
+                            boxShadow: "0 1px 2px rgba(54, 78, 89, 0.12)",
+                            transform: pressed
+                              ? [{ scale: 0.94 }, { translateY: 1 }]
+                              : [{ scale: 1 }, { translateY: 0 }],
+                            opacity: pressed ? 0.86 : 1
                           }
                         ]}
                       >
