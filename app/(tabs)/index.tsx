@@ -394,6 +394,13 @@ export default function CalculatorScreen() {
           </View>
         </View>
 
+        <View
+          style={[
+            styles.keypadDivider,
+            { backgroundColor: colors.border }
+          ]}
+        />
+
         {scientificMode ? (
           <View style={styles.landscapeKeyArea}>
             <View style={styles.scientificGrid}>
@@ -627,6 +634,12 @@ const styles = StyleSheet.create({
   previewLandscape: {
     fontSize: 20,
     minHeight: 24
+  },
+  keypadDivider: {
+    height: StyleSheet.hairlineWidth,
+    width: "100%",
+    opacity: 0.7,
+    marginBottom: 8
   },
   landscapeKeyArea: {
     flex: 2.35,
