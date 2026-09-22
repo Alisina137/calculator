@@ -393,14 +393,14 @@ export default function CalculatorScreen() {
                                 ? "rgba(255,255,255,0.06)"
                                 : "rgba(58,92,110,0.10)",
                             boxShadow: pressed
-                              ? "0 3px 6px rgba(54, 78, 89, 0.18)"
+                              ? "0 2px 4px rgba(54, 78, 89, 0.16)"
                               : "0 1px 2px rgba(54, 78, 89, 0.12)",
                             transform: pressed
-                              ? [{ translateY: 2 }]
+                              ? [{ translateY: 1 }]
                               : [{ translateY: 0 }],
-                            transitionDuration: "300ms",
+                            transitionDuration: "90ms",
                             transitionProperty: ["transform", "boxShadow", "opacity"],
-                            opacity: pressed ? 0.9 : 1
+                            opacity: pressed ? 0.96 : 1
                           }
                         ]}
                       >
