@@ -19,7 +19,7 @@ Authoritative Product Specification supplied 2026-09-22.
 Flutter was replaced before substantive feature implementation because the local Flutter toolchain was unavailable/heavy for the user's development environment. Product requirements and phase outcomes remain unchanged.
 
 ## Current phase
-Phase 4 — Everyday Tools
+Phase 5 — Localization and Regional Polish
 
 ## Phase 1 completed outcomes
 - Expo/React Native project foundation
@@ -89,16 +89,34 @@ Phase 4 — Everyday Tools
 - Calendar-date arithmetic that does not use local-time timestamps for date differences
 - Validated localized numeric/date inputs and Persian/Dari-first result presentation
 
+## Phase 5 implemented outcomes
+- Persian/Dari terminology pass across everyday tools
+- Dari-specific percentage terminology and result wording
+- Persian/Latin numeral presentation preserved independently from stored numeric values
+- Persian decimal and grouping separators in Persian numeral mode
+- Canonical normalization of Persian, Arabic-Indic and Latin digits and separators
+- Localized decimal key presentation
+- Persian (Iran) vs Dari/Afghanistan locale selection for history timestamps
+- Solar Hijri/Gregorian tool labels and date presentation refinement
+- Semantic screen-reader labels for calculator operators and scientific functions
+- Accessibility selected-state semantics for settings and tool choices
+- Visible selected-state checkmarks so state is not communicated by color alone
+- Expanded invisible touch targets for compact/scientific keys
+- Large-text resilience improvements for tool result rows and calculator labels
+- LTR mathematical expressions/results preserved inside RTL application screens
+- Tool input accessibility labels and canonical digit handling
+
 ## Verification status
 Phase 1 TypeScript checking passed locally on 2026-09-22.
 Phase 2 was implemented and pulled locally.
 Phase 3 is implemented and has been exercised on-device during UI refinement; full acceptance verification remains pending.
-Phase 4 source is implemented; local TypeScript and device runtime verification are pending after pull.
+Phase 4 TypeScript checking passed locally on 2026-09-22; device runtime verification is in progress.
+Phase 5 source is implemented; local TypeScript and device runtime verification are pending after pull.
 
 ## Known limitations
-- Phase 4 uses typed date entry (year/month/day) rather than a graphical date picker to keep the MVP dependency-light and offline.
-- Broader terminology, accessibility, large-text, numeral/date-format and RTL edge-case polish remains in Phase 5.
+- Age/date tools use typed year/month/day entry rather than a graphical date picker to keep the MVP dependency-light and offline.
+- Large-text and screen-reader behavior still require real-device acceptance testing in Phase 6.
 - History is local-only by product design.
 
 ## Next phase
-Phase 5 — Localization and Regional Polish
+Phase 6 — Production Readiness
