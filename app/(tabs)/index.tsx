@@ -1,25 +1,40 @@
 import { useMemo, useState } from "react";
 import { Link } from "expo-router";
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from "react-native";
 import { CalculatorKey } from "@/components/CalculatorKey";
 import {
+  appendConstant,
   appendDecimal,
   appendDigit,
+  appendFactorial,
+  appendFunction,
   appendOperator,
+  appendParenthesis,
   appendPercent,
+  appendPower,
   backspaceExpression,
   isExpressionReadyForEquals,
+  reciprocalExpression,
+  squareExpression,
   toggleSign
 } from "@/calculation/calculatorInput";
 import { canPreviewExpression, evaluateExpression } from "@/calculation/calculatorEngine";
 import { calculationErrorMessage } from "@/calculation/errorMessages";
 import type { FinalizedCalculation } from "@/calculation/types";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
+import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
 import { displayDigits } from "@/utils/numerals";
 
-const rows = [
+const standardRows = [
   ["AC", "⌫", "%", "÷"],
   ["7", "8", "9", "×"],
   ["4", "5", "6", "−"],
@@ -27,20 +42,33 @@ const rows = [
   ["±", "0", ".", "="]
 ];
 
+const scientificRows = [
+  ["(", ")", "sin", "cos", "tan"],
+  ["log", "ln", "√", "x²", "xʸ"],
+  ["π", "e", "!", "1/x"]
+];
+
 export default function CalculatorScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
-  const colors = colorsFor(resolvedTheme);
+  const {
+    expression,
+    setExpression,
+    addHistory,
+    scientificMode,
+    setScientificMode,
+    angleUnit,
+    setAngleUnit
+  } = useCalculator();
 
-  const [expression, setExpression] = useState("");
+  const colors = colorsFor(resolvedTheme);
   const [finalized, setFinalized] = useState<FinalizedCalculation | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
 
   const preview = useMemo(() => {
     if (!canPreviewExpression(expression)) return null;
-
-    const result = evaluateExpression(expression);
+    const result = evaluateExpression(expression, angleUnit);
     return result.ok ? result.formatted : null;
-  }, [expression]);
+  }, [expression, angleUnit]);
 
   const setEditingExpression = (next: string) => {
     setInputError(null);
@@ -48,7 +76,9 @@ export default function CalculatorScreen() {
     setExpression(next);
   };
 
-  const handleKey = (key: string) => {
+  const baseForNewValue = () => (finalized ? "" : expression);
+
+  const handleStandardKey = async (key: string) => {
     if (key === "AC") {
       setInputError(null);
       setFinalized(null);
@@ -72,14 +102,12 @@ export default function CalculatorScreen() {
     }
 
     if (key === ".") {
-      const base = finalized ? "" : expression;
-      setEditingExpression(appendDecimal(base));
+      setEditingExpression(appendDecimal(baseForNewValue()));
       return;
     }
 
     if (/^[0-9]$/.test(key)) {
-      const base = finalized ? "" : expression;
-      setEditingExpression(appendDigit(base, key));
+      setEditingExpression(appendDigit(baseForNewValue(), key));
       return;
     }
 
@@ -94,7 +122,7 @@ export default function CalculatorScreen() {
         return;
       }
 
-      const result = evaluateExpression(expression);
+      const result = evaluateExpression(expression, angleUnit);
 
       if (!result.ok) {
         setInputError(calculationErrorMessage(language, result.code));
@@ -107,14 +135,57 @@ export default function CalculatorScreen() {
         createdAt: Date.now()
       };
 
+      await addHistory(record.expression, record.result);
       setFinalized(record);
       setExpression(result.formatted);
       setInputError(null);
     }
   };
 
-  const displayExpression = displayDigits(expression || "0", numeralStyle);
+  const handleScientificKey = (key: string) => {
+    const base = finalized ? "" : expression;
 
+    if (key === "(" || key === ")") {
+      setEditingExpression(appendParenthesis(base, key));
+      return;
+    }
+
+    if (key === "sin" || key === "cos" || key === "tan" || key === "log" || key === "ln") {
+      setEditingExpression(appendFunction(base, key));
+      return;
+    }
+
+    if (key === "√") {
+      setEditingExpression(appendFunction(base, "sqrt"));
+      return;
+    }
+
+    if (key === "π" || key === "e") {
+      setEditingExpression(appendConstant(base, key));
+      return;
+    }
+
+    if (key === "x²") {
+      setEditingExpression(squareExpression(expression));
+      return;
+    }
+
+    if (key === "xʸ") {
+      setEditingExpression(appendPower(expression));
+      return;
+    }
+
+    if (key === "!") {
+      setEditingExpression(appendFactorial(expression));
+      return;
+    }
+
+    if (key === "1/x") {
+      setEditingExpression(reciprocalExpression(expression));
+    }
+  };
+
+  const displayExpression = displayDigits(expression || "0", numeralStyle);
   const displayPreview = inputError
     ? inputError
     : finalized
@@ -131,21 +202,44 @@ export default function CalculatorScreen() {
             {t(language, "calculator")}
           </Text>
 
-          <Link href="/settings" asChild>
+          <View style={styles.headerActions}>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={t(language, "settings")}
-              style={({ pressed }) => [
-                styles.settingsButton,
+              onPress={() => setScientificMode(!scientificMode)}
+              style={[
+                styles.modeButton,
                 {
-                  backgroundColor: colors.surface,
-                  opacity: pressed ? 0.65 : 1
+                  backgroundColor: scientificMode ? colors.primarySoft : colors.surface,
+                  borderColor: scientificMode ? colors.primary : colors.border
                 }
               ]}
             >
-              <Text style={[styles.settingsIcon, { color: colors.text }]}>⚙</Text>
+              <Text
+                style={[
+                  styles.modeButtonText,
+                  { color: scientificMode ? colors.primary : colors.text }
+                ]}
+              >
+                {scientificMode ? t(language, "basicMode") : t(language, "scientific")}
+              </Text>
             </Pressable>
-          </Link>
+
+            <Link href="/settings" asChild>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t(language, "settings")}
+                style={({ pressed }) => [
+                  styles.settingsButton,
+                  {
+                    backgroundColor: colors.surface,
+                    opacity: pressed ? 0.65 : 1
+                  }
+                ]}
+              >
+                <Text style={[styles.settingsIcon, { color: colors.text }]}>⚙</Text>
+              </Pressable>
+            </Link>
+          </View>
         </View>
 
         <View style={styles.display}>
@@ -158,8 +252,11 @@ export default function CalculatorScreen() {
               accessibilityLiveRegion="polite"
               numberOfLines={1}
               adjustsFontSizeToFit
-              minimumFontScale={0.55}
-              style={[styles.expression, { color: colors.text }]}
+              minimumFontScale={0.48}
+              style={[
+                styles.expression,
+                { color: colors.text, fontSize: scientificMode ? 42 : 52 }
+              ]}
             >
               {displayExpression}
             </Text>
@@ -167,6 +264,7 @@ export default function CalculatorScreen() {
 
           <Text
             accessibilityLiveRegion="polite"
+            numberOfLines={2}
             style={[
               styles.preview,
               { color: inputError ? colors.danger : colors.muted }
@@ -176,14 +274,60 @@ export default function CalculatorScreen() {
           </Text>
         </View>
 
+        {scientificMode && (
+          <View style={styles.scientificPanel}>
+            <View style={styles.angleRow}>
+              <Text style={[styles.angleLabel, { color: colors.muted }]}>
+                {t(language, "angle")}
+              </Text>
+              <Pressable
+                onPress={() => setAngleUnit(angleUnit === "DEG" ? "RAD" : "DEG")}
+                style={[
+                  styles.angleButton,
+                  { backgroundColor: colors.primarySoft, borderColor: colors.primary }
+                ]}
+              >
+                <Text style={[styles.angleButtonText, { color: colors.primary }]}>
+                  {angleUnit}
+                </Text>
+              </Pressable>
+            </View>
+
+            {scientificRows.map((row) => (
+              <View key={row.join("-")} style={styles.scientificRow}>
+                {row.map((key) => (
+                  <Pressable
+                    key={key}
+                    accessibilityRole="button"
+                    accessibilityLabel={key}
+                    onPress={() => handleScientificKey(key)}
+                    style={({ pressed }) => [
+                      styles.scientificKey,
+                      {
+                        backgroundColor: colors.surface,
+                        borderColor: colors.border,
+                        opacity: pressed ? 0.65 : 1
+                      }
+                    ]}
+                  >
+                    <Text style={[styles.scientificKeyText, { color: colors.text }]}>
+                      {key}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            ))}
+          </View>
+        )}
+
         <View style={styles.keypad}>
-          {rows.map((row) => (
+          {standardRows.map((row) => (
             <View key={row.join("-")} style={styles.row}>
               {row.map((key) => (
                 <CalculatorKey
                   key={key}
                   label={/^[0-9]$/.test(key) ? displayDigits(key, numeralStyle) : key}
-                  onPress={() => handleKey(key)}
+                  onPress={() => void handleStandardKey(key)}
                   emphasized={key === "="}
                   theme={resolvedTheme}
                 />
@@ -208,25 +352,44 @@ const styles = StyleSheet.create({
     minHeight: 56,
     flexDirection: "row-reverse",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    gap: 8
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
+    fontWeight: "800",
+    writingDirection: "rtl"
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8
+  },
+  modeButton: {
+    minHeight: 42,
+    paddingHorizontal: 13,
+    borderRadius: 14,
+    borderWidth: 1,
+    justifyContent: "center"
+  },
+  modeButtonText: {
+    fontSize: 13,
     fontWeight: "800",
     writingDirection: "rtl"
   },
   settingsButton: {
-    width: 46,
-    height: 46,
-    borderRadius: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 15,
     alignItems: "center",
     justifyContent: "center"
   },
-  settingsIcon: { fontSize: 22 },
+  settingsIcon: { fontSize: 21 },
   display: {
     flex: 1,
     justifyContent: "flex-end",
-    paddingVertical: 20
+    paddingVertical: 12,
+    minHeight: 100
   },
   expressionScroll: {
     flexGrow: 1,
@@ -234,24 +397,66 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end"
   },
   expression: {
-    fontSize: 52,
     fontWeight: "500",
     textAlign: "right",
     writingDirection: "ltr"
   },
   preview: {
-    fontSize: 21,
-    minHeight: 31,
-    marginTop: 10,
+    fontSize: 19,
+    minHeight: 29,
+    marginTop: 6,
     textAlign: "right",
     writingDirection: "rtl"
   },
+  scientificPanel: {
+    gap: 7,
+    marginBottom: 9
+  },
+  angleRow: {
+    minHeight: 36,
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 8
+  },
+  angleLabel: {
+    fontSize: 13,
+    fontWeight: "700",
+    writingDirection: "rtl"
+  },
+  angleButton: {
+    minHeight: 34,
+    minWidth: 58,
+    borderWidth: 1,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  angleButtonText: {
+    fontSize: 13,
+    fontWeight: "900"
+  },
+  scientificRow: {
+    flexDirection: "row",
+    gap: 7
+  },
+  scientificKey: {
+    flex: 1,
+    minHeight: 42,
+    borderWidth: 1,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  scientificKeyText: {
+    fontSize: 15,
+    fontWeight: "700"
+  },
   keypad: {
     paddingBottom: 6,
-    gap: 10
+    gap: 8
   },
   row: {
     flexDirection: "row",
-    gap: 10
+    gap: 8
   }
 });
