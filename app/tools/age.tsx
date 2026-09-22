@@ -113,7 +113,7 @@ export default function AgeToolScreen() {
           value={birth}
           onChangeText={setBirth}
           placeholder={calendar === "jalali" ? "1400/01/01" : "2000/01/01"}
-          keyboardType="number-pad"
+          keyboardType="default"
           theme={resolvedTheme}
         />
         <ToolField
@@ -121,7 +121,7 @@ export default function AgeToolScreen() {
           value={calculationDate}
           onChangeText={setCalculationDate}
           placeholder="سال/ماه/روز"
-          keyboardType="number-pad"
+          keyboardType="default"
           theme={resolvedTheme}
         />
       </ToolSection>
