@@ -603,10 +603,11 @@ const styles = StyleSheet.create({
     minHeight: 120
   },
   displayLandscape: {
-    flex: 0,
-    height: 48,
-    minHeight: 0,
-    paddingVertical: 0
+    flex: 1,
+    minHeight: 86,
+    paddingTop: 2,
+    paddingBottom: 6,
+    justifyContent: "flex-end"
   },
   expressionViewport: {
   },
@@ -654,24 +655,24 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     width: "100%",
     opacity: 0.7,
-    marginBottom: 4
+    marginBottom: 2
   },
   landscapeKeyArea: {
-    flex: 1,
-    minHeight: 0,
+    flex: 0,
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "flex-end",
     gap: 14,
     paddingHorizontal: 10,
-    paddingBottom: 2
+    paddingTop: 4,
+    paddingBottom: 0
   },
   scientificGrid: {
     flex: 0.95,
-    minHeight: 0,
-    gap: 8
+    gap: 6,
+    justifyContent: "flex-end"
   },
   scientificRow: {
-    height: 34,
+    height: 32,
     minHeight: 0,
     flexDirection: "row",
     gap: 10
@@ -679,7 +680,7 @@ const styles = StyleSheet.create({
   scientificKey: {
     flex: 1,
     minHeight: 0,
-    height: 34,
+    height: 32,
     borderWidth: 1,
     borderRadius: 999,
     alignItems: "center",
@@ -691,11 +692,11 @@ const styles = StyleSheet.create({
   },
   standardLandscapeGrid: {
     flex: 1.4,
-    minHeight: 0,
-    gap: 8
+    gap: 6,
+    justifyContent: "flex-end"
   },
   landscapeStandardRow: {
-    height: 34,
+    height: 32,
     minHeight: 0,
     flexDirection: "row",
     gap: 10
