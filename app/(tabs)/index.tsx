@@ -333,26 +333,22 @@ export default function CalculatorScreen() {
           scientificMode ? styles.pageLandscape : null
         ]}
       >
-        <View
-          style={[
-            styles.header,
-            scientificMode ? styles.headerLandscape : null
-          ]}
-        >
-          <Text
-            style={[
-              styles.title,
-              scientificMode ? styles.titleLandscape : null,
-              { color: colors.text }
-            ]}
-          >
-            {t(language, "calculator")}
-          </Text>
+        {!scientificMode ? (
+          <View style={styles.header}>
+            <Text
+              style={[
+                styles.title,
+                { color: colors.text }
+              ]}
+            >
+              {t(language, "calculator")}
+            </Text>
 
-          <View style={styles.headerActions}>
-            {settingsButton}
+            <View style={styles.headerActions}>
+              {settingsButton}
+            </View>
           </View>
-        </View>
+        ) : null}
 
         <View
           style={[
@@ -550,16 +546,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 8
   },
-  headerLandscape: {
-    minHeight: 30
-  },
   title: {
     fontSize: 24,
     fontWeight: "800",
     writingDirection: "rtl"
-  },
-  titleLandscape: {
-    fontSize: 15
   },
   headerActions: {
     flexDirection: "row",
