@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { AngleUnit, HistoryEntry } from "@/calculation/types";
 
 const HISTORY_KEY = "calculator.history.v1";
@@ -40,6 +40,7 @@ function isHistoryEntry(value: unknown): value is HistoryEntry {
 export function CalculatorProvider({ children }: { children: React.ReactNode }) {
   const [expression, setExpression] = useState("");
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const historyRef = useRef<HistoryEntry[]>([]);
   const [scientificMode, setScientificMode] = useState(false);
   const [angleUnit, setAngleUnit] = useState<AngleUnit>("DEG");
   const [hydrated, setHydrated] = useState(false);
@@ -61,7 +62,9 @@ export function CalculatorProvider({ children }: { children: React.ReactNode }) 
         if (savedHistory) {
           const parsed = JSON.parse(savedHistory);
           if (Array.isArray(parsed)) {
-            setHistory(parsed.filter(isHistoryEntry).slice(0, HISTORY_LIMIT));
+            const restored = parsed.filter(isHistoryEntry).slice(0, HISTORY_LIMIT);
+            historyRef.current = restored;
+            setHistory(restored);
           }
         }
 
@@ -97,6 +100,7 @@ export function CalculatorProvider({ children }: { children: React.ReactNode }) 
   }, [angleUnit, hydrated]);
 
   const persistHistory = async (next: HistoryEntry[]) => {
+    historyRef.current = next;
     setHistory(next);
     await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(next));
   };
@@ -109,12 +113,12 @@ export function CalculatorProvider({ children }: { children: React.ReactNode }) 
       createdAt: Date.now()
     };
 
-    const next = [entry, ...history].slice(0, HISTORY_LIMIT);
+    const next = [entry, ...historyRef.current].slice(0, HISTORY_LIMIT);
     await persistHistory(next);
   };
 
   const deleteHistory = async (id: string) => {
-    await persistHistory(history.filter((entry) => entry.id !== id));
+    await persistHistory(historyRef.current.filter((entry) => entry.id !== id));
   };
 
   const clearHistory = async () => {
