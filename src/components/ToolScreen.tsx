@@ -10,7 +10,11 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAppPreferences, type ResolvedTheme } from "@/context/AppPreferencesContext";
+import {
+  useAppPreferences,
+  type ResolvedTheme,
+  type ToolGuidanceId
+} from "@/context/AppPreferencesContext";
 import type { ToolGuide } from "@/i18n/toolGuidance";
 import { colorsFor } from "@/theme/colors";
 import { displayDigits, normalizeDigits } from "@/utils/numerals";
@@ -20,16 +24,23 @@ export function ToolScreen({
   subtitle,
   theme,
   guide,
+  guideId,
   children
 }: {
   title: string;
   subtitle?: string;
   theme: ResolvedTheme;
   guide?: ToolGuide;
+  guideId?: ToolGuidanceId;
   children: ReactNode;
 }) {
   const colors = colorsFor(theme);
-  const { showToolGuidance, language } = useAppPreferences();
+  const {
+    toolGuidance,
+    setToolGuidanceEnabled,
+    language
+  } = useAppPreferences();
+  const showToolGuidance = guideId ? toolGuidance[guideId] : false;
   const guideLabels =
     language === "dari"
       ? {
@@ -77,6 +88,62 @@ export function ToolScreen({
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+        {guide && guideId ? (
+          <Pressable
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: showToolGuidance }}
+            accessibilityLabel={
+              language === "dari"
+                ? "نمایش راهنمای این ابزار"
+                : "نمایش راهنمای این ابزار"
+            }
+            onPress={() =>
+              setToolGuidanceEnabled(guideId, !showToolGuidance)
+            }
+            style={[
+              styles.guideToggle,
+              {
+                backgroundColor: colors.surface,
+                borderColor: showToolGuidance ? colors.primary : colors.border
+              }
+            ]}
+          >
+            <View
+              style={[
+                styles.guideCheckbox,
+                {
+                  borderColor: showToolGuidance ? colors.primary : colors.border,
+                  backgroundColor: showToolGuidance
+                    ? colors.primary
+                    : colors.surface
+                }
+              ]}
+            >
+              {showToolGuidance ? (
+                <Text style={styles.guideCheckmark}>✓</Text>
+              ) : null}
+            </View>
+            <View style={styles.guideToggleTextWrap}>
+              <Text style={[styles.guideToggleTitle, { color: colors.text }]}>
+                {language === "dari"
+                  ? "راهنمای این ابزار"
+                  : "راهنمای این ابزار"}
+              </Text>
+              <Text
+                style={[styles.guideToggleSubtitle, { color: colors.muted }]}
+              >
+                {showToolGuidance
+                  ? language === "dari"
+                    ? "راهنما نمایش داده می‌شود"
+                    : "راهنما نمایش داده می‌شود"
+                  : language === "dari"
+                    ? "برای دیدن توضیحات این ابزار فعال کنید"
+                    : "برای دیدن توضیحات این ابزار فعال کنید"}
+              </Text>
+            </View>
+          </Pressable>
+        ) : null}
+
         {showToolGuidance && guide ? (
           <View
             style={[
@@ -364,6 +431,45 @@ const styles = StyleSheet.create({
     paddingTop: 6,
     paddingBottom: 40,
     gap: 14,
+  },
+  guideToggle: {
+    minHeight: 68,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+    borderWidth: 1,
+    borderRadius: 18,
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 12
+  },
+  guideCheckbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 1.5,
+    borderRadius: 7,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  guideCheckmark: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "900"
+  },
+  guideToggleTextWrap: {
+    flex: 1
+  },
+  guideToggleTitle: {
+    fontSize: 15,
+    fontWeight: "800",
+    textAlign: "right",
+    writingDirection: "rtl"
+  },
+  guideToggleSubtitle: {
+    marginTop: 2,
+    fontSize: 12,
+    lineHeight: 18,
+    textAlign: "right",
+    writingDirection: "rtl"
   },
   guideCard: {
     borderWidth: 1,
