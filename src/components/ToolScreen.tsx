@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12
   },
-  headerText: { flex: 1, direction: "rtl" },
+  headerText: { flex: 1 },
   title: {
     fontSize: 24,
     fontWeight: "800",
