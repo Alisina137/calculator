@@ -68,7 +68,9 @@ export default function HistoryScreen() {
         <ScrollView contentContainerStyle={styles.list}>
           {history.map((entry) => {
             const dateText = displayDigits(
-              new Date(entry.createdAt).toLocaleString("fa-IR-u-nu-latn"),
+              new Date(entry.createdAt).toLocaleString(
+                language === "dari" ? "fa-AF-u-nu-latn" : "fa-IR-u-nu-latn"
+              ),
               numeralStyle
             );
 
