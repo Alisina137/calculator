@@ -131,7 +131,9 @@ Phase 2 was implemented and pulled locally.
 Phase 3 is implemented and has been exercised on-device during UI refinement; full acceptance verification remains pending.
 Phase 4 TypeScript checking passed locally on 2026-09-22; device runtime verification is in progress.
 Phase 5 source is implemented; local TypeScript and device runtime verification are pending after pull.
-Phase 6 source is implemented; `npm install` is required for the new test runner, then `npm run verify` and final device regression are pending.
+Phase 6 source is implemented.
+Automated verification passed locally on 2026-09-22: TypeScript check passed and all 13 regression tests passed with 0 failures.
+Final physical-device regression and release asset/store preparation remain pending.
 
 ## Known limitations / release blockers
 - Age/date tools use typed year/month/day entry rather than a graphical date picker to keep the MVP dependency-light and offline.
