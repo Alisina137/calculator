@@ -45,11 +45,11 @@ export function CalculatorKey({
         compact ? styles.compactButton : styles.roundButton,
         {
           backgroundColor,
-          shadowColor: "#66808D",
+          shadowColor: compact ? "#66808D" : "transparent",
           shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: compact ? 0.05 : 0.07,
-          shadowRadius: compact ? 1 : 2,
-          elevation: compact ? 1 : 2,
+          shadowOpacity: compact ? 0.05 : 0,
+          shadowRadius: compact ? 1 : 0,
+          elevation: compact ? 1 : 0,
           opacity: disabled ? 0.45 : pressed ? 0.72 : 1
         }
       ]}
@@ -71,15 +71,16 @@ export function CalculatorKey({
 
 const styles = StyleSheet.create({
   button: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center"
   },
   roundButton: {
+    width: "20.5%",
     aspectRatio: 1,
     borderRadius: 999
   },
   compactButton: {
+    flex: 1,
     minHeight: 32,
     borderRadius: 11
   },
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
     fontWeight: "500"
   },
   roundLabel: {
-    fontSize: 27
+    fontSize: 24
   },
   compactLabel: {
     fontSize: 15
