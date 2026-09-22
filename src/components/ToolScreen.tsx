@@ -29,7 +29,19 @@ export function ToolScreen({
   children: ReactNode;
 }) {
   const colors = colorsFor(theme);
-  const { showToolGuidance } = useAppPreferences();
+  const { showToolGuidance, language } = useAppPreferences();
+  const guideLabels =
+    language === "dari"
+      ? {
+          title: "راهنمای استفاده",
+          inputs: "چه چیزی وارد کنید",
+          result: "چه نتیجه‌ای می‌گیرید"
+        }
+      : {
+          title: "راهنمای استفاده",
+          inputs: "چه چیزی وارد کنید",
+          result: "چه نتیجه‌ای می‌گیرید"
+        };
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
@@ -76,14 +88,14 @@ export function ToolScreen({
             ]}
           >
             <Text style={[styles.guideTitle, { color: colors.primary }]}>
-              راهنمای استفاده
+              {guideLabels.title}
             </Text>
             <Text style={[styles.guideBody, { color: colors.text }]}>
               {guide.purpose}
             </Text>
 
             <Text style={[styles.guideSectionTitle, { color: colors.text }]}>
-              چه چیزی وارد کنید
+              {guideLabels.inputs}
             </Text>
             {guide.inputs.map((item, index) => (
               <Text
@@ -95,7 +107,7 @@ export function ToolScreen({
             ))}
 
             <Text style={[styles.guideSectionTitle, { color: colors.text }]}>
-              چه نتیجه‌ای می‌گیرید
+              {guideLabels.result}
             </Text>
             <Text style={[styles.guideBody, { color: colors.text }]}>
               {guide.result}
