@@ -19,7 +19,7 @@ Authoritative Product Specification supplied 2026-09-22.
 Flutter was replaced before substantive feature implementation because the local Flutter toolchain was unavailable/heavy for the user's development environment. Product requirements and phase outcomes remain unchanged.
 
 ## Current phase
-Phase 5 — Localization and Regional Polish
+Phase 6 — Production Readiness
 
 ## Phase 1 completed outcomes
 - Expo/React Native project foundation
@@ -106,17 +106,42 @@ Phase 5 — Localization and Regional Polish
 - LTR mathematical expressions/results preserved inside RTL application screens
 - Tool input accessibility labels and canonical digit handling
 
+## Phase 6 implemented outcomes
+- Storage-write failures no longer interrupt active calculations
+- Corrupted stored history remains filtered during restoration
+- App-level render error boundary prevents raw stack traces from becoming the user experience
+- Clear-all history now requires destructive-action confirmation from History and Settings
+- Lightweight automated regression test runner added
+- Automated calculation engine coverage for arithmetic, precedence, decimals, negatives, percentages, powers and scientific functions
+- Automated Persian/Arabic-Indic/Latin numeral normalization coverage
+- Automated Gregorian leap-year, Solar Hijri conversion and month-end date coverage
+- Automated conversion-family and common unit conversion coverage
+- Combined `npm run verify` command for typecheck + regression tests
+- MVP release version set to 1.0.0 with initial Android/iOS build numbers
+- EAS preview and production build profiles added
+- Privacy documentation added
+- Persian/Dari store-listing metadata drafted
+- Release/regression checklist added for all seven critical journeys
+- Security/privacy release checks documented
+- Final production asset and store-submission blockers explicitly documented
+
 ## Verification status
 Phase 1 TypeScript checking passed locally on 2026-09-22.
 Phase 2 was implemented and pulled locally.
 Phase 3 is implemented and has been exercised on-device during UI refinement; full acceptance verification remains pending.
 Phase 4 TypeScript checking passed locally on 2026-09-22; device runtime verification is in progress.
 Phase 5 source is implemented; local TypeScript and device runtime verification are pending after pull.
+Phase 6 source is implemented; `npm install` is required for the new test runner, then `npm run verify` and final device regression are pending.
 
-## Known limitations
+## Known limitations / release blockers
 - Age/date tools use typed year/month/day entry rather than a graphical date picker to keep the MVP dependency-light and offline.
-- Large-text and screen-reader behavior still require real-device acceptance testing in Phase 6.
+- Large-text and screen-reader behavior still require real-device acceptance testing.
 - History is local-only by product design.
+- Production app icon, Android adaptive icon and splash artwork are not yet supplied or wired.
+- Store screenshots are not yet captured.
+- Privacy policy still needs a public URL before store submission.
+- Developer/support contact details still need to be finalized.
+- Signed Android/iOS production builds and store questionnaires remain release operations.
 
-## Next phase
-Phase 6 — Production Readiness
+## Next milestone
+Final verification and store-asset preparation.
