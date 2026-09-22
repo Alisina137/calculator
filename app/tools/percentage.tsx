@@ -9,6 +9,7 @@ import {
 } from "@/components/ToolScreen";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
+import { toolCopy } from "@/i18n/toolCopy";
 import {
   formatToolNumber,
   parseToolNumber,
@@ -22,16 +23,17 @@ type Mode = "of" | "ratio" | "increase" | "decrease";
 
 export default function PercentageToolScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
-  const percentWord = language === "dari" ? "فیصدی" : "درصد";
+  const copy = toolCopy(language);
+  const percentWord = copy.percent;
   const [mode, setMode] = useState<Mode>("of");
   const [first, setFirst] = useState("");
   const [second, setSecond] = useState("");
 
   const modes = [
-    { id: "of" as const, label: `${percentWord} از عدد` },
-    { id: "ratio" as const, label: `چند ${percentWord}؟` },
-    { id: "increase" as const, label: `افزایش ${percentWord}ی` },
-    { id: "decrease" as const, label: `کاهش ${percentWord}ی` }
+    { id: "of" as const, label: copy.percentage.of },
+    { id: "ratio" as const, label: copy.percentage.ratio },
+    { id: "increase" as const, label: copy.percentage.increase },
+    { id: "decrease" as const, label: copy.percentage.decrease }
   ];
 
   const result = useMemo(() => {
@@ -40,13 +42,13 @@ export default function PercentageToolScreen() {
     const a = parseToolNumber(first);
     const b = parseToolNumber(second);
     if (a == null || b == null) {
-      return { rows: [], error: "لطفاً عدد معتبر وارد کنید." };
+      return { rows: [], error: copy.invalidNumber };
     }
 
     if (mode === "of") {
       return {
         rows: [{
-          label: "نتیجه",
+          label: copy.result,
           value: displayDigits(formatToolNumber(percentOf(a, b)), numeralStyle),
           emphasis: true
         }],
@@ -56,7 +58,7 @@ export default function PercentageToolScreen() {
 
     if (mode === "ratio") {
       const value = percentageOf(a, b);
-      if (value == null) return { rows: [], error: "مقدار کل نمی‌تواند صفر باشد." };
+      if (value == null) return { rows: [], error: copy.percentage.totalZero };
       return {
         rows: [{
           label: percentWord,
@@ -69,7 +71,7 @@ export default function PercentageToolScreen() {
 
     const change = percentageChange(a, b);
     if (!change) {
-      return { rows: [], error: "مقدار اولیه نمی‌تواند صفر باشد." };
+      return { rows: [], error: copy.percentage.initialZero };
     }
 
     const amount = mode === "decrease" ? a - b : b - a;
@@ -78,30 +80,30 @@ export default function PercentageToolScreen() {
     return {
       rows: [
         {
-          label: mode === "decrease" ? "میزان کاهش" : "میزان افزایش",
+          label: mode === "decrease" ? copy.percentage.decreaseAmount : copy.percentage.increaseAmount,
           value: displayDigits(formatToolNumber(amount), numeralStyle)
         },
         {
-          label: mode === "decrease" ? `${percentWord} کاهش` : `${percentWord} افزایش`,
+          label: mode === "decrease" ? copy.percentage.decreasePercent : copy.percentage.increasePercent,
           value: displayDigits(`${formatToolNumber(percent)}%`, numeralStyle),
           emphasis: true
         }
       ],
       error: ""
     };
-  }, [first, second, mode, numeralStyle, percentWord]);
+  }, [first, second, mode, numeralStyle, percentWord, copy]);
 
   const labels =
     mode === "of"
-      ? [percentWord, "عدد پایه"]
+      ? [percentWord, copy.percentage.base]
       : mode === "ratio"
-        ? ["بخش", "کل"]
-        : ["مقدار اولیه", "مقدار جدید"];
+        ? [copy.percentage.part, copy.percentage.total]
+        : [copy.percentage.initial, copy.percentage.next];
 
   return (
     <ToolScreen
       title={t(language, "percentage")}
-      subtitle="محاسبه‌های روزمره درصدی با نتیجه فوری"
+      subtitle={copy.percentage.subtitle}
       theme={resolvedTheme}
     >
       <ToolSection theme={resolvedTheme}>
@@ -127,7 +129,7 @@ export default function PercentageToolScreen() {
       ) : result.rows.length ? (
         <ResultCard rows={result.rows} theme={resolvedTheme} />
       ) : (
-        <ToolMessage text="دو مقدار را وارد کنید تا نتیجه فوراً نمایش داده شود." theme={resolvedTheme} />
+        <ToolMessage text={copy.percentage.prompt} theme={resolvedTheme} />
       )}
     </ToolScreen>
   );
