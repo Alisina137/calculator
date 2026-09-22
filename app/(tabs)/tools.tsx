@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   content: {
     paddingLeft: 18,
     paddingRight: 24,
-    paddingTop: 28,
+    paddingTop: 34,
     paddingBottom: 110
   },
   title: { fontSize: 27, fontWeight: "800", textAlign: "right", writingDirection: "rtl" },
