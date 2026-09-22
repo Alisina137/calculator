@@ -24,7 +24,11 @@ export function ToolCard({
       onPress={onPress}
       style={({ pressed }) => [
         styles.card,
-        { backgroundColor: colors.surface, opacity: pressed ? 0.75 : 1 }
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          opacity: pressed ? 0.75 : 1
+        }
       ]}
     >
       <View style={[styles.iconWrap, { backgroundColor: colors.primarySoft }]}>
@@ -46,7 +50,13 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: "row-reverse",
     alignItems: "center",
-    gap: 13
+    gap: 13,
+    borderWidth: 1,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2
   },
   iconWrap: {
     width: 50,
