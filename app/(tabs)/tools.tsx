@@ -41,7 +41,12 @@ export default function ToolsScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  content: { padding: 18, paddingBottom: 110 },
+  content: {
+    paddingLeft: 18,
+    paddingRight: 24,
+    paddingTop: 28,
+    paddingBottom: 110
+  },
   title: { fontSize: 27, fontWeight: "800", textAlign: "right", writingDirection: "rtl" },
   subtitle: { fontSize: 16, marginTop: 6, textAlign: "right", writingDirection: "rtl" },
   list: { marginTop: 20, gap: 12 }
