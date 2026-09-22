@@ -337,6 +337,7 @@ export default function CalculatorScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
+            style={styles.expressionViewport}
             contentContainerStyle={styles.expressionScroll}
           >
             <Text
@@ -360,6 +361,7 @@ export default function CalculatorScreen() {
             style={[
               styles.preview,
               scientificMode ? styles.previewLandscape : null,
+              inputError ? styles.previewError : styles.previewMath,
               { color: inputError ? colors.danger : colors.muted }
             ]}
           >
@@ -479,7 +481,7 @@ const styles = StyleSheet.create({
     gap: 8
   },
   headerLandscape: {
-    minHeight: 44
+    minHeight: 36
   },
   title: {
     fontSize: 24,
@@ -542,20 +544,25 @@ const styles = StyleSheet.create({
     minHeight: 100
   },
   displayLandscape: {
-    flex: 0.55,
-    minHeight: 64,
-    paddingVertical: 4
+    flex: 0.42,
+    minHeight: 48,
+    paddingVertical: 2
+  },
+  expressionViewport: {
+    direction: "ltr"
   },
   expressionScroll: {
     flexGrow: 1,
-    alignItems: "flex-end",
-    justifyContent: "flex-end"
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    direction: "ltr"
   },
   expression: {
     fontSize: 52,
     fontWeight: "500",
-    textAlign: "right",
-    writingDirection: "ltr"
+    textAlign: "left",
+    writingDirection: "ltr",
+    direction: "ltr"
   },
   expressionLandscape: {
     fontSize: 34
@@ -563,9 +570,17 @@ const styles = StyleSheet.create({
   preview: {
     fontSize: 19,
     minHeight: 29,
-    marginTop: 6,
+    marginTop: 6
+  },
+  previewMath: {
+    textAlign: "left",
+    writingDirection: "ltr",
+    direction: "ltr"
+  },
+  previewError: {
     textAlign: "right",
-    writingDirection: "rtl"
+    writingDirection: "rtl",
+    direction: "rtl"
   },
   previewLandscape: {
     fontSize: 16,
@@ -573,40 +588,40 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   landscapeKeyArea: {
-    flex: 1.75,
+    flex: 2,
     flexDirection: "row",
-    gap: 14,
-    paddingBottom: 4
+    gap: 10,
+    paddingBottom: 2
   },
   scientificGrid: {
-    flex: 0.9,
-    gap: 6
+    flex: 0.95,
+    gap: 4
   },
   scientificRow: {
     flex: 1,
     flexDirection: "row",
-    gap: 6
+    gap: 4
   },
   scientificKey: {
     flex: 1,
-    minHeight: 40,
+    minHeight: 32,
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center"
   },
   scientificKeyText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700"
   },
   standardLandscapeGrid: {
-    flex: 1.35,
-    gap: 6
+    flex: 1.4,
+    gap: 4
   },
   landscapeStandardRow: {
     flex: 1,
     flexDirection: "row",
-    gap: 6
+    gap: 4
   },
   keypad: {
     paddingBottom: 6,
