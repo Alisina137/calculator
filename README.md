@@ -67,6 +67,27 @@ See:
 - `docs/RELEASE-CHECKLIST.md`
 - `docs/PROJECT-STATE.md`
 
-## Current release status
+## Google Play release preparation
 
-Phase 6 production-readiness source work is implemented. Final store submission still requires production icon/splash assets, public privacy-policy hosting, store screenshots/contact details, a signed production build and final physical-device regression testing.
+Run:
+
+```powershell
+npm install
+npm run verify:release
+```
+
+The repository now configures:
+
+- Android API 36 through Expo SDK 57
+- generated launcher/adaptive/themed icons
+- configured splash screen
+- Google Play 512×512 icon
+- Google Play 1024×500 feature graphic
+- preview APK profile
+- production AAB profile
+- internal and production EAS submission profiles
+- privacy policy and Play Console declarations guide
+
+See `docs/GOOGLE-PLAY-SUBMISSION.md`.
+
+Final publishing still requires real-device testing/screenshots and Play Console account-level actions.
