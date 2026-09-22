@@ -9,6 +9,7 @@ import {
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
 import { toolCopy } from "@/i18n/toolCopy";
+import { toolGuidance } from "@/i18n/toolGuidance";
 import { formatToolNumber, parseToolNumber } from "@/tools/toolMath";
 import { displayDigits } from "@/utils/numerals";
 
@@ -72,6 +73,7 @@ export default function DiscountToolScreen() {
       title={t(language, "discount")}
       subtitle={copy.discount.subtitle}
       theme={resolvedTheme}
+      guide={toolGuidance(language, "discount")}
     >
       <ToolSection theme={resolvedTheme}>
         <ToolField
