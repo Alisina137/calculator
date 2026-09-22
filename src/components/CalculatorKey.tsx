@@ -45,13 +45,22 @@ export function CalculatorKey({
         compact ? styles.compactButton : styles.roundButton,
         {
           backgroundColor,
-          boxShadow: compact
-            ? "0 1px 2px rgba(54, 78, 89, 0.12)"
-            : "0 2px 5px rgba(54, 78, 89, 0.14)",
+          borderWidth: 1,
+          borderColor:
+            theme === "dark"
+              ? "rgba(255,255,255,0.06)"
+              : "rgba(58,92,110,0.10)",
+          boxShadow: pressed
+            ? compact
+              ? "0 3px 6px rgba(54, 78, 89, 0.18)"
+              : "0 5px 10px rgba(54, 78, 89, 0.20)"
+            : compact
+              ? "0 1px 2px rgba(54, 78, 89, 0.12)"
+              : "0 2px 5px rgba(54, 78, 89, 0.14)",
           transform: pressed
-            ? [{ scale: 0.94 }, { translateY: 1 }]
-            : [{ scale: 1 }, { translateY: 0 }],
-          opacity: disabled ? 0.45 : pressed ? 0.86 : 1
+            ? [{ translateY: 5 }]
+            : [{ translateY: 0 }],
+          opacity: disabled ? 0.45 : pressed ? 0.9 : 1
         }
       ]}
     >
