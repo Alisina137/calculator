@@ -1,0 +1,63 @@
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { colorsFor } from "@/theme/colors";
+import type { ResolvedTheme } from "@/context/AppPreferencesContext";
+
+export function ToolCard({
+  icon,
+  title,
+  subtitle,
+  theme,
+  onPress
+}: {
+  icon: string;
+  title: string;
+  subtitle: string;
+  theme: ResolvedTheme;
+  onPress?: () => void;
+}) {
+  const colors = colorsFor(theme);
+
+  return (
+    <Pressable
+      accessibilityRole={onPress ? "button" : undefined}
+      accessibilityLabel={title}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.card,
+        { backgroundColor: colors.surface, opacity: pressed ? 0.75 : 1 }
+      ]}
+    >
+      <View style={[styles.iconWrap, { backgroundColor: colors.primarySoft }]}>
+        <Text style={styles.icon}>{icon}</Text>
+      </View>
+      <View style={styles.text}>
+        <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+        <Text style={[styles.subtitle, { color: colors.muted }]}>{subtitle}</Text>
+      </View>
+      <Text style={[styles.chevron, { color: colors.muted }]}>‹</Text>
+    </Pressable>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    minHeight: 86,
+    borderRadius: 23,
+    padding: 16,
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 13
+  },
+  iconWrap: {
+    width: 50,
+    height: 50,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  icon: { fontSize: 22 },
+  text: { flex: 1 },
+  title: { fontSize: 17, fontWeight: "800", textAlign: "right", writingDirection: "rtl" },
+  subtitle: { marginTop: 4, fontSize: 14, lineHeight: 20, textAlign: "right", writingDirection: "rtl" },
+  chevron: { fontSize: 30, fontWeight: "300" }
+});

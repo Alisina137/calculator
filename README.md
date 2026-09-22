@@ -1,40 +1,41 @@
 # Persian/Dari Calculator
 
-Flutter mobile calculator built from the approved Persian/Dari Calculator Product Specification.
+React Native mobile application built with Expo + TypeScript from the approved Persian/Dari Calculator Product Specification.
 
 ## Current implementation
 
 Phase 1 — Foundation and Persian-First Design System.
 
-## One-time local setup
+## Requirements
 
-If this repository does not yet contain generated Flutter platform folders such as `android/` and `ios/`, run this once from the repository root:
+- Node.js 22.13+ (Expo SDK 57 minimum)
+- npm
+- Expo Go on an Android/iOS phone for the lightest development setup
+
+## First setup
 
 ```powershell
-flutter create . --platforms=android,ios
-flutter pub get
-flutter analyze
-flutter test
-flutter run
+cd C:\projects\calculator
+npm install
+npx expo start
 ```
 
-The existing `lib/`, `test/`, and project configuration are the application source of truth. Review any Flutter-generated changes before committing them.
+Scan the QR code with Expo Go.
 
 ## Normal update workflow
 
-After the initial setup, completed phases are published to the repository's `main` branch.
-
-Update your local project with:
+For every completed phase:
 
 ```powershell
 git pull origin main
-flutter pub get
+npm install
+npx expo start
 ```
 
-Then run the app:
+`npm install` is safe to run each time and is only materially needed when dependencies change.
+
+## Verification
 
 ```powershell
-flutter run
+npm run typecheck
 ```
-
-If a phase adds native configuration or dependencies, its handoff will state any additional command explicitly.

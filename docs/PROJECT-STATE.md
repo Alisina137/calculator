@@ -7,33 +7,38 @@ Fast, free, Persian/Dari-first mobile calculator for everyday calculations.
 Authoritative Product Specification supplied 2026-09-22.
 
 ## Technology stack
-- Flutter / Dart
-- Material 3
-- Native Flutter localization delegates
-- Local-only architecture for MVP
-- No backend / authentication / billing
+- React Native 0.86
+- Expo SDK 57
+- TypeScript
+- Expo Router
+- Local-first architecture
+- No backend / authentication / billing for MVP
+
+## Architecture decision
+Flutter was replaced before substantive feature implementation because the local Flutter toolchain was unavailable/heavy for the user's development environment. Product requirements and phase outcomes remain unchanged.
 
 ## Current phase
 Phase 1 — Foundation and Persian-First Design System
 
 ## Completed outcomes
-- RTL-first application shell
+- Expo/React Native project foundation
+- RTL-first application layout
 - Three-destination bottom navigation
-- Persian (fa-IR) and Dari (fa-AF) variants
-- Persian/Latin numeral conversion utility
-- Light/dark/system theme controls
-- Haptics preference foundation
-- Reusable section/tool controls
-- Calculator, Tools, History, Settings production-facing shells
-- Phase 1 unit tests authored
+- Persian and Dari language variants
+- Persian/Latin numeral formatting utility
+- Light/dark/system appearance foundation
+- Settings foundation
+- Reusable calculator/tool controls
+- Calculator shell, Tools, History, Settings screens
+- TypeScript strict configuration
 
 ## Verification status
-Implemented; runtime verification pending because Flutter/Dart SDK is unavailable in the execution environment used to produce this package.
+Implemented in source. Runtime verification should be performed locally with npm install, npm run typecheck, and Expo Go.
 
 ## Known limitations
-- Calculator evaluation is intentionally excluded from Phase 1 and begins in Phase 2.
-- Scientific mode and specialized tool calculations are intentionally not active yet.
-- Settings persistence is not yet wired to local storage; persistence/state restoration is completed with later persistence phases.
+- Calculation evaluation is intentionally excluded from Phase 1 and begins in Phase 2.
+- Scientific calculations and specialized tool calculations are intentionally inactive in Phase 1.
+- Preference persistence is deferred until local persistence is introduced.
 
 ## Next phase
 Phase 2 — Core Calculator
