@@ -51,18 +51,16 @@ export function CalculatorKey({
               ? "rgba(255,255,255,0.06)"
               : "rgba(58,92,110,0.10)",
           boxShadow: pressed
-            ? compact
-              ? "0 2px 4px rgba(54, 78, 89, 0.16)"
-              : "0 3px 7px rgba(54, 78, 89, 0.17)"
+            ? "0 0 5px 0 rgba(54, 78, 89, 0.22)"
             : compact
               ? "0 1px 2px rgba(54, 78, 89, 0.12)"
               : "0 2px 5px rgba(54, 78, 89, 0.14)",
           transform: pressed
-            ? [{ translateY: 1 }]
+            ? [{ translateY: 2 }]
             : [{ translateY: 0 }],
-          transitionDuration: "90ms",
-          transitionProperty: ["transform", "boxShadow", "opacity"],
-          opacity: disabled ? 0.45 : pressed ? 0.96 : 1
+          transitionDuration: "300ms",
+          transitionProperty: ["transform", "boxShadow"],
+          opacity: disabled ? 0.45 : 1
         }
       ]}
     >
