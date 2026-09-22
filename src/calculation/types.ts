@@ -2,7 +2,10 @@ export type CalculationErrorCode =
   | "INCOMPLETE_EXPRESSION"
   | "DIVIDE_BY_ZERO"
   | "INVALID_NUMBER"
+  | "MATH_DOMAIN"
   | "OVERFLOW";
+
+export type AngleUnit = "DEG" | "RAD";
 
 export type CalculationSuccess = {
   ok: true;
@@ -17,8 +20,11 @@ export type CalculationFailure = {
 
 export type CalculationResult = CalculationSuccess | CalculationFailure;
 
-export type FinalizedCalculation = {
+export type HistoryEntry = {
+  id: string;
   expression: string;
   result: string;
   createdAt: number;
 };
+
+export type FinalizedCalculation = Omit<HistoryEntry, "id">;
