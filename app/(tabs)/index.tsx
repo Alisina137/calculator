@@ -300,7 +300,11 @@ export default function CalculatorScreen() {
 
   return (
     <SafeAreaView
-      edges={["top", "right", "bottom", "left"]}
+      edges={
+        scientificMode
+          ? ["top", "right", "bottom", "left"]
+          : ["top", "right", "left"]
+      }
       style={[styles.safe, { backgroundColor: colors.background }]}
     >
       <View
@@ -628,7 +632,7 @@ const styles = StyleSheet.create({
     gap: 3
   },
   keypad: {
-    paddingBottom: 6,
+    paddingBottom: 0,
     gap: 8
   },
   row: {
