@@ -74,6 +74,7 @@ export default function DiscountToolScreen() {
       subtitle={copy.discount.subtitle}
       theme={resolvedTheme}
       guide={toolGuidance(language, "discount")}
+      guideId="discount"
     >
       <ToolSection theme={resolvedTheme}>
         <ToolField
