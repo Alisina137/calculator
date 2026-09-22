@@ -14,6 +14,7 @@ type PersistedPreferences = {
   numeralStyle: NumeralStyle;
   themePreference: ThemePreference;
   hapticsEnabled: boolean;
+  showToolGuidance: boolean;
 };
 
 type PreferencesContextValue = PersistedPreferences & {
@@ -22,6 +23,7 @@ type PreferencesContextValue = PersistedPreferences & {
   setThemePreference: (value: ThemePreference) => void;
   resolvedTheme: ResolvedTheme;
   setHapticsEnabled: (value: boolean) => void;
+  setShowToolGuidance: (value: boolean) => void;
 };
 
 const AppPreferencesContext = createContext<PreferencesContextValue | null>(null);
@@ -32,6 +34,7 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
   const [numeralStyle, setNumeralStyle] = useState<NumeralStyle>("persian");
   const [themePreference, setThemePreference] = useState<ThemePreference>("system");
   const [hapticsEnabled, setHapticsEnabled] = useState(true);
+  const [showToolGuidance, setShowToolGuidance] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -58,6 +61,9 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
         if (typeof parsed.hapticsEnabled === "boolean") {
           setHapticsEnabled(parsed.hapticsEnabled);
         }
+        if (typeof parsed.showToolGuidance === "boolean") {
+          setShowToolGuidance(parsed.showToolGuidance);
+        }
       })
       .catch(() => undefined)
       .finally(() => {
@@ -76,11 +82,12 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
       language,
       numeralStyle,
       themePreference,
-      hapticsEnabled
+      hapticsEnabled,
+      showToolGuidance
     };
 
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(payload)).catch(() => undefined);
-  }, [language, numeralStyle, themePreference, hapticsEnabled, hydrated]);
+  }, [language, numeralStyle, themePreference, hapticsEnabled, showToolGuidance, hydrated]);
 
   const resolvedTheme: ResolvedTheme =
     themePreference === "system"
@@ -99,9 +106,11 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
       setThemePreference,
       resolvedTheme,
       hapticsEnabled,
-      setHapticsEnabled
+      setHapticsEnabled,
+      showToolGuidance,
+      setShowToolGuidance
     }),
-    [language, numeralStyle, themePreference, resolvedTheme, hapticsEnabled]
+    [language, numeralStyle, themePreference, resolvedTheme, hapticsEnabled, showToolGuidance]
   );
 
   return <AppPreferencesContext.Provider value={value}>{children}</AppPreferencesContext.Provider>;
