@@ -43,6 +43,8 @@ const standardRows = [
   ["±", "0", ".", "="]
 ];
 
+const styledOperatorKeys = new Set(["AC", "⌫", "%", "÷", "×", "−", "+"]);
+
 const scientificRows = [
   ["ANGLE", "(", ")"],
   ["sin", "cos", "tan"],
@@ -432,6 +434,7 @@ export default function CalculatorScreen() {
                       }
                       onPress={() => void handleStandardKey(key)}
                       emphasized={key === "="}
+                      operator={styledOperatorKeys.has(key)}
                       compact
                       theme={resolvedTheme}
                     />
@@ -454,6 +457,7 @@ export default function CalculatorScreen() {
                     }
                     onPress={() => void handleStandardKey(key)}
                     emphasized={key === "="}
+                    operator={styledOperatorKeys.has(key)}
                     theme={resolvedTheme}
                   />
                 ))}
@@ -632,7 +636,7 @@ const styles = StyleSheet.create({
     gap: 3
   },
   keypad: {
-    paddingBottom: 0,
+    paddingBottom: 6,
     gap: 8
   },
   row: {
