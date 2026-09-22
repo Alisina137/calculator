@@ -87,7 +87,7 @@ export function CalculatorKey({
       accessibilityLabel={accessibilityLabel}
       disabled={disabled}
       hitSlop={compact ? 6 : 2}
-      delayLongPress={2000}
+      delayLongPress={1000}
       onLongPress={
         tooltipEligible
           ? () => {
