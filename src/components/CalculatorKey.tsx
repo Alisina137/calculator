@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { useRef, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SymbolView } from "expo-symbols";
 import { colorsFor } from "@/theme/colors";
 import { useAppPreferences, type ResolvedTheme } from "@/context/AppPreferencesContext";
@@ -22,8 +23,26 @@ export function CalculatorKey({
 }) {
   const colors = colorsFor(theme);
   const { language } = useAppPreferences();
+  const [showTooltip, setShowTooltip] = useState(false);
+  const longPressTriggered = useRef(false);
   const isClear = label === "AC";
   const isDelete = label === "⌫";
+  const tooltipEligible = operator || emphasized;
+
+  const tooltipLabel = (() => {
+    const labels: Record<string, string> = {
+      AC: language === "dari" ? "پاک کردن همه" : "پاک کردن همه",
+      "⌫": language === "dari" ? "حذف" : "حذف",
+      "%": language === "dari" ? "فیصدی" : "درصد",
+      "÷": "تقسیم",
+      "×": "ضرب",
+      "−": language === "dari" ? "تفریق" : "منها",
+      "+": "جمع",
+      "=": "مساوی"
+    };
+
+    return labels[label] ?? label;
+  })();
 
   const accessibilityLabel =
     label === "AC"
@@ -68,7 +87,26 @@ export function CalculatorKey({
       accessibilityLabel={accessibilityLabel}
       disabled={disabled}
       hitSlop={compact ? 6 : 2}
-      onPress={onPress}
+      delayLongPress={2000}
+      onLongPress={
+        tooltipEligible
+          ? () => {
+              longPressTriggered.current = true;
+              setShowTooltip(true);
+            }
+          : undefined
+      }
+      onPressOut={() => {
+        setShowTooltip(false);
+      }}
+      onPress={() => {
+        if (longPressTriggered.current) {
+          longPressTriggered.current = false;
+          return;
+        }
+
+        onPress();
+      }}
       style={({ pressed }) => [
         styles.button,
         compact ? styles.compactButton : styles.roundButton,
@@ -94,8 +132,43 @@ export function CalculatorKey({
         }
       ]}
     >
-      {({ pressed }) =>
-        isDelete ? (
+      {({ pressed }) => (
+        <>
+          {showTooltip ? (
+            <View
+              pointerEvents="none"
+              style={[
+                styles.tooltip,
+                {
+                  backgroundColor:
+                    theme === "dark" ? "#E7EFF3" : "#24343D"
+                }
+              ]}
+            >
+              <Text
+                numberOfLines={1}
+                style={[
+                  styles.tooltipText,
+                  {
+                    color: theme === "dark" ? "#172329" : "#FFFFFF"
+                  }
+                ]}
+              >
+                {tooltipLabel}
+              </Text>
+              <View
+                style={[
+                  styles.tooltipArrow,
+                  {
+                    borderTopColor:
+                      theme === "dark" ? "#E7EFF3" : "#24343D"
+                  }
+                ]}
+              />
+            </View>
+          ) : null}
+
+          {isDelete ? (
           <SymbolView
             name={{
               ios: "delete.left",
@@ -106,7 +179,7 @@ export function CalculatorKey({
             tintColor={textColor}
             style={styles.deleteIcon}
           />
-        ) : (
+          ) : (
           <Text
             maxFontSizeMultiplier={1.4}
             adjustsFontSizeToFit
@@ -128,8 +201,9 @@ export function CalculatorKey({
           >
             {label}
           </Text>
-        )
-      }
+          )}
+        </>
+      )}
     </Pressable>
   );
 }
@@ -137,7 +211,39 @@ export function CalculatorKey({
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    overflow: "visible"
+  },
+  tooltip: {
+    position: "absolute",
+    bottom: "112%",
+    minWidth: 72,
+    maxWidth: 140,
+    minHeight: 34,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 30,
+    elevation: 10
+  },
+  tooltipText: {
+    fontSize: 12,
+    fontWeight: "800",
+    textAlign: "center",
+    writingDirection: "rtl"
+  },
+  tooltipArrow: {
+    position: "absolute",
+    bottom: -6,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderTopWidth: 6,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent"
   },
   roundButton: {
     width: "20.5%",
