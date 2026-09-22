@@ -345,14 +345,7 @@ export default function CalculatorScreen() {
           <View
             style={[
               styles.resultContainer,
-              scientificMode ? styles.resultContainerLandscape : null,
-              {
-                backgroundColor: inputError
-                  ? "transparent"
-                  : resolvedTheme === "dark"
-                    ? "#173B4F"
-                    : "#EAF4FA"
-              }
+              scientificMode ? styles.resultContainerLandscape : null
             ]}
           >
             <Text
@@ -576,20 +569,14 @@ const styles = StyleSheet.create({
   resultContainer: {
     alignSelf: "flex-start",
     minWidth: 72,
-    marginTop: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12
+    marginTop: 12
   },
   resultContainerLandscape: {
-    marginTop: 2,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8
+    marginTop: 2
   },
   preview: {
-    fontSize: 24,
-    minHeight: 32,
+    fontSize: 28,
+    minHeight: 36,
     fontWeight: "500"
   },
   previewMath: {
@@ -604,8 +591,8 @@ const styles = StyleSheet.create({
     direction: "rtl"
   },
   previewLandscape: {
-    fontSize: 16,
-    minHeight: 20
+    fontSize: 18,
+    minHeight: 22
   },
   landscapeKeyArea: {
     flex: 2.35,
