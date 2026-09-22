@@ -53,6 +53,31 @@ const scientificRows = [
   ["!", "π", "e"]
 ];
 
+function scientificAccessibilityLabel(
+  key: string,
+  angleUnit: "DEG" | "RAD"
+): string {
+  const labels: Record<string, string> = {
+    ANGLE: `واحد زاویه، ${angleUnit}`,
+    "(": "پرانتز باز",
+    ")": "پرانتز بسته",
+    sin: "سینوس",
+    cos: "کسینوس",
+    tan: "تانژانت",
+    ln: "لگاریتم طبیعی",
+    log: "لگاریتم ده‌دهی",
+    "1/x": "معکوس",
+    "√": "ریشه دوم",
+    "x²": "توان دو",
+    "xʸ": "توان دلخواه",
+    "!": "فاکتوریل",
+    "π": "عدد پی",
+    e: "عدد اویلر"
+  };
+
+  return labels[key] ?? key;
+}
+
 function ScientificModeIcon({
   active,
   color,
@@ -381,7 +406,7 @@ export default function CalculatorScreen() {
                       <Pressable
                         key={key}
                         accessibilityRole="button"
-                        accessibilityLabel={label}
+                        accessibilityLabel={scientificAccessibilityLabel(key, angleUnit)}
                         onPress={() => handleScientificKey(key)}
                         style={({ pressed }) => [
                           styles.scientificKey,
@@ -404,6 +429,8 @@ export default function CalculatorScreen() {
                       >
                         {({ pressed }) => (
                           <Text
+                            maxFontSizeMultiplier={1.4}
+                            adjustsFontSizeToFit
                             style={[
                               styles.scientificKeyText,
                               {
