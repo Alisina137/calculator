@@ -364,18 +364,30 @@ export default function CalculatorScreen() {
             </Text>
           </ScrollView>
 
-          <Text
-            accessibilityLiveRegion="polite"
-            numberOfLines={2}
+          <View
             style={[
-              styles.preview,
-              scientificMode ? styles.previewLandscape : null,
-              inputError ? styles.previewError : styles.previewMath,
-              { color: inputError ? colors.danger : colors.muted }
+              styles.resultContainer,
+              scientificMode ? styles.resultContainerLandscape : null,
+              {
+                backgroundColor: inputError
+                  ? "transparent"
+                  : colors.primarySoft
+              }
             ]}
           >
-            {displayPreview}
-          </Text>
+            <Text
+              accessibilityLiveRegion="polite"
+              numberOfLines={2}
+              style={[
+                styles.preview,
+                scientificMode ? styles.previewLandscape : null,
+                inputError ? styles.previewError : styles.previewMath,
+                { color: inputError ? colors.danger : colors.text }
+              ]}
+            >
+              {displayPreview}
+            </Text>
+          </View>
         </View>
 
         {scientificMode ? (
@@ -579,10 +591,24 @@ const styles = StyleSheet.create({
   expressionLandscape: {
     fontSize: 28
   },
+  resultContainer: {
+    alignSelf: "flex-start",
+    minWidth: 72,
+    marginTop: 7,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10
+  },
+  resultContainerLandscape: {
+    marginTop: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8
+  },
   preview: {
-    fontSize: 19,
-    minHeight: 29,
-    marginTop: 6
+    fontSize: 22,
+    minHeight: 30,
+    fontWeight: "700"
   },
   previewMath: {
     textAlign: "left",
@@ -595,9 +621,8 @@ const styles = StyleSheet.create({
     direction: "rtl"
   },
   previewLandscape: {
-    fontSize: 14,
-    minHeight: 18,
-    marginTop: 0
+    fontSize: 16,
+    minHeight: 20
   },
   landscapeKeyArea: {
     flex: 2.35,
