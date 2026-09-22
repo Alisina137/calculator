@@ -1,41 +1,72 @@
 # Persian/Dari Calculator
 
-React Native mobile application built with Expo + TypeScript from the approved Persian/Dari Calculator Product Specification.
+A Persian/Dari-first, RTL-first, offline-first mobile calculator built with React Native, Expo and TypeScript.
 
-## Current implementation
+## MVP feature set
 
-Phase 1 — Foundation and Persian-First Design System.
+- standard calculator with live result
+- scientific mode with DEG/RAD
+- local calculation history
+- percentage calculator
+- discount calculator
+- offline unit converter
+- Solar Hijri and Gregorian age calculator
+- date difference and date arithmetic
+- Persian/Dari wording
+- Persian/Latin numeral display
+- light/dark/system appearance
+- local persistence with no account or backend
 
-## Requirements
+## Stack
 
-- Node.js 22.13+ (Expo SDK 57 minimum)
-- npm
-- Expo Go on an Android/iOS phone for the lightest development setup
+- React Native 0.86
+- Expo SDK 57
+- Expo Router
+- TypeScript
+- AsyncStorage
 
-## First setup
+## Local setup
 
 ```powershell
 cd C:\projects\calculator
 npm install
-npx expo start
+npx expo start --clear
 ```
-
-Scan the QR code with Expo Go.
-
-## Normal update workflow
-
-For every completed phase:
-
-```powershell
-git pull origin main
-npm install
-npx expo start
-```
-
-`npm install` is safe to run each time and is only materially needed when dependencies change.
 
 ## Verification
 
+Run the complete automated source verification:
+
 ```powershell
-npm run typecheck
+npm run verify
 ```
+
+This runs:
+
+1. TypeScript checking
+2. core regression tests for calculation, numerals, dates and unit conversion
+
+## Release builds
+
+Preview Android:
+
+```powershell
+npx eas-cli build --profile preview --platform android
+```
+
+Production Android:
+
+```powershell
+npx eas-cli build --profile production --platform android
+```
+
+See:
+
+- `docs/PRIVACY.md`
+- `docs/STORE-METADATA.md`
+- `docs/RELEASE-CHECKLIST.md`
+- `docs/PROJECT-STATE.md`
+
+## Current release status
+
+Phase 6 production-readiness source work is implemented. Final store submission still requires production icon/splash assets, public privacy-policy hosting, store screenshots/contact details, a signed production build and final physical-device regression testing.
