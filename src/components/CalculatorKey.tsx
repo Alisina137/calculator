@@ -45,12 +45,13 @@ export function CalculatorKey({
         compact ? styles.compactButton : styles.roundButton,
         {
           backgroundColor,
-          shadowColor: compact ? "#66808D" : "transparent",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: compact ? 0.05 : 0,
-          shadowRadius: compact ? 1 : 0,
-          elevation: compact ? 1 : 0,
-          opacity: disabled ? 0.45 : pressed ? 0.72 : 1
+          boxShadow: compact
+            ? "0 1px 2px rgba(54, 78, 89, 0.12)"
+            : "0 2px 5px rgba(54, 78, 89, 0.14)",
+          transform: pressed
+            ? [{ scale: 0.94 }, { translateY: 1 }]
+            : [{ scale: 1 }, { translateY: 0 }],
+          opacity: disabled ? 0.45 : pressed ? 0.86 : 1
         }
       ]}
     >
