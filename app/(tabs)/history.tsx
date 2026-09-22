@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
@@ -20,6 +20,21 @@ export default function HistoryScreen() {
 
   const goToCalculator = () => {
     router.replace("/");
+  };
+
+  const confirmClearHistory = () => {
+    Alert.alert(
+      t(language, "confirmClearHistoryTitle"),
+      t(language, "confirmClearHistoryBody"),
+      [
+        { text: t(language, "cancel"), style: "cancel" },
+        {
+          text: t(language, "confirm"),
+          style: "destructive",
+          onPress: () => void clearHistory()
+        }
+      ]
+    );
   };
 
   if (history.length === 0) {
@@ -49,7 +64,7 @@ export default function HistoryScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t(language, "clearAll")}
-            onPress={() => void clearHistory()}
+            onPress={confirmClearHistory}
             style={({ pressed }) => [
               styles.clearButton,
               {
