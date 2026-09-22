@@ -8,12 +8,14 @@ import {
 } from "@/components/ToolScreen";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
+import { toolCopy } from "@/i18n/toolCopy";
 import { formatToolNumber, parseToolNumber } from "@/tools/toolMath";
 import { displayDigits } from "@/utils/numerals";
 
 export default function DiscountToolScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
-  const percentWord = language === "dari" ? "فیصدی" : "درصد";
+  const copy = toolCopy(language);
+  const percentWord = copy.percent;
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [quantity, setQuantity] = useState("1");
@@ -26,14 +28,14 @@ export default function DiscountToolScreen() {
     const qty = quantity.trim() ? parseToolNumber(quantity) : 1;
 
     if (original == null || percent == null || qty == null) {
-      return { rows: [], error: "لطفاً مقدارهای معتبر وارد کنید." };
+      return { rows: [], error: copy.invalidValues };
     }
-    if (original < 0) return { rows: [], error: "قیمت اصلی نمی‌تواند منفی باشد." };
+    if (original < 0) return { rows: [], error: copy.discount.negativePrice };
     if (percent < 0 || percent > 100) {
-      return { rows: [], error: `${percentWord} تخفیف باید بین ۰ تا ۱۰۰ باشد.` };
+      return { rows: [], error: copy.discount.rangeError };
     }
     if (qty <= 0 || !Number.isInteger(qty)) {
-      return { rows: [], error: "تعداد باید یک عدد صحیح بیشتر از صفر باشد." };
+      return { rows: [], error: copy.discount.quantityError };
     }
 
     const savedEach = original * (percent / 100);
@@ -44,50 +46,50 @@ export default function DiscountToolScreen() {
     return {
       rows: [
         {
-          label: "مبلغ تخفیف",
+          label: copy.discount.discountAmount,
           value: displayDigits(formatToolNumber(savedEach), numeralStyle)
         },
         {
-          label: "قیمت بعد از تخفیف",
+          label: copy.discount.finalPrice,
           value: displayDigits(formatToolNumber(finalEach), numeralStyle),
           emphasis: true
         },
         {
-          label: "مجموع برای تعداد",
+          label: copy.discount.quantityTotal,
           value: displayDigits(formatToolNumber(total), numeralStyle)
         },
         {
-          label: "کل صرفه‌جویی",
+          label: copy.discount.totalSaved,
           value: displayDigits(formatToolNumber(totalSaved), numeralStyle)
         }
       ],
       error: ""
     };
-  }, [price, discount, quantity, numeralStyle, percentWord]);
+  }, [price, discount, quantity, numeralStyle, percentWord, copy]);
 
   return (
     <ToolScreen
       title={t(language, "discount")}
-      subtitle="قیمت نهایی و مقدار صرفه‌جویی را سریع ببینید"
+      subtitle={copy.discount.subtitle}
       theme={resolvedTheme}
     >
       <ToolSection theme={resolvedTheme}>
         <ToolField
-          label="قیمت اصلی"
+          label={copy.discount.originalPrice}
           value={price}
           onChangeText={setPrice}
           placeholder="2000"
           theme={resolvedTheme}
         />
         <ToolField
-          label={`${percentWord} تخفیف`}
+          label={copy.discount.discountPercent}
           value={discount}
           onChangeText={setDiscount}
           placeholder="20"
           theme={resolvedTheme}
         />
         <ToolField
-          label="تعداد (اختیاری)"
+          label={copy.discount.quantity}
           value={quantity}
           onChangeText={setQuantity}
           placeholder="1"
@@ -100,7 +102,7 @@ export default function DiscountToolScreen() {
       ) : result.rows.length ? (
         <ResultCard rows={result.rows} theme={resolvedTheme} />
       ) : (
-        <ToolMessage text="قیمت و تخفیف را وارد کنید تا نتیجه نمایش داده شود." theme={resolvedTheme} />
+        <ToolMessage text={copy.discount.prompt} theme={resolvedTheme} />
       )}
     </ToolScreen>
   );
