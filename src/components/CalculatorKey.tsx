@@ -58,7 +58,7 @@ export function CalculatorKey({
           transform: pressed
             ? [{ translateY: 2 }]
             : [{ translateY: 0 }],
-          transitionDuration: "300ms",
+          transitionDuration: "100ms",
           transitionProperty: ["transform", "boxShadow"],
           opacity: disabled ? 0.45 : 1
         }
