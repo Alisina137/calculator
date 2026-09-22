@@ -1,2 +1,2 @@
 Trigger full application verification against current main.
-Run 2 after CI install adjustment.
+Run 3 with Android production bundle verification.
