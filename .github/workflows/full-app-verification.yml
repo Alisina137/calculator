@@ -37,5 +37,8 @@ jobs:
       - name: Expo Doctor
         run: npm run doctor
 
+      - name: Android production bundle
+        run: npx expo export --platform android --output-dir dist-verification
+
       - name: Generate and validate release assets
         run: npm run assets:generate
