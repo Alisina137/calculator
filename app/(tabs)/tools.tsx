@@ -54,10 +54,12 @@ export default function ToolsScreen() {
           </View>
           <View style={styles.guidanceTextWrap}>
             <Text style={[styles.guidanceTitle, { color: colors.text }]}>
-              راهنمای استفاده از ابزارها
+              {language === "dari" ? "راهنمای استفاده از ابزارها" : "راهنمای استفاده از ابزارها"}
             </Text>
             <Text style={[styles.guidanceSubtitle, { color: colors.muted }]}>
-              هنگام باز کردن هر ابزار، توضیح ورودی‌ها و نتیجه را نمایش بده
+              {language === "dari"
+                ? "هنگام باز کردن هر ابزار، توضیح ورودی‌ها و نتیجه را نشان بده"
+                : "هنگام باز کردن هر ابزار، توضیح ورودی‌ها و نتیجه را نمایش بده"}
             </Text>
           </View>
         </Pressable>
