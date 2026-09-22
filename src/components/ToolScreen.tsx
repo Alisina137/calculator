@@ -301,7 +301,6 @@ const styles = StyleSheet.create({
     paddingTop: 6,
     paddingBottom: 40,
     gap: 14,
-    direction: "rtl"
   },
   section: {
     borderRadius: 20,
