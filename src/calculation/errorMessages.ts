@@ -6,12 +6,14 @@ const messages: Record<AppLanguage, Record<CalculationErrorCode, string>> = {
     INCOMPLETE_EXPRESSION: "عبارت کامل نیست",
     DIVIDE_BY_ZERO: "تقسیم بر صفر ممکن نیست",
     INVALID_NUMBER: "عدد واردشده معتبر نیست",
+    MATH_DOMAIN: "این عملیات برای این مقدار تعریف نشده است",
     OVERFLOW: "نتیجه خارج از محدوده قابل نمایش است"
   },
   dari: {
     INCOMPLETE_EXPRESSION: "عبارت کامل نیست",
     DIVIDE_BY_ZERO: "تقسیم بر صفر ممکن نیست",
     INVALID_NUMBER: "عدد واردشده معتبر نیست",
+    MATH_DOMAIN: "این عملیات برای این مقدار تعریف نشده است",
     OVERFLOW: "نتیجه خارج از محدوده قابل نمایش است"
   }
 };
