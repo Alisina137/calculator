@@ -9,6 +9,7 @@ import {
 } from "@/components/ToolScreen";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
+import { toolCopy } from "@/i18n/toolCopy";
 import {
   addCalendarDuration,
   calendarDifference,
@@ -27,6 +28,7 @@ type Operation = "add" | "subtract";
 
 export default function DateToolScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
+  const copy = toolCopy(language);
   const [calendar, setCalendar] = useState<CalendarType>("jalali");
   const initial = formatCalendarDate(todayInCalendar("jalali"));
   const [mode, setMode] = useState<Mode>("difference");
@@ -45,23 +47,23 @@ export default function DateToolScreen() {
 
   const result = useMemo(() => {
     const first = parseCalendarDateText(dateA, calendar, normalizeDigits);
-    if (!first) return { rows: [], error: "تاریخ را به شکل سال/ماه/روز وارد کنید." };
+    if (!first) return { rows: [], error: copy.date.dateFormatError };
 
     if (mode === "difference") {
       const second = parseCalendarDateText(dateB, calendar, normalizeDigits);
-      if (!second) return { rows: [], error: "تاریخ دوم معتبر نیست." };
+      if (!second) return { rows: [], error: copy.date.secondDateError };
 
       const ordered =
         compareDates(first, second, calendar) <= 0
           ? [first, second] as const
           : [second, first] as const;
       const diff = calendarDifference(ordered[0], ordered[1], calendar);
-      if (!diff) return { rows: [], error: "امکان محاسبه فاصله وجود ندارد." };
+      if (!diff) return { rows: [], error: copy.date.differenceError };
 
       return {
         rows: [
           {
-            label: "فاصله دقیق",
+            label: copy.date.exactDifference,
             value: displayDigits(
               `${diff.years} سال، ${diff.months} ماه، ${diff.days} روز`,
               numeralStyle
@@ -69,7 +71,7 @@ export default function DateToolScreen() {
             emphasis: true
           },
           {
-            label: "مجموع روزها",
+            label: copy.date.totalDays,
             value: displayDigits(String(diff.totalDays), numeralStyle)
           }
         ],
@@ -84,7 +86,7 @@ export default function DateToolScreen() {
       parsedAmount < 0 ||
       !Number.isInteger(parsedAmount)
     ) {
-      return { rows: [], error: "مدت زمان باید یک عدد صحیح و نامنفی باشد." };
+      return { rows: [], error: copy.date.durationError };
     }
 
     const signed = operation === "subtract" ? -parsedAmount : parsedAmount;
@@ -92,25 +94,25 @@ export default function DateToolScreen() {
 
     return {
       rows: [{
-        label: "تاریخ نتیجه",
+        label: copy.date.resultDate,
         value: displayDigits(formatCalendarDate(calculated), numeralStyle),
         emphasis: true
       }],
       error: ""
     };
-  }, [dateA, dateB, amount, mode, unit, operation, calendar, numeralStyle]);
+  }, [dateA, dateB, amount, mode, unit, operation, calendar, numeralStyle, copy]);
 
   return (
     <ToolScreen
       title={t(language, "date")}
-      subtitle="فاصله تاریخ‌ها یا افزودن و کم‌کردن زمان"
+      subtitle={copy.date.subtitle}
       theme={resolvedTheme}
     >
       <ToolSection theme={resolvedTheme}>
         <ChoiceRow
           options={[
-            { id: "difference", label: "فاصله بین دو تاریخ" },
-            { id: "arithmetic", label: "افزودن / کم‌کردن" }
+            { id: "difference", label: copy.date.differenceMode },
+            { id: "arithmetic", label: copy.date.arithmeticMode }
           ]}
           value={mode}
           onChange={setMode}
@@ -118,8 +120,8 @@ export default function DateToolScreen() {
         />
         <ChoiceRow
           options={[
-            { id: "jalali", label: "هجری شمسی" },
-            { id: "gregorian", label: "میلادی" }
+            { id: "jalali", label: copy.age.jalali },
+            { id: "gregorian", label: copy.age.gregorian }
           ]}
           value={calendar}
           onChange={switchCalendar}
@@ -129,7 +131,7 @@ export default function DateToolScreen() {
 
       <ToolSection theme={resolvedTheme}>
         <ToolField
-          label={mode === "difference" ? "تاریخ اول" : "تاریخ شروع"}
+          label={mode === "difference" ? copy.date.firstDate : copy.date.startDate}
           value={dateA}
           onChangeText={setDateA}
           placeholder="سال/ماه/روز"
@@ -139,7 +141,7 @@ export default function DateToolScreen() {
 
         {mode === "difference" ? (
           <ToolField
-            label="تاریخ دوم"
+            label={copy.date.secondDate}
             value={dateB}
             onChangeText={setDateB}
             placeholder="سال/ماه/روز"
@@ -149,7 +151,7 @@ export default function DateToolScreen() {
         ) : (
           <>
             <ToolField
-              label="مقدار"
+              label={copy.date.amount}
               value={amount}
               onChangeText={setAmount}
               placeholder="0"
@@ -158,10 +160,10 @@ export default function DateToolScreen() {
             />
             <ChoiceRow
               options={[
-                { id: "days", label: "روز" },
-                { id: "weeks", label: "هفته" },
-                { id: "months", label: "ماه" },
-                { id: "years", label: "سال" }
+                { id: "days", label: copy.date.days },
+                { id: "weeks", label: copy.date.weeks },
+                { id: "months", label: copy.date.months },
+                { id: "years", label: copy.date.years }
               ]}
               value={unit}
               onChange={setUnit}
@@ -169,8 +171,8 @@ export default function DateToolScreen() {
             />
             <ChoiceRow
               options={[
-                { id: "add", label: "افزودن" },
-                { id: "subtract", label: "کم‌کردن" }
+                { id: "add", label: copy.date.add },
+                { id: "subtract", label: copy.date.subtract }
               ]}
               value={operation}
               onChange={setOperation}
@@ -185,7 +187,7 @@ export default function DateToolScreen() {
       ) : result.rows.length ? (
         <ResultCard rows={result.rows} theme={resolvedTheme} />
       ) : (
-        <ToolMessage text="مقدارهای لازم را وارد کنید تا نتیجه نمایش داده شود." theme={resolvedTheme} />
+        <ToolMessage text={copy.date.prompt} theme={resolvedTheme} />
       )}
     </ToolScreen>
   );
