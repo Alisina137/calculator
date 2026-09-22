@@ -670,11 +670,11 @@ const styles = StyleSheet.create({
   },
   keypad: {
     paddingBottom: 8,
-    gap: 10
+    gap: 9
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10
+    justifyContent: "space-between"
   }
 });
