@@ -72,12 +72,14 @@ export default function CalculatorScreen() {
     }
 
     if (key === ".") {
-      setEditingExpression(appendDecimal(expression));
+      const base = finalized ? "" : expression;
+      setEditingExpression(appendDecimal(base));
       return;
     }
 
     if (/^[0-9]$/.test(key)) {
-      setEditingExpression(appendDigit(expression, key));
+      const base = finalized ? "" : expression;
+      setEditingExpression(appendDigit(base, key));
       return;
     }
 
