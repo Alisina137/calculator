@@ -6,6 +6,7 @@ export type AppLanguage = "dari" | "persian";
 export type NumeralStyle = "persian" | "latin";
 export type ThemePreference = "system" | "light" | "dark";
 export type ResolvedTheme = "light" | "dark";
+export type ToolGuidanceId = "percentage" | "discount" | "unit" | "age" | "date";
 
 const STORAGE_KEY = "calculator.preferences.v1";
 
@@ -14,7 +15,7 @@ type PersistedPreferences = {
   numeralStyle: NumeralStyle;
   themePreference: ThemePreference;
   hapticsEnabled: boolean;
-  showToolGuidance: boolean;
+  toolGuidance: Record<ToolGuidanceId, boolean>;
 };
 
 type PreferencesContextValue = PersistedPreferences & {
@@ -23,7 +24,7 @@ type PreferencesContextValue = PersistedPreferences & {
   setThemePreference: (value: ThemePreference) => void;
   resolvedTheme: ResolvedTheme;
   setHapticsEnabled: (value: boolean) => void;
-  setShowToolGuidance: (value: boolean) => void;
+  setToolGuidanceEnabled: (tool: ToolGuidanceId, value: boolean) => void;
 };
 
 const AppPreferencesContext = createContext<PreferencesContextValue | null>(null);
@@ -34,7 +35,13 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
   const [numeralStyle, setNumeralStyle] = useState<NumeralStyle>("persian");
   const [themePreference, setThemePreference] = useState<ThemePreference>("system");
   const [hapticsEnabled, setHapticsEnabled] = useState(true);
-  const [showToolGuidance, setShowToolGuidance] = useState(false);
+  const [toolGuidance, setToolGuidance] = useState<Record<ToolGuidanceId, boolean>>({
+    percentage: false,
+    discount: false,
+    unit: false,
+    age: false,
+    date: false
+  });
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -61,8 +68,11 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
         if (typeof parsed.hapticsEnabled === "boolean") {
           setHapticsEnabled(parsed.hapticsEnabled);
         }
-        if (typeof parsed.showToolGuidance === "boolean") {
-          setShowToolGuidance(parsed.showToolGuidance);
+        if (parsed.toolGuidance && typeof parsed.toolGuidance === "object") {
+          setToolGuidance((current) => ({
+            ...current,
+            ...parsed.toolGuidance
+          }));
         }
       })
       .catch(() => undefined)
@@ -83,11 +93,11 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
       numeralStyle,
       themePreference,
       hapticsEnabled,
-      showToolGuidance
+      toolGuidance
     };
 
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(payload)).catch(() => undefined);
-  }, [language, numeralStyle, themePreference, hapticsEnabled, showToolGuidance, hydrated]);
+  }, [language, numeralStyle, themePreference, hapticsEnabled, toolGuidance, hydrated]);
 
   const resolvedTheme: ResolvedTheme =
     themePreference === "system"
@@ -107,10 +117,11 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
       resolvedTheme,
       hapticsEnabled,
       setHapticsEnabled,
-      showToolGuidance,
-      setShowToolGuidance
+      toolGuidance,
+      setToolGuidanceEnabled: (tool: ToolGuidanceId, enabled: boolean) =>
+        setToolGuidance((current) => ({ ...current, [tool]: enabled }))
     }),
-    [language, numeralStyle, themePreference, resolvedTheme, hapticsEnabled, showToolGuidance]
+    [language, numeralStyle, themePreference, resolvedTheme, hapticsEnabled, toolGuidance]
   );
 
   return <AppPreferencesContext.Provider value={value}>{children}</AppPreferencesContext.Provider>;
