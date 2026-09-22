@@ -357,7 +357,7 @@ export default function CalculatorScreen() {
               style={[
                 styles.expression,
                 scientificMode ? styles.expressionLandscape : null,
-                { color: colors.text }
+                { color: resolvedTheme === "dark" ? colors.text : "#2F6A87" }
               ]}
             >
               {displayExpression}
@@ -373,7 +373,7 @@ export default function CalculatorScreen() {
                   ? "transparent"
                   : resolvedTheme === "dark"
                     ? "#173B4F"
-                    : "#E8F4FF"
+                    : "#EAF4FA"
               }
             ]}
           >
@@ -384,7 +384,13 @@ export default function CalculatorScreen() {
                 styles.preview,
                 scientificMode ? styles.previewLandscape : null,
                 inputError ? styles.previewError : styles.previewMath,
-                { color: inputError ? colors.danger : colors.text }
+                {
+                  color: inputError
+                    ? colors.danger
+                    : resolvedTheme === "dark"
+                      ? colors.text
+                      : "#91AFC0"
+                }
               ]}
             >
               {displayPreview}
@@ -410,9 +416,8 @@ export default function CalculatorScreen() {
                           styles.scientificKey,
                           {
                             backgroundColor:
-                              key === "ANGLE" ? colors.primarySoft : colors.surface,
-                            borderColor:
-                              key === "ANGLE" ? colors.primary : colors.border,
+                              key === "ANGLE" ? colors.primarySoft : colors.key,
+                            borderColor: "transparent",
                             opacity: pressed ? 0.65 : 1
                           }
                         ]}
@@ -500,7 +505,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4
   },
   header: {
-    minHeight: 56,
+    minHeight: 52,
     flexDirection: "row-reverse",
     alignItems: "center",
     justifyContent: "space-between",
@@ -566,8 +571,8 @@ const styles = StyleSheet.create({
   display: {
     flex: 1,
     justifyContent: "flex-end",
-    paddingVertical: 12,
-    minHeight: 100
+    paddingVertical: 16,
+    minHeight: 120
   },
   displayLandscape: {
     flex: 0.32,
@@ -584,8 +589,8 @@ const styles = StyleSheet.create({
     direction: "ltr"
   },
   expression: {
-    fontSize: 52,
-    fontWeight: "500",
+    fontSize: 48,
+    fontWeight: "400",
     textAlign: "left",
     writingDirection: "ltr",
     direction: "ltr"
@@ -596,10 +601,10 @@ const styles = StyleSheet.create({
   resultContainer: {
     alignSelf: "flex-start",
     minWidth: 72,
-    marginTop: 7,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10
+    marginTop: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12
   },
   resultContainerLandscape: {
     marginTop: 2,
@@ -608,9 +613,9 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   preview: {
-    fontSize: 22,
-    minHeight: 30,
-    fontWeight: "700"
+    fontSize: 24,
+    minHeight: 32,
+    fontWeight: "500"
   },
   previewMath: {
     alignSelf: "flex-start",
@@ -664,11 +669,12 @@ const styles = StyleSheet.create({
     gap: 3
   },
   keypad: {
-    paddingBottom: 6,
-    gap: 8
+    paddingBottom: 8,
+    gap: 10
   },
   row: {
     flexDirection: "row",
-    gap: 8
+    alignItems: "center",
+    gap: 10
   }
 });
