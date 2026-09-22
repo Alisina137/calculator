@@ -11,6 +11,7 @@ import {
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
 import { toolCopy } from "@/i18n/toolCopy";
+import { toolGuidance } from "@/i18n/toolGuidance";
 import { formatToolNumber, parseToolNumber } from "@/tools/toolMath";
 import {
   convertUnit,
@@ -77,6 +78,7 @@ export default function UnitConverterToolScreen() {
       title={t(language, "unitConverter")}
       subtitle={copy.unit.subtitle}
       theme={resolvedTheme}
+      guide={toolGuidance(language, "unit")}
     >
       <ToolSection title={copy.unit.category} theme={resolvedTheme}>
         <ChoiceRow
