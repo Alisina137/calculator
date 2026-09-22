@@ -7,6 +7,7 @@ export function CalculatorKey({
   onPress,
   disabled = false,
   emphasized = false,
+  operator = false,
   compact = false,
   theme
 }: {
@@ -14,10 +15,23 @@ export function CalculatorKey({
   onPress: () => void;
   disabled?: boolean;
   emphasized?: boolean;
+  operator?: boolean;
   compact?: boolean;
   theme: ResolvedTheme;
 }) {
   const colors = colorsFor(theme);
+
+  const backgroundColor = emphasized
+    ? colors.primary
+    : operator
+      ? colors.primarySoft
+      : colors.key;
+
+  const textColor = emphasized
+    ? colors.background
+    : operator
+      ? colors.primary
+      : colors.text;
 
   return (
     <Pressable
@@ -28,8 +42,10 @@ export function CalculatorKey({
       style={({ pressed }) => [
         styles.button,
         compact ? styles.compactButton : null,
+        operator && !emphasized ? styles.operatorButton : null,
         {
-          backgroundColor: emphasized ? colors.primary : colors.key,
+          backgroundColor,
+          borderColor: operator && !emphasized ? colors.primary : "transparent",
           opacity: disabled ? 0.45 : pressed ? 0.7 : 1
         }
       ]}
@@ -38,7 +54,8 @@ export function CalculatorKey({
         style={[
           styles.label,
           compact ? styles.compactLabel : null,
-          { color: emphasized ? colors.background : colors.text }
+          operator ? styles.operatorLabel : null,
+          { color: textColor }
         ]}
       >
         {label}
@@ -52,8 +69,12 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 58,
     borderRadius: 19,
+    borderWidth: 0,
     alignItems: "center",
     justifyContent: "center"
+  },
+  operatorButton: {
+    borderWidth: 1
   },
   compactButton: {
     minHeight: 32,
@@ -62,6 +83,9 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 22,
     fontWeight: "700"
+  },
+  operatorLabel: {
+    fontWeight: "800"
   },
   compactLabel: {
     fontSize: 15
