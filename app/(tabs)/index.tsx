@@ -407,6 +407,7 @@ export default function CalculatorScreen() {
                         key={key}
                         accessibilityRole="button"
                         accessibilityLabel={scientificAccessibilityLabel(key, angleUnit)}
+                        hitSlop={8}
                         onPress={() => handleScientificKey(key)}
                         style={({ pressed }) => [
                           styles.scientificKey,
