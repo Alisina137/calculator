@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
+import { useCalculator } from "@/context/CalculatorContext";
 import { Text } from "react-native";
 
 function TabIcon({ symbol, focused }: { symbol: string; focused: boolean }) {
@@ -10,6 +11,7 @@ function TabIcon({ symbol, focused }: { symbol: string; focused: boolean }) {
 
 export default function TabsLayout() {
   const { language, resolvedTheme } = useAppPreferences();
+  const { scientificMode } = useCalculator();
   const colors = colorsFor(resolvedTheme);
 
   return (
@@ -18,13 +20,15 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.muted,
-        tabBarStyle: {
-          backgroundColor: colors.surface,
-          borderTopColor: colors.border,
-          height: 72,
-          paddingBottom: 10,
-          paddingTop: 8
-        },
+        tabBarStyle: scientificMode
+          ? { display: "none" }
+          : {
+              backgroundColor: colors.surface,
+              borderTopColor: colors.border,
+              height: 72,
+              paddingBottom: 10,
+              paddingTop: 8
+            },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "700",
