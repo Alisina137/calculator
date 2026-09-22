@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { Alert, Pressable, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
@@ -10,6 +10,21 @@ export default function SettingsScreen() {
   const prefs = useAppPreferences();
   const { clearHistory } = useCalculator();
   const colors = colorsFor(prefs.resolvedTheme);
+
+  const confirmClearHistory = () => {
+    Alert.alert(
+      t(prefs.language, "confirmClearHistoryTitle"),
+      t(prefs.language, "confirmClearHistoryBody"),
+      [
+        { text: t(prefs.language, "cancel"), style: "cancel" },
+        {
+          text: t(prefs.language, "confirm"),
+          style: "destructive",
+          onPress: () => void clearHistory()
+        }
+      ]
+    );
+  };
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
@@ -76,7 +91,9 @@ export default function SettingsScreen() {
           </Text>
           <View style={styles.groupBody}>
             <Pressable
-              onPress={() => void clearHistory()}
+              accessibilityRole="button"
+              accessibilityLabel={t(prefs.language, "clearHistory")}
+              onPress={confirmClearHistory}
               style={[
                 styles.option,
                 {
