@@ -23,8 +23,7 @@ import {
   backspaceExpression,
   isExpressionReadyForEquals,
   reciprocalExpression,
-  squareExpression,
-  toggleSign
+  squareExpression
 } from "@/calculation/calculatorInput";
 import { canPreviewExpression, evaluateExpression } from "@/calculation/calculatorEngine";
 import { calculationErrorMessage } from "@/calculation/errorMessages";
@@ -36,7 +35,7 @@ import { colorsFor } from "@/theme/colors";
 import { displayDigits } from "@/utils/numerals";
 
 const standardRows = [
-  ["AC", "±", "%", "÷"],
+  ["AC", "SCI", "%", "÷"],
   ["7", "8", "9", "×"],
   ["4", "5", "6", "−"],
   ["1", "2", "3", "+"],
@@ -143,8 +142,8 @@ export default function CalculatorScreen() {
       return;
     }
 
-    if (key === "±") {
-      setEditingExpression(toggleSign(expression));
+    if (key === "SCI") {
+      setScientificMode(!scientificMode);
       return;
     }
 
@@ -257,31 +256,6 @@ export default function CalculatorScreen() {
         ? displayDigits(preview, numeralStyle)
         : "";
 
-  const modeButton = (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={
-        scientificMode ? t(language, "basicMode") : t(language, "scientific")
-      }
-      onPress={() => setScientificMode(!scientificMode)}
-      style={({ pressed }) => [
-        styles.modeButton,
-        {
-          backgroundColor: scientificMode ? colors.primarySoft : colors.surface,
-          borderColor: scientificMode ? colors.primary : colors.border,
-          opacity: pressed ? 0.65 : 1
-        }
-      ]}
-    >
-      <ScientificModeIcon
-        active={scientificMode}
-        color={colors.muted}
-        accent={colors.primary}
-        background="transparent"
-      />
-    </Pressable>
-  );
-
   const settingsButton = (
     <Link href="/settings" asChild>
       <Pressable
@@ -332,7 +306,6 @@ export default function CalculatorScreen() {
           </Text>
 
           <View style={styles.headerActions}>
-            {modeButton}
             {settingsButton}
           </View>
         </View>
@@ -447,9 +420,13 @@ export default function CalculatorScreen() {
                     <CalculatorKey
                       key={key}
                       label={
-                        /^[0-9]$/.test(key)
-                          ? displayDigits(key, numeralStyle)
-                          : key
+                        key === "SCI"
+                          ? scientificMode
+                            ? "↔"
+                            : "√π"
+                          : /^[0-9]$/.test(key)
+                            ? displayDigits(key, numeralStyle)
+                            : key
                       }
                       onPress={() => void handleStandardKey(key)}
                       emphasized={key === "="}
@@ -470,9 +447,13 @@ export default function CalculatorScreen() {
                   <CalculatorKey
                     key={key}
                     label={
-                      /^[0-9]$/.test(key)
-                        ? displayDigits(key, numeralStyle)
-                        : key
+                      key === "SCI"
+                        ? scientificMode
+                          ? "↔"
+                          : "√π"
+                        : /^[0-9]$/.test(key)
+                          ? displayDigits(key, numeralStyle)
+                          : key
                     }
                     onPress={() => void handleStandardKey(key)}
                     emphasized={key === "="}
@@ -526,14 +507,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8
-  },
-  modeButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 14,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center"
   },
   modeIconBox: {
     width: 24,
