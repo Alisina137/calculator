@@ -52,17 +52,17 @@ export function CalculatorKey({
               : "rgba(58,92,110,0.10)",
           boxShadow: pressed
             ? compact
-              ? "0 3px 6px rgba(54, 78, 89, 0.18)"
-              : "0 5px 10px rgba(54, 78, 89, 0.20)"
+              ? "0 2px 4px rgba(54, 78, 89, 0.16)"
+              : "0 3px 7px rgba(54, 78, 89, 0.17)"
             : compact
               ? "0 1px 2px rgba(54, 78, 89, 0.12)"
               : "0 2px 5px rgba(54, 78, 89, 0.14)",
           transform: pressed
-            ? [{ translateY: 2 }]
+            ? [{ translateY: 1 }]
             : [{ translateY: 0 }],
-          transitionDuration: "300ms",
+          transitionDuration: "90ms",
           transitionProperty: ["transform", "boxShadow", "opacity"],
-          opacity: disabled ? 0.45 : pressed ? 0.9 : 1
+          opacity: disabled ? 0.45 : pressed ? 0.96 : 1
         }
       ]}
     >
