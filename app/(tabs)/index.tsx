@@ -398,7 +398,7 @@ export default function CalculatorScreen() {
                             transform: pressed
                               ? [{ translateY: 2 }]
                               : [{ translateY: 0 }],
-                            transitionDuration: "300ms",
+                            transitionDuration: "100ms",
                             transitionProperty: ["transform", "boxShadow"],
                             opacity: 1
                           }
