@@ -66,12 +66,21 @@ export function CalculatorKey({
       ]}
     >
       <Text
-        style={[
+        style={({ pressed }: any) => [
           styles.label,
           compact ? styles.compactLabel : styles.roundLabel,
           operator ? styles.operatorLabel : null,
           isClear ? styles.clearLabel : null,
-          { color: textColor }
+          {
+            color: textColor,
+            fontSize: compact
+              ? pressed
+                ? 12
+                : 15
+              : pressed
+                ? 19.2
+                : 24
+          }
         ]}
       >
         {label}
