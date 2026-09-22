@@ -481,7 +481,7 @@ export default function CalculatorScreen() {
                       label={
                         key === "SCI"
                           ? scientificMode
-                            ? "↔"
+                            ? t(language, "basicMode")
                             : "√π"
                           : /^[0-9]$/.test(key) || key === "."
                             ? displayDigits(key, numeralStyle)
@@ -508,7 +508,7 @@ export default function CalculatorScreen() {
                     label={
                       key === "SCI"
                         ? scientificMode
-                          ? "↔"
+                          ? t(language, "basicMode")
                           : "√π"
                         : /^[0-9]$/.test(key) || key === "."
                           ? displayDigits(key, numeralStyle)
