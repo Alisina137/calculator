@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
     gap: 14,
     paddingHorizontal: 10,
     paddingTop: 4,
-    paddingBottom: 8
+    paddingBottom: 14
   },
   scientificGrid: {
     flex: 0.95,
