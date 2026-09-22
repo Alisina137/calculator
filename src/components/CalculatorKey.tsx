@@ -44,22 +44,23 @@ export function CalculatorKey({
         styles.button,
         compact ? styles.compactButton : styles.roundButton,
         {
-          backgroundColor,
+          backgroundColor: pressed
+            ? emphasized
+              ? theme === "dark"
+                ? "#789D50"
+                : "#668A3B"
+              : theme === "dark"
+                ? "#1B292F"
+                : "#DCE7ED"
+            : backgroundColor,
           borderWidth: 1,
           borderColor:
             theme === "dark"
               ? "rgba(255,255,255,0.06)"
               : "rgba(58,92,110,0.10)",
-          boxShadow: pressed
-            ? "0 0 5px 0 rgba(54, 78, 89, 0.22)"
-            : compact
-              ? "0 1px 2px rgba(54, 78, 89, 0.12)"
-              : "0 2px 5px rgba(54, 78, 89, 0.14)",
-          transform: pressed
-            ? [{ translateY: 2 }]
-            : [{ translateY: 0 }],
-          transitionDuration: "100ms",
-          transitionProperty: ["transform", "boxShadow"],
+          boxShadow: compact
+            ? "0 1px 2px rgba(54, 78, 89, 0.12)"
+            : "0 2px 5px rgba(54, 78, 89, 0.14)",
           opacity: disabled ? 0.45 : 1
         }
       ]}
