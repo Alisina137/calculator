@@ -1,3 +1,4 @@
+import * as ScreenOrientation from "expo-screen-orientation";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "expo-router";
 import {
@@ -43,10 +44,42 @@ const standardRows = [
 ];
 
 const scientificRows = [
-  ["(", ")", "sin", "cos", "tan"],
-  ["log", "ln", "√", "x²", "xʸ"],
-  ["π", "e", "!", "1/x"]
+  ["ANGLE", "(", ")"],
+  ["sin", "cos", "tan"],
+  ["ln", "log", "1/x"],
+  ["√", "x²", "xʸ"],
+  ["!", "π", "e"]
 ];
+
+function ScientificModeIcon({
+  active,
+  color,
+  accent,
+  background
+}: {
+  active: boolean;
+  color: string;
+  accent: string;
+  background: string;
+}) {
+  return (
+    <View
+      style={[
+        styles.modeIconBox,
+        {
+          borderColor: active ? accent : color,
+          backgroundColor: background
+        }
+      ]}
+    >
+      <Text style={[styles.modeIconTop, { color: active ? accent : color }]}>√π</Text>
+      <View style={styles.modeIconDots}>
+        <View style={[styles.modeDot, { backgroundColor: active ? accent : color }]} />
+        <View style={[styles.modeDot, { backgroundColor: active ? accent : color }]} />
+      </View>
+    </View>
+  );
+}
 
 export default function CalculatorScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
@@ -57,12 +90,23 @@ export default function CalculatorScreen() {
     scientificMode,
     setScientificMode,
     angleUnit,
-    setAngleUnit
+    setAngleUnit,
+    hydrated
   } = useCalculator();
 
   const colors = colorsFor(resolvedTheme);
   const [finalized, setFinalized] = useState<FinalizedCalculation | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!hydrated) return;
+
+    const lock = scientificMode
+      ? ScreenOrientation.OrientationLock.LANDSCAPE
+      : ScreenOrientation.OrientationLock.PORTRAIT_UP;
+
+    ScreenOrientation.lockAsync(lock).catch(() => undefined);
+  }, [scientificMode, hydrated]);
 
   useEffect(() => {
     if (finalized && expression !== finalized.result) {
@@ -151,12 +195,23 @@ export default function CalculatorScreen() {
   const handleScientificKey = (key: string) => {
     const base = finalized ? "" : expression;
 
+    if (key === "ANGLE") {
+      setAngleUnit(angleUnit === "DEG" ? "RAD" : "DEG");
+      return;
+    }
+
     if (key === "(" || key === ")") {
       setEditingExpression(appendParenthesis(base, key));
       return;
     }
 
-    if (key === "sin" || key === "cos" || key === "tan" || key === "log" || key === "ln") {
+    if (
+      key === "sin" ||
+      key === "cos" ||
+      key === "tan" ||
+      key === "log" ||
+      key === "ln"
+    ) {
       setEditingExpression(appendFunction(base, key));
       return;
     }
@@ -200,55 +255,85 @@ export default function CalculatorScreen() {
         ? `= ${displayDigits(preview, numeralStyle)}`
         : "";
 
+  const modeButton = (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={
+        scientificMode ? t(language, "basicMode") : t(language, "scientific")
+      }
+      onPress={() => setScientificMode(!scientificMode)}
+      style={({ pressed }) => [
+        styles.modeButton,
+        {
+          backgroundColor: scientificMode ? colors.primarySoft : colors.surface,
+          borderColor: scientificMode ? colors.primary : colors.border,
+          opacity: pressed ? 0.65 : 1
+        }
+      ]}
+    >
+      <ScientificModeIcon
+        active={scientificMode}
+        color={colors.muted}
+        accent={colors.primary}
+        background="transparent"
+      />
+    </Pressable>
+  );
+
+  const settingsButton = (
+    <Link href="/settings" asChild>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t(language, "settings")}
+        style={({ pressed }) => [
+          styles.settingsButton,
+          {
+            backgroundColor: colors.surface,
+            opacity: pressed ? 0.65 : 1
+          }
+        ]}
+      >
+        <Text style={[styles.settingsIcon, { color: colors.text }]}>⚙</Text>
+      </Pressable>
+    </Link>
+  );
+
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
-      <View style={styles.page}>
-        <View style={styles.header}>
-          <Text style={[styles.title, { color: colors.text }]}>
+      <View
+        style={[
+          styles.page,
+          scientificMode ? styles.pageLandscape : null
+        ]}
+      >
+        <View
+          style={[
+            styles.header,
+            scientificMode ? styles.headerLandscape : null
+          ]}
+        >
+          <Text
+            style={[
+              styles.title,
+              scientificMode ? styles.titleLandscape : null,
+              { color: colors.text }
+            ]}
+          >
             {t(language, "calculator")}
           </Text>
 
           <View style={styles.headerActions}>
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => setScientificMode(!scientificMode)}
-              style={[
-                styles.modeButton,
-                {
-                  backgroundColor: scientificMode ? colors.primarySoft : colors.surface,
-                  borderColor: scientificMode ? colors.primary : colors.border
-                }
-              ]}
-            >
-              <Text
-                style={[
-                  styles.modeButtonText,
-                  { color: scientificMode ? colors.primary : colors.text }
-                ]}
-              >
-                {scientificMode ? t(language, "basicMode") : t(language, "scientific")}
-              </Text>
-            </Pressable>
-
-            <Link href="/settings" asChild>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t(language, "settings")}
-                style={({ pressed }) => [
-                  styles.settingsButton,
-                  {
-                    backgroundColor: colors.surface,
-                    opacity: pressed ? 0.65 : 1
-                  }
-                ]}
-              >
-                <Text style={[styles.settingsIcon, { color: colors.text }]}>⚙</Text>
-              </Pressable>
-            </Link>
+            {modeButton}
+            {settingsButton}
           </View>
         </View>
 
-        <View style={styles.display}>
+        <View
+          style={[
+            styles.display,
+            scientificMode ? styles.displayLandscape : null
+          ]}
+        >
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -258,10 +343,11 @@ export default function CalculatorScreen() {
               accessibilityLiveRegion="polite"
               numberOfLines={1}
               adjustsFontSizeToFit
-              minimumFontScale={0.48}
+              minimumFontScale={0.45}
               style={[
                 styles.expression,
-                { color: colors.text, fontSize: scientificMode ? 42 : 52 }
+                scientificMode ? styles.expressionLandscape : null,
+                { color: colors.text }
               ]}
             >
               {displayExpression}
@@ -273,6 +359,7 @@ export default function CalculatorScreen() {
             numberOfLines={2}
             style={[
               styles.preview,
+              scientificMode ? styles.previewLandscape : null,
               { color: inputError ? colors.danger : colors.muted }
             ]}
           >
@@ -280,79 +367,109 @@ export default function CalculatorScreen() {
           </Text>
         </View>
 
-        {scientificMode && (
-          <View style={styles.scientificPanel}>
-            <View style={styles.angleRow}>
-              <Text style={[styles.angleLabel, { color: colors.muted }]}>
-                {t(language, "angle")}
-              </Text>
-              <Pressable
-                onPress={() => setAngleUnit(angleUnit === "DEG" ? "RAD" : "DEG")}
-                style={[
-                  styles.angleButton,
-                  { backgroundColor: colors.primarySoft, borderColor: colors.primary }
-                ]}
-              >
-                <Text style={[styles.angleButtonText, { color: colors.primary }]}>
-                  {angleUnit}
-                </Text>
-              </Pressable>
+        {scientificMode ? (
+          <View style={styles.landscapeKeyArea}>
+            <View style={styles.scientificGrid}>
+              {scientificRows.map((row) => (
+                <View key={row.join("-")} style={styles.scientificRow}>
+                  {row.map((key) => {
+                    const label = key === "ANGLE" ? angleUnit : key;
+
+                    return (
+                      <Pressable
+                        key={key}
+                        accessibilityRole="button"
+                        accessibilityLabel={label}
+                        onPress={() => handleScientificKey(key)}
+                        style={({ pressed }) => [
+                          styles.scientificKey,
+                          {
+                            backgroundColor:
+                              key === "ANGLE" ? colors.primarySoft : colors.surface,
+                            borderColor:
+                              key === "ANGLE" ? colors.primary : colors.border,
+                            opacity: pressed ? 0.65 : 1
+                          }
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.scientificKeyText,
+                            {
+                              color:
+                                key === "ANGLE" ? colors.primary : colors.text
+                            }
+                          ]}
+                        >
+                          {label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              ))}
             </View>
 
-            {scientificRows.map((row) => (
-              <View key={row.join("-")} style={styles.scientificRow}>
-                {row.map((key) => (
-                  <Pressable
-                    key={key}
-                    accessibilityRole="button"
-                    accessibilityLabel={key}
-                    onPress={() => handleScientificKey(key)}
-                    style={({ pressed }) => [
-                      styles.scientificKey,
-                      {
-                        backgroundColor: colors.surface,
-                        borderColor: colors.border,
-                        opacity: pressed ? 0.65 : 1
+            <View style={styles.standardLandscapeGrid}>
+              {standardRows.map((row) => (
+                <View key={row.join("-")} style={styles.landscapeStandardRow}>
+                  {row.map((key) => (
+                    <CalculatorKey
+                      key={key}
+                      label={
+                        /^[0-9]$/.test(key)
+                          ? displayDigits(key, numeralStyle)
+                          : key
                       }
-                    ]}
-                  >
-                    <Text style={[styles.scientificKeyText, { color: colors.text }]}>
-                      {key}
-                    </Text>
-                  </Pressable>
+                      onPress={() => void handleStandardKey(key)}
+                      emphasized={key === "="}
+                      compact
+                      theme={resolvedTheme}
+                    />
+                  ))}
+                </View>
+              ))}
+            </View>
+          </View>
+        ) : (
+          <View style={styles.keypad}>
+            {standardRows.map((row) => (
+              <View key={row.join("-")} style={styles.row}>
+                {row.map((key) => (
+                  <CalculatorKey
+                    key={key}
+                    label={
+                      /^[0-9]$/.test(key)
+                        ? displayDigits(key, numeralStyle)
+                        : key
+                    }
+                    onPress={() => void handleStandardKey(key)}
+                    emphasized={key === "="}
+                    theme={resolvedTheme}
+                  />
                 ))}
               </View>
             ))}
           </View>
         )}
-
-        <View style={styles.keypad}>
-          {standardRows.map((row) => (
-            <View key={row.join("-")} style={styles.row}>
-              {row.map((key) => (
-                <CalculatorKey
-                  key={key}
-                  label={/^[0-9]$/.test(key) ? displayDigits(key, numeralStyle) : key}
-                  onPress={() => void handleStandardKey(key)}
-                  emphasized={key === "="}
-                  theme={resolvedTheme}
-                />
-              ))}
-            </View>
-          ))}
-        </View>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1 },
+  safe: {
+    flex: 1
+  },
   page: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 8,
     direction: "rtl"
+  },
+  pageLandscape: {
+    paddingHorizontal: 18,
+    paddingTop: 4
   },
   header: {
     minHeight: 56,
@@ -361,10 +478,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 8
   },
+  headerLandscape: {
+    minHeight: 44
+  },
   title: {
     fontSize: 24,
     fontWeight: "800",
     writingDirection: "rtl"
+  },
+  titleLandscape: {
+    fontSize: 18
   },
   headerActions: {
     flexDirection: "row",
@@ -372,16 +495,35 @@ const styles = StyleSheet.create({
     gap: 8
   },
   modeButton: {
-    minHeight: 42,
-    paddingHorizontal: 13,
+    width: 44,
+    height: 44,
     borderRadius: 14,
     borderWidth: 1,
+    alignItems: "center",
     justifyContent: "center"
   },
-  modeButtonText: {
-    fontSize: 13,
-    fontWeight: "800",
-    writingDirection: "rtl"
+  modeIconBox: {
+    width: 24,
+    height: 28,
+    borderRadius: 5,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  modeIconTop: {
+    fontSize: 9,
+    fontWeight: "900",
+    lineHeight: 11
+  },
+  modeIconDots: {
+    marginTop: 2,
+    flexDirection: "row",
+    gap: 3
+  },
+  modeDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 2
   },
   settingsButton: {
     width: 44,
@@ -390,12 +532,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  settingsIcon: { fontSize: 21 },
+  settingsIcon: {
+    fontSize: 21
+  },
   display: {
     flex: 1,
     justifyContent: "flex-end",
     paddingVertical: 12,
     minHeight: 100
+  },
+  displayLandscape: {
+    flex: 0.55,
+    minHeight: 64,
+    paddingVertical: 4
   },
   expressionScroll: {
     flexGrow: 1,
@@ -403,9 +552,13 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end"
   },
   expression: {
+    fontSize: 52,
     fontWeight: "500",
     textAlign: "right",
     writingDirection: "ltr"
+  },
+  expressionLandscape: {
+    fontSize: 34
   },
   preview: {
     fontSize: 19,
@@ -414,40 +567,29 @@ const styles = StyleSheet.create({
     textAlign: "right",
     writingDirection: "rtl"
   },
-  scientificPanel: {
-    gap: 7,
-    marginBottom: 9
+  previewLandscape: {
+    fontSize: 16,
+    minHeight: 22,
+    marginTop: 2
   },
-  angleRow: {
-    minHeight: 36,
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 8
+  landscapeKeyArea: {
+    flex: 1.75,
+    flexDirection: "row",
+    gap: 14,
+    paddingBottom: 4
   },
-  angleLabel: {
-    fontSize: 13,
-    fontWeight: "700",
-    writingDirection: "rtl"
-  },
-  angleButton: {
-    minHeight: 34,
-    minWidth: 58,
-    borderWidth: 1,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  angleButtonText: {
-    fontSize: 13,
-    fontWeight: "900"
+  scientificGrid: {
+    flex: 0.9,
+    gap: 6
   },
   scientificRow: {
+    flex: 1,
     flexDirection: "row",
-    gap: 7
+    gap: 6
   },
   scientificKey: {
     flex: 1,
-    minHeight: 42,
+    minHeight: 40,
     borderWidth: 1,
     borderRadius: 14,
     alignItems: "center",
@@ -456,6 +598,15 @@ const styles = StyleSheet.create({
   scientificKeyText: {
     fontSize: 15,
     fontWeight: "700"
+  },
+  standardLandscapeGrid: {
+    flex: 1.35,
+    gap: 6
+  },
+  landscapeStandardRow: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 6
   },
   keypad: {
     paddingBottom: 6,
