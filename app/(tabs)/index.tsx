@@ -627,8 +627,9 @@ const styles = StyleSheet.create({
   },
   display: {
     flex: 1,
-    justifyContent: "flex-end",
-    paddingVertical: 16,
+    justifyContent: "center",
+    paddingTop: 4,
+    paddingBottom: 12,
     minHeight: 120
   },
   displayLandscape: {
@@ -654,10 +655,10 @@ const styles = StyleSheet.create({
   resultContainer: {
     alignSelf: "flex-start",
     minWidth: 72,
-    marginTop: 12
+    marginTop: 20
   },
   resultContainerLandscape: {
-    marginTop: 0
+    marginTop: 6
   },
   preview: {
     fontSize: 32,
