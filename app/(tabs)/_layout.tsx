@@ -1,20 +1,26 @@
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { Text } from "react-native";
+import type { ColorValue } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
 
-function TextTabIcon({ symbol, focused }: { symbol: string; focused: boolean }) {
-  return <Text style={{ fontSize: focused ? 23 : 21 }}>{symbol}</Text>;
-}
-
-function CalculatorTabIcon({ focused, color }: { focused: boolean; color: string }) {
+function NavSymbol({
+  focused,
+  color,
+  ios,
+  android
+}: {
+  focused: boolean;
+  color: ColorValue;
+  ios: string;
+  android: string;
+}) {
   return (
     <SymbolView
-      name={{ ios: "plus.forwardslash.minus", android: "calculate", web: "calculate" }}
+      name={{ ios, android, web: android }}
       size={focused ? 25 : 23}
       tintColor={color}
     />
@@ -56,7 +62,12 @@ export default function TabsLayout() {
         options={{
           title: t(language, "calculator"),
           tabBarIcon: ({ focused, color }) => (
-            <CalculatorTabIcon focused={focused} color={color} />
+            <NavSymbol
+              focused={focused}
+              color={color}
+              ios="plus.forwardslash.minus"
+              android="calculate"
+            />
           )
         }}
       />
@@ -64,14 +75,28 @@ export default function TabsLayout() {
         name="tools"
         options={{
           title: t(language, "tools"),
-          tabBarIcon: ({ focused }) => <TextTabIcon symbol="▦" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <NavSymbol
+              focused={focused}
+              color={color}
+              ios="wrench.and.screwdriver"
+              android="construction"
+            />
+          )
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
           title: t(language, "history"),
-          tabBarIcon: ({ focused }) => <TextTabIcon symbol="↺" focused={focused} />
+          tabBarIcon: ({ focused, color }) => (
+            <NavSymbol
+              focused={focused}
+              color={color}
+              ios="clock.arrow.circlepath"
+              android="history"
+            />
+          )
         }}
       />
     </Tabs>
