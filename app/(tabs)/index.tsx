@@ -396,8 +396,10 @@ export default function CalculatorScreen() {
                               ? "0 3px 6px rgba(54, 78, 89, 0.18)"
                               : "0 1px 2px rgba(54, 78, 89, 0.12)",
                             transform: pressed
-                              ? [{ translateY: 5 }]
+                              ? [{ translateY: 2 }]
                               : [{ translateY: 0 }],
+                            transitionDuration: "300ms",
+                            transitionProperty: ["transform", "boxShadow", "opacity"],
                             opacity: pressed ? 0.9 : 1
                           }
                         ]}
