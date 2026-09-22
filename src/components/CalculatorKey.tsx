@@ -131,8 +131,9 @@ const styles = StyleSheet.create({
   },
   compactButton: {
     flex: 1,
-    minHeight: 32,
-    borderRadius: 11
+    minHeight: 0,
+    height: 34,
+    borderRadius: 999
   },
   label: {
     fontWeight: "500"
