@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { CalendarDatePicker } from "@/components/CalendarDatePicker";
 import {
   ChoiceRow,
   ResultCard,
@@ -144,6 +145,15 @@ export default function AgeToolScreen() {
           keyboardType="number-pad"
           theme={resolvedTheme}
         />
+        <CalendarDatePicker
+          label={copy.age.birthDate}
+          value={birth}
+          calendar={calendar}
+          language={language}
+          numeralStyle={numeralStyle}
+          theme={resolvedTheme}
+          onSelect={setBirth}
+        />
         <ToolField
           label={copy.age.calculationDate}
           value={calculationDate}
@@ -153,6 +163,15 @@ export default function AgeToolScreen() {
           placeholder="سال/ماه/روز"
           keyboardType="number-pad"
           theme={resolvedTheme}
+        />
+        <CalendarDatePicker
+          label={copy.age.calculationDate}
+          value={calculationDate}
+          calendar={calendar}
+          language={language}
+          numeralStyle={numeralStyle}
+          theme={resolvedTheme}
+          onSelect={setCalculationDate}
         />
       </ToolSection>
 
