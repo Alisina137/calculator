@@ -627,9 +627,9 @@ const styles = StyleSheet.create({
   },
   display: {
     flex: 1,
-    justifyContent: "center",
-    paddingTop: 4,
-    paddingBottom: 12,
+    justifyContent: "space-between",
+    paddingTop: 8,
+    paddingBottom: 6,
     minHeight: 120
   },
   displayLandscape: {
@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     minHeight: 86,
     paddingTop: 2,
     paddingBottom: 6,
-    justifyContent: "flex-end"
+    justifyContent: "space-between"
   },
   expressionInput: {
     width: "100%",
@@ -655,7 +655,7 @@ const styles = StyleSheet.create({
   resultContainer: {
     alignSelf: "flex-start",
     minWidth: 72,
-    marginTop: 20
+    marginTop: 0
   },
   resultContainerLandscape: {
     marginTop: 6
