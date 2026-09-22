@@ -155,7 +155,7 @@ export function ChoiceRow<T extends string>({
                 { color: active ? colors.primary : colors.text }
               ]}
             >
-              {option.label}
+              {active ? `✓ ${option.label}` : option.label}
             </Text>
           </Pressable>
         );
