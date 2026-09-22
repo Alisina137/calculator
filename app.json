@@ -2,7 +2,7 @@
   "expo": {
     "name": "حساب فارسی",
     "slug": "hesab-farsi",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "orientation": "default",
     "userInterfaceStyle": "automatic",
     "scheme": "hesabfarsi",
@@ -17,10 +17,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.alisina.hesabfarsi"
+      "bundleIdentifier": "com.alisina.hesabfarsi",
+      "buildNumber": "1"
     },
     "android": {
-      "package": "com.alisina.hesabfarsi"
+      "package": "com.alisina.hesabfarsi",
+      "versionCode": 1
     },
     "experiments": {
       "typedRoutes": true
