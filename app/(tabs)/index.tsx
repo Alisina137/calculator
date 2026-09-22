@@ -488,7 +488,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 8,
-    direction: "rtl"
   },
   pageLandscape: {
     paddingHorizontal: 8,
@@ -560,20 +559,17 @@ const styles = StyleSheet.create({
     paddingVertical: 0
   },
   expressionViewport: {
-    direction: "ltr"
   },
   expressionScroll: {
     flexGrow: 1,
     alignItems: "flex-start",
     justifyContent: "flex-start",
-    direction: "ltr"
   },
   expression: {
     fontSize: 48,
     fontWeight: "400",
     textAlign: "left",
     writingDirection: "ltr",
-    direction: "ltr"
   },
   expressionLandscape: {
     fontSize: 28
@@ -595,12 +591,10 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     textAlign: "left",
     writingDirection: "ltr",
-    direction: "ltr"
   },
   previewError: {
     textAlign: "right",
     writingDirection: "rtl",
-    direction: "rtl"
   },
   previewLandscape: {
     fontSize: 20,
