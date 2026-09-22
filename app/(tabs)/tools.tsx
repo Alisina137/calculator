@@ -1,3 +1,4 @@
+import { type Href, router } from "expo-router";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { ToolCard } from "@/components/ToolCard";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
@@ -9,11 +10,11 @@ export default function ToolsScreen() {
   const colors = colorsFor(resolvedTheme);
 
   const tools = [
-    ["٪", "percentage", "percentageDesc"],
-    ["🏷", "discount", "discountDesc"],
-    ["⇄", "unitConverter", "unitConverterDesc"],
-    ["🎂", "age", "ageDesc"],
-    ["▣", "date", "dateDesc"]
+    ["٪", "percentage", "percentageDesc", "/tools/percentage"],
+    ["🏷", "discount", "discountDesc", "/tools/discount"],
+    ["⇄", "unitConverter", "unitConverterDesc", "/tools/unit-converter"],
+    ["🎂", "age", "ageDesc", "/tools/age"],
+    ["▣", "date", "dateDesc", "/tools/date"]
   ] as const;
 
   return (
@@ -22,13 +23,14 @@ export default function ToolsScreen() {
         <Text style={[styles.title, { color: colors.text }]}>{t(language, "tools")}</Text>
         <Text style={[styles.subtitle, { color: colors.muted }]}>{t(language, "everydayTools")}</Text>
         <View style={styles.list}>
-          {tools.map(([icon, title, description]) => (
+          {tools.map(([icon, title, description, href]) => (
             <ToolCard
               key={title}
               icon={icon}
               title={t(language, title)}
               subtitle={t(language, description)}
               theme={resolvedTheme}
+              onPress={() => router.push(href as Href)}
             />
           ))}
         </View>
