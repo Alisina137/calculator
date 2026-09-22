@@ -1,0 +1,40 @@
+name: Full App Verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/full-app-verification.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Expo dependency compatibility
+        run: npm run compat
+
+      - name: TypeScript
+        run: npm run typecheck
+
+      - name: Automated feature tests
+        run: npm test
+
+      - name: Expo Doctor
+        run: npm run doctor
+
+      - name: Generate and validate release assets
+        run: npm run assets:generate
