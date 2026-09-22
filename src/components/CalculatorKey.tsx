@@ -56,14 +56,14 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   compactButton: {
-    minHeight: 42,
-    borderRadius: 14
+    minHeight: 32,
+    borderRadius: 11
   },
   label: {
     fontSize: 22,
     fontWeight: "700"
   },
   compactLabel: {
-    fontSize: 18
+    fontSize: 15
   }
 });
