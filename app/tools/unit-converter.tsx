@@ -10,6 +10,7 @@ import {
 } from "@/components/ToolScreen";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
+import { toolCopy } from "@/i18n/toolCopy";
 import { formatToolNumber, parseToolNumber } from "@/tools/toolMath";
 import {
   convertUnit,
@@ -22,6 +23,7 @@ import { displayDigits } from "@/utils/numerals";
 export default function UnitConverterToolScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
   const colors = colorsFor(resolvedTheme);
+  const copy = toolCopy(language);
   const [categoryId, setCategoryId] = useState<UnitCategoryId>("length");
   const category = unitCategories.find((item) => item.id === categoryId) ?? unitCategories[0];
   const [value, setValue] = useState("");
@@ -38,11 +40,11 @@ export default function UnitConverterToolScreen() {
   const result = useMemo(() => {
     if (!value.trim()) return { value: "", error: "" };
     const parsed = parseToolNumber(value);
-    if (parsed == null) return { value: "", error: "لطفاً عدد معتبر وارد کنید." };
+    if (parsed == null) return { value: "", error: copy.invalidNumber };
 
     const converted = convertUnit(parsed, category, fromId, toId);
     if (converted == null || !Number.isFinite(converted)) {
-      return { value: "", error: "تبدیل این مقدار ممکن نیست." };
+      return { value: "", error: copy.unit.impossible };
     }
 
     const target = category.units.find((unit) => unit.id === toId);
@@ -53,7 +55,7 @@ export default function UnitConverterToolScreen() {
       ),
       error: ""
     };
-  }, [value, category, fromId, toId, numeralStyle]);
+  }, [value, category, fromId, toId, numeralStyle, copy]);
 
   const categoryOptions = unitCategories.map((item) => ({
     id: item.id,
@@ -73,10 +75,10 @@ export default function UnitConverterToolScreen() {
   return (
     <ToolScreen
       title={t(language, "unitConverter")}
-      subtitle="تبدیل سریع واحدها بدون نیاز به اینترنت"
+      subtitle={copy.unit.subtitle}
       theme={resolvedTheme}
     >
-      <ToolSection title="نوع واحد" theme={resolvedTheme}>
+      <ToolSection title={copy.unit.category} theme={resolvedTheme}>
         <ChoiceRow
           options={categoryOptions}
           value={categoryId}
@@ -87,14 +89,14 @@ export default function UnitConverterToolScreen() {
 
       <ToolSection theme={resolvedTheme}>
         <ToolField
-          label="مقدار"
+          label={copy.unit.value}
           value={value}
           onChangeText={setValue}
           placeholder="0"
           theme={resolvedTheme}
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>از واحد</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{copy.unit.from}</Text>
         <ChoiceRow
           options={unitOptions}
           value={fromId}
@@ -104,7 +106,7 @@ export default function UnitConverterToolScreen() {
 
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="جابه‌جایی واحدها"
+          accessibilityLabel={copy.unit.swapLabel}
           onPress={swap}
           style={({ pressed }) => [
             styles.swap,
@@ -114,10 +116,10 @@ export default function UnitConverterToolScreen() {
             }
           ]}
         >
-          <Text style={[styles.swapText, { color: colors.primary }]}>⇄ جابه‌جایی</Text>
+          <Text style={[styles.swapText, { color: colors.primary }]}>⇄ {copy.unit.swap}</Text>
         </Pressable>
 
-        <Text style={[styles.label, { color: colors.text }]}>به واحد</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{copy.unit.to}</Text>
         <ChoiceRow
           options={unitOptions}
           value={toId}
@@ -130,11 +132,11 @@ export default function UnitConverterToolScreen() {
         <ToolMessage text={result.error} theme={resolvedTheme} danger />
       ) : result.value ? (
         <ResultCard
-          rows={[{ label: "نتیجه تبدیل", value: result.value, emphasis: true }]}
+          rows={[{ label: copy.unit.result, value: result.value, emphasis: true }]}
           theme={resolvedTheme}
         />
       ) : (
-        <ToolMessage text="مقدار و واحدها را انتخاب کنید؛ نتیجه فوراً به‌روز می‌شود." theme={resolvedTheme} />
+        <ToolMessage text={copy.unit.prompt} theme={resolvedTheme} />
       )}
     </ToolScreen>
   );
