@@ -32,7 +32,9 @@ export default function DiscountToolScreen() {
     if (percent < 0 || percent > 100) {
       return { rows: [], error: `${percentWord} تخفیف باید بین ۰ تا ۱۰۰ باشد.` };
     }
-    if (qty <= 0) return { rows: [], error: "تعداد باید بیشتر از صفر باشد." };
+    if (qty <= 0 || !Number.isInteger(qty)) {
+      return { rows: [], error: "تعداد باید یک عدد صحیح بیشتر از صفر باشد." };
+    }
 
     const savedEach = original * (percent / 100);
     const finalEach = original - savedEach;
