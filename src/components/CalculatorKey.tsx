@@ -20,18 +20,19 @@ export function CalculatorKey({
   theme: ResolvedTheme;
 }) {
   const colors = colorsFor(theme);
+  const isClear = label === "AC";
 
   const backgroundColor = emphasized
     ? colors.primary
-    : operator
-      ? colors.primarySoft
-      : colors.key;
+    : colors.key;
 
   const textColor = emphasized
-    ? colors.background
-    : operator
-      ? colors.primary
-      : colors.text;
+    ? "#FFFFFF"
+    : isClear
+      ? colors.danger
+      : operator
+        ? colors.primary
+        : colors.text;
 
   return (
     <Pressable
@@ -41,25 +42,24 @@ export function CalculatorKey({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        compact ? styles.compactButton : null,
-        operator && !emphasized ? styles.operatorButton : null,
+        compact ? styles.compactButton : styles.roundButton,
         {
           backgroundColor,
-          borderColor: operator && !emphasized ? colors.primary : "transparent",
-          shadowColor: "#000",
+          shadowColor: "#66808D",
           shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: compact ? 0.06 : 0.08,
-          shadowRadius: compact ? 1.5 : 2,
+          shadowOpacity: compact ? 0.05 : 0.07,
+          shadowRadius: compact ? 1 : 2,
           elevation: compact ? 1 : 2,
-          opacity: disabled ? 0.45 : pressed ? 0.7 : 1
+          opacity: disabled ? 0.45 : pressed ? 0.72 : 1
         }
       ]}
     >
       <Text
         style={[
           styles.label,
-          compact ? styles.compactLabel : null,
+          compact ? styles.compactLabel : styles.roundLabel,
           operator ? styles.operatorLabel : null,
+          isClear ? styles.clearLabel : null,
           { color: textColor }
         ]}
       >
@@ -72,27 +72,30 @@ export function CalculatorKey({
 const styles = StyleSheet.create({
   button: {
     flex: 1,
-    minHeight: 58,
-    borderRadius: 19,
-    borderWidth: 0,
     alignItems: "center",
     justifyContent: "center"
   },
-  operatorButton: {
-    borderWidth: 1
+  roundButton: {
+    aspectRatio: 1,
+    borderRadius: 999
   },
   compactButton: {
     minHeight: 32,
     borderRadius: 11
   },
   label: {
-    fontSize: 22,
-    fontWeight: "700"
+    fontWeight: "500"
   },
-  operatorLabel: {
-    fontWeight: "800"
+  roundLabel: {
+    fontSize: 27
   },
   compactLabel: {
     fontSize: 15
+  },
+  operatorLabel: {
+    fontWeight: "700"
+  },
+  clearLabel: {
+    fontWeight: "500"
   }
 });
