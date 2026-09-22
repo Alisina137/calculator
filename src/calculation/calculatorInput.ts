@@ -4,9 +4,18 @@ function isOperator(value: string) {
   return displayOperators.includes(value as (typeof displayOperators)[number]);
 }
 
+function isUnaryMinusAt(expression: string, index: number) {
+  if (expression[index] !== "−") return false;
+  if (index === 0) return true;
+  return isOperator(expression[index - 1]);
+}
+
 function lastOperandStart(expression: string) {
   for (let index = expression.length - 1; index >= 0; index -= 1) {
-    if (isOperator(expression[index])) return index + 1;
+    const character = expression[index];
+    if (!isOperator(character)) continue;
+    if (isUnaryMinusAt(expression, index)) continue;
+    return index + 1;
   }
   return 0;
 }
@@ -51,24 +60,38 @@ export function appendOperator(expression: string, operator: string) {
     expression = expression.slice(0, -1);
   }
 
-  const last = expression.at(-1);
+  const lastIndex = expression.length - 1;
+  const last = expression[lastIndex];
   if (!last) return expression;
 
   if (isOperator(last)) {
+    if (last === "−" && isUnaryMinusAt(expression, lastIndex)) {
+      const beforeUnary = expression[lastIndex - 1];
+
+      if (beforeUnary && isOperator(beforeUnary)) {
+        if (operator === "−") return expression;
+        return expression.slice(0, -2) + operator;
+      }
+    }
+
     if (operator === "−" && last !== "−") {
       return expression + operator;
     }
+
     return expression.slice(0, -1) + operator;
   }
 
-  if (last === "%") return expression + operator;
   return expression + operator;
 }
 
 export function appendPercent(expression: string) {
   if (!expression) return expression;
+
   const last = expression.at(-1);
-  if (!last || isOperator(last) || last === "." || last === "%") return expression;
+  if (!last || isOperator(last) || last === "." || last === "%") {
+    return expression;
+  }
+
   return expression + "%";
 }
 
@@ -77,6 +100,7 @@ export function toggleSign(expression: string) {
 
   const start = lastOperandStart(expression);
   const operand = expression.slice(start);
+
   if (!operand || operand.endsWith("%")) return expression;
 
   if (operand.startsWith("−")) {
@@ -92,6 +116,12 @@ export function backspaceExpression(expression: string) {
 
 export function isExpressionReadyForEquals(expression: string) {
   if (!expression) return false;
-  const last = expression.at(-1);
-  return Boolean(last && !isOperator(last) && last !== ".");
+
+  const lastIndex = expression.length - 1;
+  const last = expression[lastIndex];
+
+  if (last === ".") return false;
+  if (!isOperator(last)) return true;
+
+  return last === "−" && !isUnaryMinusAt(expression, lastIndex);
 }
