@@ -13,6 +13,19 @@
         {
           "initialOrientation": "DEFAULT"
         }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/release/splash-icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain",
+          "backgroundColor": "#F1F6F9",
+          "dark": {
+            "image": "./assets/release/splash-icon.png",
+            "backgroundColor": "#11191E"
+          }
+        }
       ]
     ],
     "ios": {
@@ -22,10 +35,18 @@
     },
     "android": {
       "package": "com.alisina.hesabfarsi",
-      "versionCode": 1
+      "versionCode": 1,
+      "icon": "./assets/release/icon.png",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/release/adaptive-foreground.png",
+        "monochromeImage": "./assets/release/adaptive-monochrome.png",
+        "backgroundColor": "#0F74C8"
+      }
     },
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "icon": "./assets/release/icon.png",
+    "backgroundColor": "#F1F6F9"
   }
 }
