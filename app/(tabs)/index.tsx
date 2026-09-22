@@ -3,12 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "expo-router";
 import {
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { CalculatorKey } from "@/components/CalculatorKey";
 import {
   appendConstant,
@@ -299,7 +299,10 @@ export default function CalculatorScreen() {
   );
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
+    <SafeAreaView
+      edges={["top", "right", "bottom", "left"]}
+      style={[styles.safe, { backgroundColor: colors.background }]}
+    >
       <View
         style={[
           styles.page,
@@ -470,8 +473,9 @@ const styles = StyleSheet.create({
     direction: "rtl"
   },
   pageLandscape: {
-    paddingHorizontal: 18,
-    paddingTop: 4
+    paddingHorizontal: 8,
+    paddingTop: 2,
+    paddingBottom: 4
   },
   header: {
     minHeight: 56,
@@ -481,7 +485,7 @@ const styles = StyleSheet.create({
     gap: 8
   },
   headerLandscape: {
-    minHeight: 36
+    minHeight: 30
   },
   title: {
     fontSize: 24,
@@ -489,7 +493,7 @@ const styles = StyleSheet.create({
     writingDirection: "rtl"
   },
   titleLandscape: {
-    fontSize: 18
+    fontSize: 15
   },
   headerActions: {
     flexDirection: "row",
@@ -497,8 +501,8 @@ const styles = StyleSheet.create({
     gap: 8
   },
   modeButton: {
-    width: 44,
-    height: 44,
+    width: 40,
+    height: 40,
     borderRadius: 14,
     borderWidth: 1,
     alignItems: "center",
@@ -528,8 +532,8 @@ const styles = StyleSheet.create({
     borderRadius: 2
   },
   settingsButton: {
-    width: 44,
-    height: 44,
+    width: 40,
+    height: 40,
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center"
@@ -544,9 +548,9 @@ const styles = StyleSheet.create({
     minHeight: 100
   },
   displayLandscape: {
-    flex: 0.42,
-    minHeight: 48,
-    paddingVertical: 2
+    flex: 0.32,
+    minHeight: 40,
+    paddingVertical: 0
   },
   expressionViewport: {
     direction: "ltr"
@@ -565,7 +569,7 @@ const styles = StyleSheet.create({
     direction: "ltr"
   },
   expressionLandscape: {
-    fontSize: 34
+    fontSize: 28
   },
   preview: {
     fontSize: 19,
@@ -583,45 +587,45 @@ const styles = StyleSheet.create({
     direction: "rtl"
   },
   previewLandscape: {
-    fontSize: 16,
-    minHeight: 22,
-    marginTop: 2
+    fontSize: 14,
+    minHeight: 18,
+    marginTop: 0
   },
   landscapeKeyArea: {
-    flex: 2,
+    flex: 2.35,
     flexDirection: "row",
-    gap: 10,
+    gap: 6,
     paddingBottom: 2
   },
   scientificGrid: {
     flex: 0.95,
-    gap: 4
+    gap: 3
   },
   scientificRow: {
     flex: 1,
     flexDirection: "row",
-    gap: 4
+    gap: 3
   },
   scientificKey: {
     flex: 1,
-    minHeight: 32,
+    minHeight: 28,
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center"
   },
   scientificKeyText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "700"
   },
   standardLandscapeGrid: {
     flex: 1.4,
-    gap: 4
+    gap: 3
   },
   landscapeStandardRow: {
     flex: 1,
     flexDirection: "row",
-    gap: 4
+    gap: 3
   },
   keypad: {
     paddingBottom: 6,
