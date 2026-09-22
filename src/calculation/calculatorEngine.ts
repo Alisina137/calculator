@@ -1,10 +1,18 @@
 import { normalizeDigits } from "@/utils/numerals";
-import type { CalculationErrorCode, CalculationResult } from "./types";
+import type { AngleUnit, CalculationErrorCode, CalculationResult } from "./types";
+
+type Operator = "+" | "-" | "*" | "/" | "^";
+type FunctionName = "sin" | "cos" | "tan" | "log" | "ln" | "sqrt" | "inv";
 
 type Token =
   | { type: "number"; value: number }
-  | { type: "operator"; value: "+" | "-" | "*" | "/" }
-  | { type: "percent" };
+  | { type: "operator"; value: Operator }
+  | { type: "percent" }
+  | { type: "factorial" }
+  | { type: "lparen" }
+  | { type: "rparen" }
+  | { type: "function"; value: FunctionName }
+  | { type: "constant"; value: "pi" | "e" };
 
 class CalculatorParseError extends Error {
   constructor(public readonly code: CalculationErrorCode) {
@@ -13,6 +21,7 @@ class CalculatorParseError extends Error {
 }
 
 const isDigit = (character: string) => /[0-9]/.test(character);
+const isLetter = (character: string) => /[a-z]/i.test(character);
 
 function canonicalizeExpression(expression: string) {
   return normalizeDigits(expression)
@@ -20,7 +29,9 @@ function canonicalizeExpression(expression: string) {
     .replace(/٫/g, ".")
     .replace(/[×xX]/g, "*")
     .replace(/÷/g, "/")
-    .replace(/[−–—]/g, "-");
+    .replace(/[−–—]/g, "-")
+    .replace(/π/g, "pi")
+    .replace(/√/g, "sqrt");
 }
 
 function tokenize(expression: string): Token[] {
@@ -54,13 +65,59 @@ function tokenize(expression: string): Token[] {
       continue;
     }
 
+    if (isLetter(character)) {
+      let identifier = "";
+      while (index < input.length && isLetter(input[index])) {
+        identifier += input[index];
+        index += 1;
+      }
+
+      if (identifier === "pi" || identifier === "e") {
+        tokens.push({ type: "constant", value: identifier });
+        continue;
+      }
+
+      if (
+        identifier === "sin" ||
+        identifier === "cos" ||
+        identifier === "tan" ||
+        identifier === "log" ||
+        identifier === "ln" ||
+        identifier === "sqrt" ||
+        identifier === "inv"
+      ) {
+        tokens.push({ type: "function", value: identifier });
+        continue;
+      }
+
+      throw new CalculatorParseError("INCOMPLETE_EXPRESSION");
+    }
+
     if (character === "%") {
       tokens.push({ type: "percent" });
       index += 1;
       continue;
     }
 
-    if (character === "+" || character === "-" || character === "*" || character === "/") {
+    if (character === "!") {
+      tokens.push({ type: "factorial" });
+      index += 1;
+      continue;
+    }
+
+    if (character === "(") {
+      tokens.push({ type: "lparen" });
+      index += 1;
+      continue;
+    }
+
+    if (character === ")") {
+      tokens.push({ type: "rparen" });
+      index += 1;
+      continue;
+    }
+
+    if (character === "+" || character === "-" || character === "*" || character === "/" || character === "^") {
       tokens.push({ type: "operator", value: character });
       index += 1;
       continue;
@@ -75,7 +132,10 @@ function tokenize(expression: string): Token[] {
 class Parser {
   private index = 0;
 
-  constructor(private readonly tokens: Token[]) {}
+  constructor(
+    private readonly tokens: Token[],
+    private readonly angleUnit: AngleUnit
+  ) {}
 
   parse(): number {
     if (this.tokens.length === 0) {
@@ -135,15 +195,40 @@ class Parser {
   private parseUnary(): number {
     if (this.matchOperator("+")) return this.parseUnary();
     if (this.matchOperator("-")) return -this.parseUnary();
-    return this.parsePercent();
+    return this.parsePower();
   }
 
-  private parsePercent(): number {
+  private parsePower(): number {
+    let left = this.parsePostfix();
+
+    if (this.matchOperator("^")) {
+      const right = this.parseUnary();
+      left = Math.pow(left, right);
+      this.assertFinite(left);
+    }
+
+    return left;
+  }
+
+  private parsePostfix(): number {
     let value = this.parsePrimary();
 
-    while (this.tokens[this.index]?.type === "percent") {
-      this.index += 1;
-      value /= 100;
+    while (true) {
+      const token = this.tokens[this.index];
+
+      if (token?.type === "percent") {
+        this.index += 1;
+        value /= 100;
+        continue;
+      }
+
+      if (token?.type === "factorial") {
+        this.index += 1;
+        value = this.factorial(value);
+        continue;
+      }
+
+      break;
     }
 
     return value;
@@ -152,15 +237,107 @@ class Parser {
   private parsePrimary(): number {
     const token = this.tokens[this.index];
 
-    if (!token || token.type !== "number") {
+    if (!token) {
       throw new CalculatorParseError("INCOMPLETE_EXPRESSION");
     }
 
-    this.index += 1;
-    return token.value;
+    if (token.type === "number") {
+      this.index += 1;
+      return token.value;
+    }
+
+    if (token.type === "constant") {
+      this.index += 1;
+      return token.value === "pi" ? Math.PI : Math.E;
+    }
+
+    if (token.type === "lparen") {
+      this.index += 1;
+      const value = this.parseAdditive();
+      this.consumeRightParen();
+      return value;
+    }
+
+    if (token.type === "function") {
+      this.index += 1;
+      const functionName = token.value;
+
+      if (this.tokens[this.index]?.type !== "lparen") {
+        throw new CalculatorParseError("INCOMPLETE_EXPRESSION");
+      }
+
+      this.index += 1;
+      const argument = this.parseAdditive();
+      this.consumeRightParen();
+      return this.applyFunction(functionName, argument);
+    }
+
+    throw new CalculatorParseError("INCOMPLETE_EXPRESSION");
   }
 
-  private matchOperator(operator: "+" | "-" | "*" | "/") {
+  private consumeRightParen() {
+    if (this.tokens[this.index]?.type !== "rparen") {
+      throw new CalculatorParseError("INCOMPLETE_EXPRESSION");
+    }
+    this.index += 1;
+  }
+
+  private applyFunction(name: FunctionName, value: number) {
+    let result: number;
+
+    switch (name) {
+      case "sin":
+        result = Math.sin(this.toRadiansIfNeeded(value));
+        break;
+      case "cos":
+        result = Math.cos(this.toRadiansIfNeeded(value));
+        break;
+      case "tan":
+        result = Math.tan(this.toRadiansIfNeeded(value));
+        break;
+      case "log":
+        if (value <= 0) throw new CalculatorParseError("MATH_DOMAIN");
+        result = Math.log10(value);
+        break;
+      case "ln":
+        if (value <= 0) throw new CalculatorParseError("MATH_DOMAIN");
+        result = Math.log(value);
+        break;
+      case "sqrt":
+        if (value < 0) throw new CalculatorParseError("MATH_DOMAIN");
+        result = Math.sqrt(value);
+        break;
+      case "inv":
+        if (value === 0) throw new CalculatorParseError("DIVIDE_BY_ZERO");
+        result = 1 / value;
+        break;
+    }
+
+    this.assertFinite(result);
+    return result;
+  }
+
+  private factorial(value: number) {
+    if (!Number.isInteger(value) || value < 0) {
+      throw new CalculatorParseError("MATH_DOMAIN");
+    }
+
+    if (value > 170) {
+      throw new CalculatorParseError("OVERFLOW");
+    }
+
+    let result = 1;
+    for (let current = 2; current <= value; current += 1) {
+      result *= current;
+    }
+    return result;
+  }
+
+  private toRadiansIfNeeded(value: number) {
+    return this.angleUnit === "DEG" ? (value * Math.PI) / 180 : value;
+  }
+
+  private matchOperator(operator: Operator) {
     const token = this.tokens[this.index];
 
     if (token?.type === "operator" && token.value === operator) {
@@ -207,10 +384,13 @@ export function formatCalculationNumber(value: number): string {
   return rounded.toString();
 }
 
-export function evaluateExpression(expression: string): CalculationResult {
+export function evaluateExpression(
+  expression: string,
+  angleUnit: AngleUnit = "DEG"
+): CalculationResult {
   try {
     const tokens = tokenize(expression);
-    const value = new Parser(tokens).parse();
+    const value = new Parser(tokens, angleUnit).parse();
 
     return {
       ok: true,
@@ -228,5 +408,5 @@ export function evaluateExpression(expression: string): CalculationResult {
 
 export function canPreviewExpression(expression: string) {
   if (!expression.trim()) return false;
-  return !/[+\-−×÷*/.]$/.test(expression.trim());
+  return !/[+\-−×÷*/^.(]$/.test(expression.trim());
 }
