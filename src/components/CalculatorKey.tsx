@@ -65,26 +65,27 @@ export function CalculatorKey({
         }
       ]}
     >
-      <Text
-        style={({ pressed }: any) => [
-          styles.label,
-          compact ? styles.compactLabel : styles.roundLabel,
-          operator ? styles.operatorLabel : null,
-          isClear ? styles.clearLabel : null,
-          {
-            color: textColor,
-            fontSize: compact
-              ? pressed
-                ? 12
-                : 15
-              : pressed
-                ? 19.2
-                : 24
-          }
-        ]}
-      >
-        {label}
-      </Text>
+      {({ pressed }) => (
+        <Text
+          style={[
+            styles.label,
+            operator ? styles.operatorLabel : null,
+            isClear ? styles.clearLabel : null,
+            {
+              color: textColor,
+              fontSize: compact
+                ? pressed
+                  ? 12
+                  : 15
+                : pressed
+                  ? 19.2
+                  : 24
+            }
+          ]}
+        >
+          {label}
+        </Text>
+      )}
     </Pressable>
   );
 }
@@ -106,12 +107,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: "500"
-  },
-  roundLabel: {
-    fontSize: 24
-  },
-  compactLabel: {
-    fontSize: 15
   },
   operatorLabel: {
     fontWeight: "700"
