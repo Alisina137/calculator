@@ -47,6 +47,8 @@ export default function HistoryScreen() {
         <View style={styles.header}>
           <Text style={[styles.title, { color: colors.text }]}>{t(language, "history")}</Text>
           <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t(language, "clearAll")}
             onPress={() => void clearHistory()}
             style={({ pressed }) => [
               styles.clearButton,
@@ -77,6 +79,7 @@ export default function HistoryScreen() {
               >
                 <Pressable
                   accessibilityRole="button"
+                  accessibilityLabel={t(language, "reuseResult")}
                   onPress={() => {
                     reuseResult(entry);
                     goToCalculator();
@@ -98,6 +101,8 @@ export default function HistoryScreen() {
 
                 <View style={styles.actions}>
                   <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t(language, "reuseExpression")}
                     onPress={() => {
                       reuseExpression(entry);
                       goToCalculator();
@@ -110,6 +115,8 @@ export default function HistoryScreen() {
                   </Pressable>
 
                   <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t(language, "delete")}
                     onPress={() => void deleteHistory(entry.id)}
                     style={[styles.actionButton, { borderColor: colors.border }]}
                   >
@@ -167,14 +174,14 @@ const styles = StyleSheet.create({
   },
   expression: {
     fontSize: 16,
-    textAlign: "right",
+    textAlign: "left",
     writingDirection: "ltr"
   },
   result: {
     marginTop: 8,
     fontSize: 25,
     fontWeight: "800",
-    textAlign: "right",
+    textAlign: "left",
     writingDirection: "ltr"
   },
   date: {
