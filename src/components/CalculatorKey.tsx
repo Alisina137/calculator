@@ -46,6 +46,11 @@ export function CalculatorKey({
         {
           backgroundColor,
           borderColor: operator && !emphasized ? colors.primary : "transparent",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: compact ? 0.06 : 0.08,
+          shadowRadius: compact ? 1.5 : 2,
+          elevation: compact ? 1 : 2,
           opacity: disabled ? 0.45 : pressed ? 0.7 : 1
         }
       ]}
