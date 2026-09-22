@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
   },
   displayLandscape: {
     flex: 0,
-    height: 58,
+    height: 48,
     minHeight: 0,
     paddingVertical: 0
   },
@@ -646,42 +646,45 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 0,
     flexDirection: "row",
-    gap: 5,
-    paddingBottom: 1
+    alignItems: "flex-start",
+    gap: 14,
+    paddingHorizontal: 10,
+    paddingBottom: 2
   },
   scientificGrid: {
     flex: 0.95,
     minHeight: 0,
-    gap: 2
+    gap: 8
   },
   scientificRow: {
-    flex: 1,
+    height: 34,
     minHeight: 0,
     flexDirection: "row",
-    gap: 2
+    gap: 10
   },
   scientificKey: {
     flex: 1,
     minHeight: 0,
+    height: 34,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 999,
     alignItems: "center",
     justifyContent: "center"
   },
   scientificKeyText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "700"
   },
   standardLandscapeGrid: {
     flex: 1.4,
     minHeight: 0,
-    gap: 2
+    gap: 8
   },
   landscapeStandardRow: {
-    flex: 1,
+    height: 34,
     minHeight: 0,
     flexDirection: "row",
-    gap: 2
+    gap: 10
   },
   keypad: {
     paddingBottom: 8,
