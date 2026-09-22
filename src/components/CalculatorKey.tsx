@@ -58,8 +58,10 @@ export function CalculatorKey({
               ? "0 1px 2px rgba(54, 78, 89, 0.12)"
               : "0 2px 5px rgba(54, 78, 89, 0.14)",
           transform: pressed
-            ? [{ translateY: 5 }]
+            ? [{ translateY: 2 }]
             : [{ translateY: 0 }],
+          transitionDuration: "300ms",
+          transitionProperty: ["transform", "boxShadow", "opacity"],
           opacity: disabled ? 0.45 : pressed ? 0.9 : 1
         }
       ]}
