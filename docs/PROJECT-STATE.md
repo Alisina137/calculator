@@ -61,6 +61,8 @@ Phase 3 — History and Scientific Mode
 - Persistent DEG/RAD setting
 - Persistent language, numeral, appearance and haptic preferences
 - Scientific mode without clearing current expression
+- Scientific mode automatically switches to a landscape two-panel keypad
+- Compact scientific calculator icon toggles simple/scientific modes
 - Parentheses
 - sin, cos and tan
 - log and ln
@@ -79,7 +81,7 @@ Phase 3 source is implemented; npm install, TypeScript and device runtime verifi
 
 ## Known limitations
 - Specialized everyday tools are still placeholders until Phase 4.
-- Scientific layout is optimized for portrait phone use and will receive broader accessibility/RTL polish in Phase 5.
+- Scientific layout is now optimized for landscape phone use; broader accessibility/RTL polish remains in Phase 5.
 - History is local-only by product design.
 
 ## Next phase
