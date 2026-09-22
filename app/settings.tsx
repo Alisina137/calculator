@@ -1,12 +1,14 @@
 import { router } from "expo-router";
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
+import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
 import type { AppLanguage, NumeralStyle, ThemePreference } from "@/context/AppPreferencesContext";
 
 export default function SettingsScreen() {
   const prefs = useAppPreferences();
+  const { clearHistory } = useCalculator();
   const colors = colorsFor(prefs.resolvedTheme);
 
   return (
@@ -60,6 +62,28 @@ export default function SettingsScreen() {
           <View style={styles.switchRow}>
             <Switch value={prefs.hapticsEnabled} onValueChange={prefs.setHapticsEnabled} />
             <Text style={[styles.groupTitle, { color: colors.text }]}>{t(prefs.language, "haptics")}</Text>
+          </View>
+        </View>
+
+        <View style={[styles.group, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.groupTitle, { color: colors.text }]}>
+            {t(prefs.language, "history")}
+          </Text>
+          <View style={styles.groupBody}>
+            <Pressable
+              onPress={() => void clearHistory()}
+              style={[
+                styles.option,
+                {
+                  backgroundColor: colors.background,
+                  borderColor: colors.border
+                }
+              ]}
+            >
+              <Text style={[styles.optionText, { color: colors.danger }]}>
+                {t(prefs.language, "clearHistory")}
+              </Text>
+            </Pressable>
           </View>
         </View>
 
