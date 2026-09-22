@@ -155,6 +155,20 @@ export default function CalculatorScreen() {
 
   const baseForNewValue = () => (finalized ? "" : expression);
 
+  const changeScientificMode = async (next: boolean) => {
+    setScientificMode(next);
+
+    try {
+      await ScreenOrientation.lockAsync(
+        next
+          ? ScreenOrientation.OrientationLock.LANDSCAPE
+          : ScreenOrientation.OrientationLock.PORTRAIT_UP
+      );
+    } catch {
+      // The UI state still changes even if the device refuses an orientation lock.
+    }
+  };
+
   const handleStandardKey = async (key: string) => {
     if (key === "AC") {
       setInputError(null);
@@ -169,7 +183,7 @@ export default function CalculatorScreen() {
     }
 
     if (key === "SCI") {
-      setScientificMode(!scientificMode);
+      await changeScientificMode(!scientificMode);
       return;
     }
 
@@ -340,7 +354,7 @@ export default function CalculatorScreen() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t(language, "basicMode")}
-                onPress={() => setScientificMode(false)}
+                onPress={() => void changeScientificMode(false)}
                 style={({ pressed }) => [
                   styles.simpleModeButton,
                   {
