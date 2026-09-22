@@ -9,6 +9,7 @@ import {
 } from "@/components/ToolScreen";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
+import { toolCopy } from "@/i18n/toolCopy";
 import {
   calendarDifference,
   daysInMonth,
@@ -22,6 +23,7 @@ import { displayDigits, normalizeDigits } from "@/utils/numerals";
 
 export default function AgeToolScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
+  const copy = toolCopy(language);
   const [calendar, setCalendar] = useState<CalendarType>("jalali");
   const [birth, setBirth] = useState("");
   const [calculationDate, setCalculationDate] = useState(
@@ -41,11 +43,11 @@ export default function AgeToolScreen() {
     const endDate = parseCalendarDateText(calculationDate, calendar, normalizeDigits);
 
     if (!birthDate || !endDate) {
-      return { rows: [], error: "تاریخ را به شکل سال/ماه/روز وارد کنید." };
+      return { rows: [], error: copy.age.dateFormatError };
     }
 
     const diff = calendarDifference(birthDate, endDate, calendar);
-    if (!diff) return { rows: [], error: "تاریخ تولد باید قبل از تاریخ محاسبه باشد." };
+    if (!diff) return { rows: [], error: copy.age.futureBirthError };
 
     let birthdayYear = endDate.year;
     const thisBirthday = {
@@ -70,36 +72,36 @@ export default function AgeToolScreen() {
     return {
       rows: [
         {
-          label: "سن دقیق",
+          label: copy.age.exactAge,
           value: displayDigits(exact, numeralStyle),
           emphasis: true
         },
         {
-          label: "مجموع روزهای عمر",
+          label: copy.age.totalDays,
           value: displayDigits(String(diff.totalDays), numeralStyle)
         },
         {
-          label: "تا تولد بعدی",
+          label: copy.age.nextBirthday,
           value: daysUntil === 0
-            ? "امروز"
+            ? copy.age.today
             : displayDigits(`${daysUntil} روز`, numeralStyle)
         }
       ],
       error: ""
     };
-  }, [birth, calculationDate, calendar, numeralStyle]);
+  }, [birth, calculationDate, calendar, numeralStyle, copy]);
 
   return (
     <ToolScreen
       title={t(language, "age")}
-      subtitle="سن دقیق با تاریخ هجری شمسی یا میلادی"
+      subtitle={copy.age.subtitle}
       theme={resolvedTheme}
     >
-      <ToolSection title="نوع تقویم" theme={resolvedTheme}>
+      <ToolSection title={copy.age.calendarType} theme={resolvedTheme}>
         <ChoiceRow
           options={[
-            { id: "jalali", label: "هجری شمسی" },
-            { id: "gregorian", label: "میلادی" }
+            { id: "jalali", label: copy.age.jalali },
+            { id: "gregorian", label: copy.age.gregorian }
           ]}
           value={calendar}
           onChange={switchCalendar}
@@ -109,7 +111,7 @@ export default function AgeToolScreen() {
 
       <ToolSection theme={resolvedTheme}>
         <ToolField
-          label="تاریخ تولد"
+          label={copy.age.birthDate}
           value={birth}
           onChangeText={setBirth}
           placeholder={calendar === "jalali" ? "1400/01/01" : "2000/01/01"}
@@ -117,7 +119,7 @@ export default function AgeToolScreen() {
           theme={resolvedTheme}
         />
         <ToolField
-          label="تاریخ محاسبه"
+          label={copy.age.calculationDate}
           value={calculationDate}
           onChangeText={setCalculationDate}
           placeholder="سال/ماه/روز"
@@ -131,7 +133,7 @@ export default function AgeToolScreen() {
       ) : result.rows.length ? (
         <ResultCard rows={result.rows} theme={resolvedTheme} />
       ) : (
-        <ToolMessage text="تاریخ تولد را وارد کنید تا سن دقیق نمایش داده شود." theme={resolvedTheme} />
+        <ToolMessage text={copy.age.prompt} theme={resolvedTheme} />
       )}
     </ToolScreen>
   );
