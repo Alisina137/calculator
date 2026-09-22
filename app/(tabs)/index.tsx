@@ -402,17 +402,20 @@ export default function CalculatorScreen() {
                           }
                         ]}
                       >
-                        <Text
-                          style={[
-                            styles.scientificKeyText,
-                            {
-                              color:
-                                key === "ANGLE" ? colors.primary : colors.text
-                            }
-                          ]}
-                        >
-                          {label}
-                        </Text>
+                        {({ pressed }) => (
+                          <Text
+                            style={[
+                              styles.scientificKeyText,
+                              {
+                                color:
+                                  key === "ANGLE" ? colors.primary : colors.text,
+                                fontSize: pressed ? 9.6 : 12
+                              }
+                            ]}
+                          >
+                            {label}
+                          </Text>
+                        )}
                       </Pressable>
                     );
                   })}
