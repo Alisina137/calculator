@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 18,
     paddingBottom: 18,
-    paddingTop: 30
+    paddingTop: 38
   },
   header: {
     flexDirection: "row-reverse",
