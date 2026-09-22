@@ -65,7 +65,7 @@ export function ToolScreen({
           ]}
         >
           <SymbolView
-            name={{ ios: "chevron.right", android: "arrow_back", web: "arrow_back" }}
+            name={{ ios: "chevron.right", android: "arrow_forward", web: "arrow_forward" }}
             size={22}
             tintColor={colors.text}
           />
