@@ -1,31 +1,10 @@
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import type { ColorValue } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
-
-function NavSymbol({
-  focused,
-  color,
-  ios,
-  android
-}: {
-  focused: boolean;
-  color: ColorValue;
-  ios: string;
-  android: string;
-}) {
-  return (
-    <SymbolView
-      name={{ ios, android, web: android }}
-      size={focused ? 25 : 23}
-      tintColor={color}
-    />
-  );
-}
 
 export default function TabsLayout() {
   const { language, resolvedTheme } = useAppPreferences();
@@ -62,39 +41,50 @@ export default function TabsLayout() {
         options={{
           title: t(language, "calculator"),
           tabBarIcon: ({ focused, color }) => (
-            <NavSymbol
-              focused={focused}
-              color={color}
-              ios="plus.forwardslash.minus"
-              android="calculate"
+            <SymbolView
+              name={{
+                ios: "plus.forwardslash.minus",
+                android: "calculate",
+                web: "calculate"
+              }}
+              size={focused ? 25 : 23}
+              tintColor={color}
             />
           )
         }}
       />
+
       <Tabs.Screen
         name="tools"
         options={{
           title: t(language, "tools"),
           tabBarIcon: ({ focused, color }) => (
-            <NavSymbol
-              focused={focused}
-              color={color}
-              ios="wrench.and.screwdriver"
-              android="construction"
+            <SymbolView
+              name={{
+                ios: "wrench.and.screwdriver",
+                android: "construction",
+                web: "construction"
+              }}
+              size={focused ? 25 : 23}
+              tintColor={color}
             />
           )
         }}
       />
+
       <Tabs.Screen
         name="history"
         options={{
           title: t(language, "history"),
           tabBarIcon: ({ focused, color }) => (
-            <NavSymbol
-              focused={focused}
-              color={color}
-              ios="clock.arrow.circlepath"
-              android="history"
+            <SymbolView
+              name={{
+                ios: "clock.arrow.circlepath",
+                android: "history",
+                web: "history"
+              }}
+              size={focused ? 25 : 23}
+              tintColor={color}
             />
           )
         }}
