@@ -11,6 +11,7 @@ import {
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
 import { toolCopy } from "@/i18n/toolCopy";
+import { toolGuidance } from "@/i18n/toolGuidance";
 import {
   calendarDifference,
   daysInMonth,
@@ -123,6 +124,7 @@ export default function AgeToolScreen() {
       title={t(language, "age")}
       subtitle={copy.age.subtitle}
       theme={resolvedTheme}
+      guide={toolGuidance(language, "age")}
     >
       <ToolSection title={copy.age.calendarType} theme={resolvedTheme}>
         <ChoiceRow
