@@ -21,6 +21,32 @@ import {
 } from "@/tools/dateUtils";
 import { displayDigits, normalizeDigits } from "@/utils/numerals";
 
+function formatDateInput(nextValue: string, previousValue: string): string {
+  const normalized = normalizeDigits(nextValue);
+  const digits = normalized.replace(/\D/g, "").slice(0, 8);
+  const deleting = normalized.length < previousValue.length;
+
+  if (!digits) return "";
+
+  if (digits.length <= 4) {
+    if (digits.length === 4 && !deleting) return `${digits}/`;
+    return digits;
+  }
+
+  if (digits.length <= 6) {
+    const year = digits.slice(0, 4);
+    const month = digits.slice(4);
+
+    if (digits.length === 6 && !deleting) {
+      return `${year}/${month}/`;
+    }
+
+    return `${year}/${month}`;
+  }
+
+  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6, 8)}`;
+}
+
 export default function AgeToolScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
   const copy = toolCopy(language);
@@ -113,17 +139,19 @@ export default function AgeToolScreen() {
         <ToolField
           label={copy.age.birthDate}
           value={birth}
-          onChangeText={setBirth}
+          onChangeText={(value) => setBirth(formatDateInput(value, birth))}
           placeholder={calendar === "jalali" ? "1400/01/01" : "2000/01/01"}
-          keyboardType="default"
+          keyboardType="number-pad"
           theme={resolvedTheme}
         />
         <ToolField
           label={copy.age.calculationDate}
           value={calculationDate}
-          onChangeText={setCalculationDate}
+          onChangeText={(value) =>
+            setCalculationDate(formatDateInput(value, calculationDate))
+          }
           placeholder="سال/ماه/روز"
-          keyboardType="default"
+          keyboardType="number-pad"
           theme={resolvedTheme}
         />
       </ToolSection>
