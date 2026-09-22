@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text } from "react-native";
 import { colorsFor } from "@/theme/colors";
-import type { ResolvedTheme } from "@/context/AppPreferencesContext";
+import { useAppPreferences, type ResolvedTheme } from "@/context/AppPreferencesContext";
 
 export function CalculatorKey({
   label,
@@ -20,7 +20,33 @@ export function CalculatorKey({
   theme: ResolvedTheme;
 }) {
   const colors = colorsFor(theme);
+  const { language } = useAppPreferences();
   const isClear = label === "AC";
+
+  const accessibilityLabel =
+    label === "AC"
+      ? "پاک کردن کامل"
+      : label === "⌫"
+        ? "حذف رقم"
+        : label === "÷"
+          ? "تقسیم"
+          : label === "×"
+            ? "ضرب"
+            : label === "−"
+              ? "منها"
+              : label === "+"
+                ? "جمع"
+                : label === "="
+                  ? "مساوی"
+                  : label === "%"
+                    ? language === "dari"
+                      ? "فیصدی"
+                      : "درصد"
+                    : label === "√π"
+                      ? "حالت علمی"
+                      : label === "↔"
+                        ? "بازگشت به حالت ساده"
+                        : label;
 
   const backgroundColor = emphasized
     ? colors.primary
@@ -37,7 +63,7 @@ export function CalculatorKey({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={accessibilityLabel}
       disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
@@ -67,6 +93,8 @@ export function CalculatorKey({
     >
       {({ pressed }) => (
         <Text
+          maxFontSizeMultiplier={1.4}
+          adjustsFontSizeToFit
           style={[
             styles.label,
             operator ? styles.operatorLabel : null,
