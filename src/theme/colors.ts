@@ -1,27 +1,27 @@
 import type { ResolvedTheme } from "@/context/AppPreferencesContext";
 
 const light = {
-  background: "#F7F9F8",
-  surface: "#FFFFFF",
-  text: "#17211F",
-  muted: "#66736F",
-  border: "#DDE4E1",
-  primary: "#176B5B",
-  primarySoft: "#D9EEE8",
-  key: "#E9EFED",
-  danger: "#B3261E"
+  background: "#F1F6F9",
+  surface: "#F7FAFC",
+  text: "#2E6683",
+  muted: "#9AB0BD",
+  border: "#D9E3E9",
+  primary: "#789C49",
+  primarySoft: "#E7EFE1",
+  key: "#E8F0F5",
+  danger: "#D83B32"
 };
 
 const dark = {
-  background: "#101513",
-  surface: "#18201D",
-  text: "#F1F6F4",
-  muted: "#A9B6B1",
-  border: "#2C3834",
-  primary: "#77D5BD",
-  primarySoft: "#214D42",
-  key: "#26322E",
-  danger: "#FFB4AB"
+  background: "#11191E",
+  surface: "#18242A",
+  text: "#D8EAF3",
+  muted: "#8FA4AF",
+  border: "#2B3A42",
+  primary: "#9ABB69",
+  primarySoft: "#293A29",
+  key: "#202E35",
+  danger: "#FF8A80"
 };
 
 export function colorsFor(theme: ResolvedTheme) {
