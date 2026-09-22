@@ -15,7 +15,12 @@ export default function SettingsScreen() {
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
-          <Pressable onPress={() => router.back()} style={[styles.back, { backgroundColor: colors.surface }]}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="بازگشت"
+            onPress={() => router.back()}
+            style={[styles.back, { backgroundColor: colors.surface }]}
+          >
             <Text style={[styles.backText, { color: colors.text }]}>→</Text>
           </Pressable>
           <Text style={[styles.title, { color: colors.text }]}>{t(prefs.language, "settings")}</Text>
@@ -124,6 +129,9 @@ function OptionRow<T extends string>({
         return (
           <Pressable
             key={optionValue}
+            accessibilityRole="button"
+            accessibilityLabel={label}
+            accessibilityState={{ selected }}
             onPress={() => onChange(optionValue)}
             style={[
               styles.option,
