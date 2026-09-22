@@ -252,9 +252,9 @@ export default function CalculatorScreen() {
   const displayPreview = inputError
     ? inputError
     : finalized
-      ? `= ${displayDigits(finalized.result, numeralStyle)}`
+      ? displayDigits(finalized.result, numeralStyle)
       : preview
-        ? `= ${displayDigits(preview, numeralStyle)}`
+        ? displayDigits(preview, numeralStyle)
         : "";
 
   const modeButton = (
@@ -371,7 +371,9 @@ export default function CalculatorScreen() {
               {
                 backgroundColor: inputError
                   ? "transparent"
-                  : colors.primarySoft
+                  : resolvedTheme === "dark"
+                    ? "#173B4F"
+                    : "#E8F4FF"
               }
             ]}
           >
@@ -611,6 +613,7 @@ const styles = StyleSheet.create({
     fontWeight: "700"
   },
   previewMath: {
+    alignSelf: "flex-start",
     textAlign: "left",
     writingDirection: "ltr",
     direction: "ltr"
