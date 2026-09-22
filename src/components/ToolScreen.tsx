@@ -10,8 +10,9 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import type { ResolvedTheme } from "@/context/AppPreferencesContext";
+import { useAppPreferences, type ResolvedTheme } from "@/context/AppPreferencesContext";
 import { colorsFor } from "@/theme/colors";
+import { displayDigits, normalizeDigits } from "@/utils/numerals";
 
 export function ToolScreen({
   title,
@@ -82,14 +83,20 @@ export function ToolField({
   keyboardType?: "decimal-pad" | "number-pad" | "default";
 }) {
   const colors = colorsFor(theme);
+  const { numeralStyle } = useAppPreferences();
+  const displayValue = displayDigits(value, numeralStyle);
+  const displayPlaceholder = placeholder
+    ? displayDigits(placeholder, numeralStyle)
+    : undefined;
 
   return (
     <View style={styles.fieldWrap}>
       <Text style={[styles.fieldLabel, { color: colors.text }]}>{label}</Text>
       <TextInput
-        value={value}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
+        value={displayValue}
+        onChangeText={(text) => onChangeText(normalizeDigits(text))}
+        placeholder={displayPlaceholder}
+        accessibilityLabel={label}
         placeholderTextColor={colors.muted}
         keyboardType={keyboardType}
         style={[
@@ -130,6 +137,8 @@ export function ChoiceRow<T extends string>({
           <Pressable
             key={option.id}
             accessibilityRole="button"
+            accessibilityLabel={option.label}
+            accessibilityState={{ selected: active }}
             onPress={() => onChange(option.id)}
             style={({ pressed }) => [
               styles.choice,
@@ -362,6 +371,7 @@ const styles = StyleSheet.create({
   resultRow: {
     minHeight: 49,
     flexDirection: "row-reverse",
+    flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12
@@ -373,6 +383,7 @@ const styles = StyleSheet.create({
     writingDirection: "rtl"
   },
   resultValue: {
+    flexShrink: 1,
     fontSize: 18,
     fontWeight: "700",
     textAlign: "left",
