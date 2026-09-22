@@ -462,7 +462,7 @@ export default function CalculatorScreen() {
                           ? scientificMode
                             ? "↔"
                             : "√π"
-                          : /^[0-9]$/.test(key)
+                          : /^[0-9]$/.test(key) || key === "."
                             ? displayDigits(key, numeralStyle)
                             : key
                       }
@@ -489,7 +489,7 @@ export default function CalculatorScreen() {
                         ? scientificMode
                           ? "↔"
                           : "√π"
-                        : /^[0-9]$/.test(key)
+                        : /^[0-9]$/.test(key) || key === "."
                           ? displayDigits(key, numeralStyle)
                           : key
                     }
