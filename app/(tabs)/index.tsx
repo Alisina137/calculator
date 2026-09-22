@@ -1,6 +1,7 @@
 import * as ScreenOrientation from "expo-screen-orientation";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "expo-router";
+import { SymbolView } from "expo-symbols";
 import {
   Pressable,
   ScrollView,
@@ -269,7 +270,11 @@ export default function CalculatorScreen() {
           }
         ]}
       >
-        <Text style={[styles.settingsIcon, { color: colors.text }]}>⚙</Text>
+        <SymbolView
+          name={{ ios: "gearshape", android: "settings", web: "settings" }}
+          size={24}
+          tintColor={colors.text}
+        />
       </Pressable>
     </Link>
   );
@@ -537,9 +542,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center"
-  },
-  settingsIcon: {
-    fontSize: 21
   },
   display: {
     flex: 1,
