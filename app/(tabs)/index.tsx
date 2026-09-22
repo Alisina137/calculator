@@ -575,8 +575,8 @@ const styles = StyleSheet.create({
     marginTop: 2
   },
   preview: {
-    fontSize: 28,
-    minHeight: 36,
+    fontSize: 32,
+    minHeight: 40,
     fontWeight: "500"
   },
   previewMath: {
@@ -591,8 +591,8 @@ const styles = StyleSheet.create({
     direction: "rtl"
   },
   previewLandscape: {
-    fontSize: 18,
-    minHeight: 22
+    fontSize: 20,
+    minHeight: 24
   },
   landscapeKeyArea: {
     flex: 2.35,
