@@ -589,8 +589,9 @@ const styles = StyleSheet.create({
     minHeight: 120
   },
   displayLandscape: {
-    flex: 0.32,
-    minHeight: 40,
+    flex: 0,
+    height: 58,
+    minHeight: 0,
     paddingVertical: 0
   },
   expressionViewport: {
@@ -615,7 +616,7 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   resultContainerLandscape: {
-    marginTop: 2
+    marginTop: 0
   },
   preview: {
     fontSize: 32,
@@ -639,26 +640,29 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     width: "100%",
     opacity: 0.7,
-    marginBottom: 8
+    marginBottom: 4
   },
   landscapeKeyArea: {
-    flex: 2.35,
+    flex: 1,
+    minHeight: 0,
     flexDirection: "row",
-    gap: 6,
-    paddingBottom: 2
+    gap: 5,
+    paddingBottom: 1
   },
   scientificGrid: {
     flex: 0.95,
-    gap: 3
+    minHeight: 0,
+    gap: 2
   },
   scientificRow: {
     flex: 1,
+    minHeight: 0,
     flexDirection: "row",
-    gap: 3
+    gap: 2
   },
   scientificKey: {
     flex: 1,
-    minHeight: 28,
+    minHeight: 0,
     borderWidth: 1,
     borderRadius: 10,
     alignItems: "center",
@@ -670,12 +674,14 @@ const styles = StyleSheet.create({
   },
   standardLandscapeGrid: {
     flex: 1.4,
-    gap: 3
+    minHeight: 0,
+    gap: 2
   },
   landscapeStandardRow: {
     flex: 1,
+    minHeight: 0,
     flexDirection: "row",
-    gap: 3
+    gap: 2
   },
   keypad: {
     paddingBottom: 8,
