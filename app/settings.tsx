@@ -143,7 +143,7 @@ function OptionRow<T extends string>({
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  content: { padding: 18, paddingBottom: 36, direction: "rtl", gap: 14 },
+  content: { padding: 18, paddingBottom: 36, gap: 14 },
   header: { flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between", marginBottom: 4 },
   title: { fontSize: 27, fontWeight: "800", writingDirection: "rtl" },
   back: { width: 46, height: 46, borderRadius: 16, alignItems: "center", justifyContent: "center" },
