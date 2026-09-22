@@ -79,6 +79,7 @@ export default function UnitConverterToolScreen() {
       subtitle={copy.unit.subtitle}
       theme={resolvedTheme}
       guide={toolGuidance(language, "unit")}
+      guideId="unit"
     >
       <ToolSection title={copy.unit.category} theme={resolvedTheme}>
         <ChoiceRow
