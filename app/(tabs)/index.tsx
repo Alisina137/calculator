@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "expo-router";
 import {
   Pressable,
@@ -63,6 +63,12 @@ export default function CalculatorScreen() {
   const colors = colorsFor(resolvedTheme);
   const [finalized, setFinalized] = useState<FinalizedCalculation | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (finalized && expression !== finalized.result) {
+      setFinalized(null);
+    }
+  }, [expression, finalized]);
 
   const preview = useMemo(() => {
     if (!canPreviewExpression(expression)) return null;
