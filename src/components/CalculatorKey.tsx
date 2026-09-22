@@ -65,6 +65,7 @@ export function CalculatorKey({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       disabled={disabled}
+      hitSlop={compact ? 6 : 2}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
