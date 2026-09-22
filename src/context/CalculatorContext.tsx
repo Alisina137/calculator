@@ -102,7 +102,12 @@ export function CalculatorProvider({ children }: { children: React.ReactNode }) 
   const persistHistory = async (next: HistoryEntry[]) => {
     historyRef.current = next;
     setHistory(next);
-    await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+
+    try {
+      await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+    } catch {
+      // Keep the in-memory calculator usable even if local persistence fails.
+    }
   };
 
   const addHistory = async (entryExpression: string, result: string) => {
