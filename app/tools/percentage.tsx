@@ -107,6 +107,7 @@ export default function PercentageToolScreen() {
       subtitle={copy.percentage.subtitle}
       theme={resolvedTheme}
       guide={toolGuidance(language, "percentage")}
+      guideId="percentage"
     >
       <ToolSection theme={resolvedTheme}>
         <ChoiceRow options={modes} value={mode} onChange={setMode} theme={resolvedTheme} />
