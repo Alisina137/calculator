@@ -19,7 +19,7 @@ Authoritative Product Specification supplied 2026-09-22.
 Flutter was replaced before substantive feature implementation because the local Flutter toolchain was unavailable/heavy for the user's development environment. Product requirements and phase outcomes remain unchanged.
 
 ## Current phase
-Phase 3 — History and Scientific Mode
+Phase 4 — Everyday Tools
 
 ## Phase 1 completed outcomes
 - Expo/React Native project foundation
@@ -74,15 +74,31 @@ Phase 3 — History and Scientific Mode
 - DEG/RAD with DEG as default
 - Scientific domain and overflow error handling
 
+## Phase 4 implemented outcomes
+- Percentage calculator with four modes: percent of value, ratio percentage, percentage increase and percentage decrease
+- Discount calculator with original price, discount percentage and optional quantity
+- Discount outputs for saved amount, final price, quantity total and total savings
+- Offline unit converter with length, mass, area, volume, temperature, speed, data size and time
+- Immediate unit conversion and source/target swap
+- Age calculator supporting Solar Hijri and Gregorian input
+- Exact age in years, months and days
+- Total age in days and next-birthday information
+- Date difference calculator with exact calendar difference and total days
+- Date arithmetic for days, weeks, months and years
+- Add/subtract date operations
+- Calendar-date arithmetic that does not use local-time timestamps for date differences
+- Validated localized numeric/date inputs and Persian/Dari-first result presentation
+
 ## Verification status
 Phase 1 TypeScript checking passed locally on 2026-09-22.
 Phase 2 was implemented and pulled locally.
-Phase 3 source is implemented; npm install, TypeScript and device runtime verification are pending after pull.
+Phase 3 is implemented and has been exercised on-device during UI refinement; full acceptance verification remains pending.
+Phase 4 source is implemented; local TypeScript and device runtime verification are pending after pull.
 
 ## Known limitations
-- Specialized everyday tools are still placeholders until Phase 4.
-- Scientific layout is now optimized for landscape phone use; broader accessibility/RTL polish remains in Phase 5.
+- Phase 4 uses typed date entry (year/month/day) rather than a graphical date picker to keep the MVP dependency-light and offline.
+- Broader terminology, accessibility, large-text, numeral/date-format and RTL edge-case polish remains in Phase 5.
 - History is local-only by product design.
 
 ## Next phase
-Phase 4 — Everyday Tools
+Phase 5 — Localization and Regional Polish
