@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { AppPreferencesProvider, useAppPreferences } from "@/context/AppPreferencesContext";
+import { CalculatorProvider } from "@/context/CalculatorContext";
 
 function RootNavigator() {
   const { resolvedTheme } = useAppPreferences();
@@ -24,7 +25,9 @@ function RootNavigator() {
 export default function RootLayout() {
   return (
     <AppPreferencesProvider>
-      <RootNavigator />
+      <CalculatorProvider>
+        <RootNavigator />
+      </CalculatorProvider>
     </AppPreferencesProvider>
   );
 }
