@@ -4,28 +4,14 @@ import { Link } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalculatorKey } from "@/components/CalculatorKey";
-import {
-  appendConstant,
-  appendDecimal,
-  appendDigit,
-  appendFactorial,
-  appendFunction,
-  appendOperator,
-  appendParenthesis,
-  appendPercent,
-  appendPower,
-  backspaceExpression,
-  isExpressionReadyForEquals,
-  reciprocalExpression,
-  squareExpression
-} from "@/calculation/calculatorInput";
+import { isExpressionReadyForEquals } from "@/calculation/calculatorInput";
 import { canPreviewExpression, evaluateExpression } from "@/calculation/calculatorEngine";
 import { calculationErrorMessage } from "@/calculation/errorMessages";
 import type { FinalizedCalculation } from "@/calculation/types";
@@ -33,7 +19,7 @@ import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
-import { displayDigits } from "@/utils/numerals";
+import { displayDigits, normalizeDigits } from "@/utils/numerals";
 
 const standardRows = [
   ["AC", "SCI", "%", "÷"],
@@ -124,6 +110,7 @@ export default function CalculatorScreen() {
   const colors = colorsFor(resolvedTheme);
   const [finalized, setFinalized] = useState<FinalizedCalculation | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
 
   useEffect(() => {
     if (!hydrated) return;
@@ -147,13 +134,46 @@ export default function CalculatorScreen() {
     return result.ok ? result.formatted : null;
   }, [expression, angleUnit]);
 
-  const setEditingExpression = (next: string) => {
+  const setEditingExpression = (
+    next: string,
+    caret = next.length
+  ) => {
     setInputError(null);
     setFinalized(null);
     setExpression(next);
+    setSelection({ start: caret, end: caret });
   };
 
-  const baseForNewValue = () => (finalized ? "" : expression);
+  const replaceSelection = (
+    inserted: string,
+    cursorOffset = inserted.length
+  ) => {
+    const source = finalized ? "" : expression;
+    const start = finalized ? 0 : Math.min(selection.start, source.length);
+    const end = finalized ? 0 : Math.min(selection.end, source.length);
+    const next = source.slice(0, start) + inserted + source.slice(end);
+    setEditingExpression(next, start + cursorOffset);
+  };
+
+  const deleteAtSelection = () => {
+    const start = Math.min(selection.start, expression.length);
+    const end = Math.min(selection.end, expression.length);
+
+    if (start !== end) {
+      setEditingExpression(
+        expression.slice(0, start) + expression.slice(end),
+        start
+      );
+      return;
+    }
+
+    if (start === 0) return;
+
+    setEditingExpression(
+      expression.slice(0, start - 1) + expression.slice(start),
+      start - 1
+    );
+  };
 
   const changeScientificMode = async (next: boolean) => {
     setScientificMode(next);
@@ -174,11 +194,12 @@ export default function CalculatorScreen() {
       setInputError(null);
       setFinalized(null);
       setExpression("");
+      setSelection({ start: 0, end: 0 });
       return;
     }
 
     if (key === "⌫") {
-      setEditingExpression(backspaceExpression(expression));
+      deleteAtSelection();
       return;
     }
 
@@ -188,22 +209,22 @@ export default function CalculatorScreen() {
     }
 
     if (key === "%") {
-      setEditingExpression(appendPercent(expression));
+      replaceSelection("%");
       return;
     }
 
     if (key === ".") {
-      setEditingExpression(appendDecimal(baseForNewValue()));
+      replaceSelection(".");
       return;
     }
 
     if (/^[0-9]$/.test(key)) {
-      setEditingExpression(appendDigit(baseForNewValue(), key));
+      replaceSelection(key);
       return;
     }
 
     if (["+", "−", "×", "÷"].includes(key)) {
-      setEditingExpression(appendOperator(expression, key));
+      replaceSelection(key);
       return;
     }
 
@@ -229,20 +250,22 @@ export default function CalculatorScreen() {
       await addHistory(record.expression, record.result);
       setFinalized(record);
       setExpression(result.formatted);
+      setSelection({
+        start: result.formatted.length,
+        end: result.formatted.length
+      });
       setInputError(null);
     }
   };
 
   const handleScientificKey = (key: string) => {
-    const base = finalized ? "" : expression;
-
     if (key === "ANGLE") {
       setAngleUnit(angleUnit === "DEG" ? "RAD" : "DEG");
       return;
     }
 
     if (key === "(" || key === ")") {
-      setEditingExpression(appendParenthesis(base, key));
+      replaceSelection(key);
       return;
     }
 
@@ -253,37 +276,48 @@ export default function CalculatorScreen() {
       key === "log" ||
       key === "ln"
     ) {
-      setEditingExpression(appendFunction(base, key));
+      replaceSelection(`${key}()`, key.length + 1);
       return;
     }
 
     if (key === "√") {
-      setEditingExpression(appendFunction(base, "sqrt"));
+      replaceSelection("sqrt()", 5);
       return;
     }
 
     if (key === "π" || key === "e") {
-      setEditingExpression(appendConstant(base, key));
+      replaceSelection(key);
       return;
     }
 
     if (key === "x²") {
-      setEditingExpression(squareExpression(expression));
+      replaceSelection("^2");
       return;
     }
 
     if (key === "xʸ") {
-      setEditingExpression(appendPower(expression));
+      replaceSelection("^");
       return;
     }
 
     if (key === "!") {
-      setEditingExpression(appendFactorial(expression));
+      replaceSelection("!");
       return;
     }
 
     if (key === "1/x") {
-      setEditingExpression(reciprocalExpression(expression));
+      const start = Math.min(selection.start, expression.length);
+      const end = Math.min(selection.end, expression.length);
+
+      if (start !== end && !finalized) {
+        const selected = expression.slice(start, end);
+        const inserted = `1/(${selected})`;
+        const next =
+          expression.slice(0, start) + inserted + expression.slice(end);
+        setEditingExpression(next, start + inserted.length);
+      } else {
+        replaceSelection("1/()", 3);
+      }
     }
   };
 
@@ -356,26 +390,31 @@ export default function CalculatorScreen() {
             scientificMode ? styles.displayLandscape : null
           ]}
         >
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.expressionViewport}
-            contentContainerStyle={styles.expressionScroll}
-          >
-            <Text
-              accessibilityLiveRegion="polite"
-              numberOfLines={1}
-              adjustsFontSizeToFit
-              minimumFontScale={0.45}
-              style={[
-                styles.expression,
-                scientificMode ? styles.expressionLandscape : null,
-                { color: resolvedTheme === "dark" ? colors.text : "#2F6A87" }
-              ]}
-            >
-              {displayExpression}
-            </Text>
-          </ScrollView>
+          <TextInput
+            accessibilityLabel="عبارت محاسبه"
+            accessibilityLiveRegion="polite"
+            value={displayExpression}
+            onChangeText={(value) => {
+              const canonical = normalizeDigits(value);
+              setEditingExpression(canonical, canonical.length);
+            }}
+            onSelectionChange={({ nativeEvent }) => {
+              setSelection(nativeEvent.selection);
+            }}
+            selection={selection}
+            showSoftInputOnFocus={false}
+            caretHidden={false}
+            cursorColor={colors.primary}
+            selectionColor={colors.primary}
+            contextMenuHidden={false}
+            multiline={false}
+            scrollEnabled
+            style={[
+              styles.expressionInput,
+              scientificMode ? styles.expressionLandscape : null,
+              { color: resolvedTheme === "dark" ? colors.text : "#2F6A87" }
+            ]}
+          />
 
           <View
             style={[
@@ -599,18 +638,15 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     justifyContent: "flex-end"
   },
-  expressionViewport: {
-  },
-  expressionScroll: {
-    flexGrow: 1,
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
-  },
-  expression: {
+  expressionInput: {
+    width: "100%",
+    minHeight: 58,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
     fontSize: 48,
     fontWeight: "400",
     textAlign: "left",
-    writingDirection: "ltr",
+    writingDirection: "ltr"
   },
   expressionLandscape: {
     fontSize: 28
