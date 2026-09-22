@@ -109,6 +109,7 @@ export default function DateToolScreen() {
       subtitle={copy.date.subtitle}
       theme={resolvedTheme}
       guide={toolGuidance(language, "date")}
+      guideId="date"
     >
       <ToolSection theme={resolvedTheme}>
         <ChoiceRow
