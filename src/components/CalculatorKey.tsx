@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text } from "react-native";
+import { SymbolView } from "expo-symbols";
 import { colorsFor } from "@/theme/colors";
 import { useAppPreferences, type ResolvedTheme } from "@/context/AppPreferencesContext";
 
@@ -22,6 +23,7 @@ export function CalculatorKey({
   const colors = colorsFor(theme);
   const { language } = useAppPreferences();
   const isClear = label === "AC";
+  const isDelete = label === "⌫";
 
   const accessibilityLabel =
     label === "AC"
@@ -92,29 +94,42 @@ export function CalculatorKey({
         }
       ]}
     >
-      {({ pressed }) => (
-        <Text
-          maxFontSizeMultiplier={1.4}
-          adjustsFontSizeToFit
-          style={[
-            styles.label,
-            operator ? styles.operatorLabel : null,
-            isClear ? styles.clearLabel : null,
-            {
-              color: textColor,
-              fontSize: compact
-                ? pressed
-                  ? 12
-                  : 15
-                : pressed
-                  ? 19.2
-                  : 24
-            }
-          ]}
-        >
-          {label}
-        </Text>
-      )}
+      {({ pressed }) =>
+        isDelete ? (
+          <SymbolView
+            name={{
+              ios: "delete.left",
+              android: "backspace",
+              web: "backspace"
+            }}
+            size={compact ? (pressed ? 15 : 17) : pressed ? 22 : 25}
+            tintColor={textColor}
+            style={styles.deleteIcon}
+          />
+        ) : (
+          <Text
+            maxFontSizeMultiplier={1.4}
+            adjustsFontSizeToFit
+            style={[
+              styles.label,
+              operator ? styles.operatorLabel : null,
+              isClear ? styles.clearLabel : null,
+              {
+                color: textColor,
+                fontSize: compact
+                  ? pressed
+                    ? 12
+                    : 15
+                  : pressed
+                    ? 19.2
+                    : 24
+              }
+            ]}
+          >
+            {label}
+          </Text>
+        )
+      }
     </Pressable>
   );
 }
@@ -143,5 +158,8 @@ const styles = StyleSheet.create({
   },
   clearLabel: {
     fontWeight: "500"
+  },
+  deleteIcon: {
+    opacity: 0.94
   }
 });
