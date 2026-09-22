@@ -198,29 +198,30 @@ export function calendarDifference(
   end: CalendarDate,
   calendar: CalendarType
 ) {
-  const totalDays = toDayNumber(end, calendar) - toDayNumber(start, calendar);
+  const startDay = toDayNumber(start, calendar);
+  const endDay = toDayNumber(end, calendar);
+  const totalDays = endDay - startDay;
   if (totalDays < 0) return null;
 
-  let years = end.year - start.year;
-  let months = end.month - start.month;
-  let days = end.day - start.day;
+  let years = Math.max(0, end.year - start.year);
+  let afterYears = addCalendarDuration(start, years, "years", calendar);
 
-  if (days < 0) {
-    months -= 1;
-    let previousMonth = end.month - 1;
-    let previousYear = end.year;
-    if (previousMonth === 0) {
-      previousMonth = 12;
-      previousYear -= 1;
-    }
-    days += daysInMonth(calendar, previousYear, previousMonth);
-  }
-
-  if (months < 0) {
+  while (years > 0 && toDayNumber(afterYears, calendar) > endDay) {
     years -= 1;
-    months += 12;
+    afterYears = addCalendarDuration(start, years, "years", calendar);
   }
 
+  let months =
+    (end.year - afterYears.year) * 12 + (end.month - afterYears.month);
+  months = Math.max(0, months);
+
+  let afterMonths = addCalendarDuration(afterYears, months, "months", calendar);
+  while (months > 0 && toDayNumber(afterMonths, calendar) > endDay) {
+    months -= 1;
+    afterMonths = addCalendarDuration(afterYears, months, "months", calendar);
+  }
+
+  const days = endDay - toDayNumber(afterMonths, calendar);
   return { years, months, days, totalDays };
 }
 
@@ -238,7 +239,7 @@ export function addCalendarDuration(
   if (unit === "months") {
     const totalMonths = start.year * 12 + (start.month - 1) + amount;
     const year = Math.floor(totalMonths / 12);
-    const month = mod(totalMonths, 12) + 1;
+    const month = ((totalMonths % 12) + 12) % 12 + 1;
     const day = Math.min(start.day, daysInMonth(calendar, year, month));
     return { year, month, day };
   }
