@@ -68,7 +68,11 @@ export function appendOperator(expression: string, operator: string) {
     if (last === "−" && isUnaryMinusAt(expression, lastIndex)) {
       const beforeUnary = expression[lastIndex - 1];
 
-      if (beforeUnary && isOperator(beforeUnary)) {
+      if (!beforeUnary) {
+        return operator === "−" ? expression : "";
+      }
+
+      if (isOperator(beforeUnary)) {
         if (operator === "−") return expression;
         return expression.slice(0, -2) + operator;
       }
@@ -121,7 +125,5 @@ export function isExpressionReadyForEquals(expression: string) {
   const last = expression[lastIndex];
 
   if (last === ".") return false;
-  if (!isOperator(last)) return true;
-
-  return last === "−" && !isUnaryMinusAt(expression, lastIndex);
+  return !isOperator(last);
 }
