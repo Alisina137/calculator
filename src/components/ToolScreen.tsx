@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppPreferences, type ResolvedTheme } from "@/context/AppPreferencesContext";
+import type { ToolGuide } from "@/i18n/toolGuidance";
 import { colorsFor } from "@/theme/colors";
 import { displayDigits, normalizeDigits } from "@/utils/numerals";
 
@@ -18,14 +19,17 @@ export function ToolScreen({
   title,
   subtitle,
   theme,
+  guide,
   children
 }: {
   title: string;
   subtitle?: string;
   theme: ResolvedTheme;
+  guide?: ToolGuide;
   children: ReactNode;
 }) {
   const colors = colorsFor(theme);
+  const { showToolGuidance } = useAppPreferences();
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
@@ -61,6 +65,44 @@ export function ToolScreen({
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+        {showToolGuidance && guide ? (
+          <View
+            style={[
+              styles.guideCard,
+              {
+                backgroundColor: colors.primarySoft,
+                borderColor: colors.primary
+              }
+            ]}
+          >
+            <Text style={[styles.guideTitle, { color: colors.primary }]}>
+              راهنمای استفاده
+            </Text>
+            <Text style={[styles.guideBody, { color: colors.text }]}>
+              {guide.purpose}
+            </Text>
+
+            <Text style={[styles.guideSectionTitle, { color: colors.text }]}>
+              چه چیزی وارد کنید
+            </Text>
+            {guide.inputs.map((item, index) => (
+              <Text
+                key={item}
+                style={[styles.guideBody, { color: colors.text }]}
+              >
+                {index + 1}. {item}
+              </Text>
+            ))}
+
+            <Text style={[styles.guideSectionTitle, { color: colors.text }]}>
+              چه نتیجه‌ای می‌گیرید
+            </Text>
+            <Text style={[styles.guideBody, { color: colors.text }]}>
+              {guide.result}
+            </Text>
+          </View>
+        ) : null}
+
         {children}
       </ScrollView>
     </SafeAreaView>
@@ -310,6 +352,31 @@ const styles = StyleSheet.create({
     paddingTop: 6,
     paddingBottom: 40,
     gap: 14,
+  },
+  guideCard: {
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 16,
+    gap: 8
+  },
+  guideTitle: {
+    fontSize: 17,
+    fontWeight: "900",
+    textAlign: "right",
+    writingDirection: "rtl"
+  },
+  guideSectionTitle: {
+    marginTop: 4,
+    fontSize: 14,
+    fontWeight: "800",
+    textAlign: "right",
+    writingDirection: "rtl"
+  },
+  guideBody: {
+    fontSize: 13,
+    lineHeight: 21,
+    textAlign: "right",
+    writingDirection: "rtl"
   },
   section: {
     borderRadius: 20,
