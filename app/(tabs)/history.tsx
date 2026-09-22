@@ -129,7 +129,7 @@ export default function HistoryScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  page: { flex: 1, padding: 18, direction: "rtl" },
+  page: { flex: 1, padding: 18 },
   header: {
     flexDirection: "row-reverse",
     alignItems: "center",
