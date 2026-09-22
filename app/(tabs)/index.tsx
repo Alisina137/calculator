@@ -386,20 +386,18 @@ export default function CalculatorScreen() {
                         style={({ pressed }) => [
                           styles.scientificKey,
                           {
-                            backgroundColor:
-                              key === "ANGLE" ? colors.primarySoft : colors.key,
+                            backgroundColor: pressed
+                              ? resolvedTheme === "dark"
+                                ? "#1B292F"
+                                : "#DCE7ED"
+                              : key === "ANGLE"
+                                ? colors.primarySoft
+                                : colors.key,
                             borderColor:
                               resolvedTheme === "dark"
                                 ? "rgba(255,255,255,0.06)"
                                 : "rgba(58,92,110,0.10)",
-                            boxShadow: pressed
-                              ? "0 0 5px 0 rgba(54, 78, 89, 0.22)"
-                              : "0 1px 2px rgba(54, 78, 89, 0.12)",
-                            transform: pressed
-                              ? [{ translateY: 2 }]
-                              : [{ translateY: 0 }],
-                            transitionDuration: "100ms",
-                            transitionProperty: ["transform", "boxShadow"],
+                            boxShadow: "0 1px 2px rgba(54, 78, 89, 0.12)",
                             opacity: 1
                           }
                         ]}
