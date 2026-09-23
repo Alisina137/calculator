@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useColorScheme } from "react-native";
+import { supportedLanguages, type AppLanguage } from "@/i18n/languages";
 
-export type AppLanguage = "dari" | "persian";
+export type { AppLanguage } from "@/i18n/languages";
 export type NumeralStyle = "persian" | "latin";
 export type ThemePreference = "system" | "light" | "dark";
 export type ResolvedTheme = "light" | "dark";
@@ -31,8 +32,8 @@ const AppPreferencesContext = createContext<PreferencesContextValue | null>(null
 
 export function AppPreferencesProvider({ children }: { children: React.ReactNode }) {
   const systemScheme = useColorScheme();
-  const [language, setLanguage] = useState<AppLanguage>("dari");
-  const [numeralStyle, setNumeralStyle] = useState<NumeralStyle>("persian");
+  const [language, setLanguage] = useState<AppLanguage>("en");
+  const [numeralStyle, setNumeralStyle] = useState<NumeralStyle>("latin");
   const [themePreference, setThemePreference] = useState<ThemePreference>("system");
   const [hapticsEnabled, setHapticsEnabled] = useState(true);
   const [toolGuidance, setToolGuidance] = useState<Record<ToolGuidanceId, boolean>>({
@@ -52,8 +53,13 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
         if (!active || !saved) return;
         const parsed = JSON.parse(saved) as Partial<PersistedPreferences>;
 
-        if (parsed.language === "dari" || parsed.language === "persian") {
-          setLanguage(parsed.language);
+        const savedLanguage = parsed.language as string | undefined;
+        if (savedLanguage === "dari" || savedLanguage === "persian") {
+          setLanguage("fa");
+        } else if (
+          supportedLanguages.some((item) => item.id === savedLanguage)
+        ) {
+          setLanguage(savedLanguage as AppLanguage);
         }
         if (parsed.numeralStyle === "persian" || parsed.numeralStyle === "latin") {
           setNumeralStyle(parsed.numeralStyle);
