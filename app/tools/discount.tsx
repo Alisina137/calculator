@@ -10,7 +10,7 @@ import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
 import { toolCopy } from "@/i18n/toolCopy";
 import { toolGuidance } from "@/i18n/toolGuidance";
-import { formatToolNumber, parseToolNumber } from "@/tools/toolMath";
+import { calculateDiscount, formatToolNumber, parseToolNumber } from "@/tools/toolMath";
 import { displayDigits } from "@/utils/numerals";
 
 export default function DiscountToolScreen() {
@@ -39,10 +39,11 @@ export default function DiscountToolScreen() {
       return { rows: [], error: copy.discount.quantityError };
     }
 
-    const savedEach = original * (percent / 100);
-    const finalEach = original - savedEach;
-    const total = finalEach * qty;
-    const totalSaved = savedEach * qty;
+    const { savedEach, finalEach, total, totalSaved } = calculateDiscount(
+      original,
+      percent,
+      qty
+    );
 
     return {
       rows: [
