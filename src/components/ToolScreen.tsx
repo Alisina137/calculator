@@ -14,7 +14,7 @@ import {
   type ResolvedTheme,
   type ToolGuidanceId
 } from "@/context/AppPreferencesContext";
-import type { ToolGuide } from "@/i18n/toolGuidance";
+import { toolGuideLabels, type ToolGuide } from "@/i18n/toolGuidance";
 import { colorsFor } from "@/theme/colors";
 import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { displayDigits, normalizeDigits } from "@/utils/numerals";
@@ -45,10 +45,7 @@ export function ToolScreen({
   const align = textAlignment(language);
   const direction = textDirection(language);
   const row = rowDirection(language);
-  const guideLabels =
-    language === "fa"
-      ? { title: "راهنمای استفاده", inputs: "چه چیزی وارد کنید", result: "چه نتیجه‌ای می‌گیرید" }
-      : { title: "How to use", inputs: "What to enter", result: "What you get" };
+  const guideLabels = toolGuideLabels(language);
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
@@ -88,7 +85,7 @@ export function ToolScreen({
           <AnimatedPressable
             accessibilityRole="checkbox"
             accessibilityState={{ checked: showToolGuidance }}
-            accessibilityLabel={language === "fa" ? "نمایش راهنمای این ابزار" : "Show tool guide"}
+            accessibilityLabel={guideLabels.accessibility}
             onPress={() =>
               setToolGuidanceEnabled(guideId, !showToolGuidance)
             }
@@ -118,14 +115,12 @@ export function ToolScreen({
             </View>
             <View style={styles.guideToggleTextWrap}>
               <Text style={[styles.guideToggleTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>
-                {language === "fa" ? "راهنمای این ابزار" : "Tool guide"}
+                {guideLabels.toggleTitle}
               </Text>
               <Text
                 style={[styles.guideToggleSubtitle, { color: colors.muted, textAlign: align, writingDirection: direction }]}
               >
-                {showToolGuidance
-                  ? language === "fa" ? "راهنما نمایش داده می‌شود" : "Guide is visible"
-                  : language === "fa" ? "برای دیدن توضیحات این ابزار فعال کنید" : "Enable to see instructions"}
+                {showToolGuidance ? guideLabels.visible : guideLabels.hidden}
               </Text>
             </View>
           </AnimatedPressable>
