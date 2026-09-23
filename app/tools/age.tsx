@@ -95,7 +95,10 @@ export default function AgeToolScreen() {
     };
     const daysUntil = toDayNumber(nextBirthday, calendar) - toDayNumber(endDate, calendar);
 
-    const exact = `${diff.years} سال، ${diff.months} ماه، ${diff.days} روز`;
+    const exact =
+      language === "fa"
+        ? `${diff.years} سال، ${diff.months} ماه، ${diff.days} روز`
+        : `${diff.years} years, ${diff.months} months, ${diff.days} days`;
 
     return {
       rows: [
@@ -112,7 +115,7 @@ export default function AgeToolScreen() {
           label: copy.age.nextBirthday,
           value: daysUntil === 0
             ? copy.age.today
-            : displayDigits(`${daysUntil} روز`, numeralStyle)
+            : displayDigits(language === "fa" ? `${daysUntil} روز` : `${daysUntil} days`, numeralStyle)
         }
       ],
       error: ""
@@ -163,7 +166,7 @@ export default function AgeToolScreen() {
           onChangeText={(value) =>
             setCalculationDate(formatDateInput(value, calculationDate))
           }
-          placeholder="سال/ماه/روز"
+          placeholder={language === "fa" ? "سال/ماه/روز" : "YYYY/MM/DD"}
           keyboardType="number-pad"
           theme={resolvedTheme}
         />
