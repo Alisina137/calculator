@@ -96,7 +96,7 @@ export function ToolScreen({
             }
             style={[
               styles.guideToggle,
-              { flexDirection: layoutRow },
+              { flexDirection: row },
               {
                 backgroundColor: colors.surface,
                 borderColor: showToolGuidance ? colors.primary : colors.border
@@ -350,7 +350,7 @@ export function ResultCard({
           key={resultRow.label + index}
           style={[
             styles.resultRow,
-            { flexDirection: row },
+            { flexDirection: layoutRow },
             index > 0 ? { borderTopColor: colors.border, borderTopWidth: StyleSheet.hairlineWidth } : null
           ]}
         >
