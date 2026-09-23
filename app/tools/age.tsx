@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CalendarDatePicker } from "@/components/CalendarDatePicker";
 import {
   ChoiceRow,
@@ -52,11 +52,21 @@ function formatDateInput(nextValue: string, previousValue: string): string {
 export default function AgeToolScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
   const copy = toolCopy(language);
-  const [calendar, setCalendar] = useState<CalendarType>("jalali");
+  const preferredCalendar: CalendarType =
+    numeralStyle === "latin" ? "gregorian" : "jalali";
+  const [calendar, setCalendar] = useState<CalendarType>(preferredCalendar);
   const [birth, setBirth] = useState("");
   const [calculationDate, setCalculationDate] = useState(
-    formatCalendarDate(todayInCalendar("jalali"))
+    formatCalendarDate(todayInCalendar(preferredCalendar))
   );
+
+  useEffect(() => {
+    setCalendar(preferredCalendar);
+    setBirth("");
+    setCalculationDate(
+      formatCalendarDate(todayInCalendar(preferredCalendar))
+    );
+  }, [preferredCalendar]);
 
   const switchCalendar = (next: CalendarType) => {
     setCalendar(next);
