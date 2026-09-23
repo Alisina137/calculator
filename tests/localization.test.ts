@@ -32,3 +32,5 @@ test("uses RTL only for RTL languages", () => {
   assert.equal(textDirection("fa"), "rtl");
   assert.equal(textDirection("en"), "ltr");
 });
+
+// Temporary CI verification marker.
