@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Alert, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { Alert, Modal, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
@@ -8,6 +8,7 @@ import { isRtlLanguage, rowDirection, supportedLanguages, textAlignment, textDir
 import { numeralStyles } from "@/i18n/numeralStyles";
 import { colorsFor } from "@/theme/colors";
 import type { AppLanguage, NumeralStyle, ThemePreference } from "@/context/AppPreferencesContext";
+import { useState } from "react";
 
 export default function SettingsScreen() {
   const prefs = useAppPreferences();
@@ -49,9 +50,8 @@ export default function SettingsScreen() {
         </View>
 
         <SettingGroup title={t(prefs.language, "language")} theme={prefs.resolvedTheme} language={prefs.language}>
-          <OptionRow<AppLanguage>
+          <LanguageSelect
             value={prefs.language}
-            options={supportedLanguages.map((item) => [item.id, item.nativeName] as const)}
             onChange={prefs.setLanguage}
             theme={prefs.resolvedTheme}
             language={prefs.language}
@@ -135,6 +135,139 @@ function SettingGroup({ title, theme, language, children }: { title: string; the
   );
 }
 
+function LanguageSelect({
+  value,
+  onChange,
+  theme,
+  language
+}: {
+  value: AppLanguage;
+  onChange: (value: AppLanguage) => void;
+  theme: "light" | "dark";
+  language: AppLanguage;
+}) {
+  const [open, setOpen] = useState(false);
+  const colors = colorsFor(theme);
+  const direction = textDirection(language);
+  const row = rowDirection(language);
+  const selectedLanguage =
+    supportedLanguages.find((item) => item.id === value) ?? supportedLanguages[0];
+
+  return (
+    <>
+      <AnimatedPressable
+        accessibilityRole="button"
+        accessibilityLabel={selectedLanguage.nativeName}
+        accessibilityState={{ expanded: open }}
+        onPress={() => setOpen(true)}
+        style={({ pressed }) => [
+          styles.languageSelect,
+          {
+            flexDirection: row,
+            backgroundColor: pressed ? colors.primarySoft : colors.background,
+            borderColor: open || pressed ? colors.primary : colors.border
+          }
+        ]}
+      >
+        <Text
+          style={[
+            styles.languageSelectText,
+            { color: colors.text, writingDirection: direction }
+          ]}
+        >
+          {selectedLanguage.nativeName}
+        </Text>
+        <Text style={[styles.languageChevron, { color: colors.muted }]}>⌄</Text>
+      </AnimatedPressable>
+
+      <Modal
+        visible={open}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setOpen(false)}
+      >
+        <View style={styles.languageOverlay}>
+          <View
+            style={[
+              styles.languageModal,
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border
+              }
+            ]}
+          >
+            <View style={[styles.languageModalHeader, { flexDirection: row }]}>
+              <Text
+                style={[
+                  styles.languageModalTitle,
+                  { color: colors.text, writingDirection: direction }
+                ]}
+              >
+                {t(language, "language")}
+              </Text>
+              <AnimatedPressable
+                accessibilityRole="button"
+                accessibilityLabel={t(language, "cancel")}
+                onPress={() => setOpen(false)}
+                style={styles.languageClose}
+              >
+                <Text style={[styles.languageCloseText, { color: colors.muted }]}>×</Text>
+              </AnimatedPressable>
+            </View>
+
+            <ScrollView
+              style={styles.languageList}
+              contentContainerStyle={styles.languageListContent}
+              showsVerticalScrollIndicator={false}
+            >
+              {supportedLanguages.map((item) => {
+                const selected = item.id === value;
+                return (
+                  <AnimatedPressable
+                    key={item.id}
+                    accessibilityRole="button"
+                    accessibilityLabel={item.nativeName}
+                    accessibilityState={{ selected }}
+                    onPress={() => {
+                      onChange(item.id);
+                      setOpen(false);
+                    }}
+                    style={({ pressed }) => [
+                      styles.languageOption,
+                      {
+                        flexDirection: row,
+                        backgroundColor:
+                          selected || pressed ? colors.primarySoft : colors.background,
+                        borderColor:
+                          selected || pressed ? colors.primary : colors.border
+                      }
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.languageOptionText,
+                        {
+                          color: selected ? colors.primary : colors.text,
+                          writingDirection: item.rtl ? "rtl" : "ltr"
+                        }
+                      ]}
+                    >
+                      {item.nativeName}
+                    </Text>
+                    {selected ? (
+                      <Text style={[styles.languageCheck, { color: colors.primary }]}>✓</Text>
+                    ) : null}
+                  </AnimatedPressable>
+                );
+              })}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+    </>
+  );
+}
+
 function OptionRow<T extends string>({
   value,
   options,
@@ -190,6 +323,81 @@ const styles = StyleSheet.create({
   groupTitle: { fontSize: 17, fontWeight: "800", textAlign: "right", writingDirection: "rtl" },
   groupBody: { marginTop: 14 },
   options: { gap: 9 },
+  languageSelect: {
+    minHeight: 52,
+    borderWidth: 1,
+    borderRadius: 15,
+    paddingHorizontal: 14,
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  languageSelectText: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "700"
+  },
+  languageChevron: {
+    fontSize: 22,
+    fontWeight: "700"
+  },
+  languageOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.42)",
+    padding: 20,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  languageModal: {
+    width: "100%",
+    maxWidth: 440,
+    maxHeight: "78%",
+    borderWidth: 1,
+    borderRadius: 24,
+    padding: 16
+  },
+  languageModalHeader: {
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 12
+  },
+  languageModalTitle: {
+    fontSize: 20,
+    fontWeight: "800"
+  },
+  languageClose: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  languageCloseText: {
+    fontSize: 30,
+    lineHeight: 32
+  },
+  languageList: {
+    maxHeight: 470
+  },
+  languageListContent: {
+    gap: 8,
+    paddingBottom: 4
+  },
+  languageOption: {
+    minHeight: 48,
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  languageOptionText: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "700"
+  },
+  languageCheck: {
+    fontSize: 17,
+    fontWeight: "900"
+  },
   option: { minHeight: 48, borderRadius: 15, borderWidth: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 12 },
   optionText: { fontSize: 15, fontWeight: "700", textAlign: "center", writingDirection: "rtl" },
   switchRow: { minHeight: 48, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
