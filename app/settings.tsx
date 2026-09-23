@@ -5,7 +5,7 @@ import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
 import { isRtlLanguage, rowDirection, supportedLanguages, textAlignment, textDirection } from "@/i18n/languages";
-import { numeralStyles } from "@/i18n/numeralStyles";
+import { numeralStyleOptionsForLanguage } from "@/i18n/numeralStyles";
 import { colorsFor } from "@/theme/colors";
 import type { AppLanguage, NumeralStyle, ThemePreference } from "@/context/AppPreferencesContext";
 import { useState } from "react";
@@ -61,7 +61,7 @@ export default function SettingsScreen() {
         <SettingGroup title={t(prefs.language, "numerals")} theme={prefs.resolvedTheme} language={prefs.language}>
           <OptionRow<NumeralStyle>
             value={prefs.numeralStyle}
-            options={numeralStyles.map(
+            options={numeralStyleOptionsForLanguage(prefs.language).map(
               (item) => [item.id, `${item.label} ${item.sample}`] as const
             )}
             onChange={prefs.setNumeralStyle}
