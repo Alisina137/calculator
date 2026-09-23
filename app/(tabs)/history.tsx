@@ -1,5 +1,6 @@
 import { router } from "expo-router";
-import { Alert, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
@@ -61,23 +62,23 @@ export default function HistoryScreen() {
       <View style={styles.page}>
         <View style={styles.header}>
           <Text style={[styles.title, { color: colors.text }]}>{t(language, "history")}</Text>
-          <Pressable
+          <AnimatedPressable
             accessibilityRole="button"
             accessibilityLabel={t(language, "clearAll")}
             onPress={confirmClearHistory}
             style={({ pressed }) => [
               styles.clearButton,
               {
-                backgroundColor: colors.surface,
-                borderColor: colors.border,
-                opacity: pressed ? 0.65 : 1
+                backgroundColor: pressed ? colors.primarySoft : colors.surface,
+                borderColor: pressed ? colors.primary : colors.border,
+                opacity: 1
               }
             ]}
           >
             <Text style={[styles.clearText, { color: colors.danger }]}>
               {t(language, "clearAll")}
             </Text>
-          </Pressable>
+          </AnimatedPressable>
         </View>
 
         <ScrollView contentContainerStyle={styles.list}>
@@ -94,7 +95,7 @@ export default function HistoryScreen() {
                 key={entry.id}
                 style={[styles.card, { backgroundColor: colors.surface }]}
               >
-                <Pressable
+                <AnimatedPressable
                   accessibilityRole="button"
                   accessibilityLabel={t(language, "reuseResult")}
                   onPress={() => {
@@ -114,33 +115,45 @@ export default function HistoryScreen() {
                   <Text style={[styles.date, { color: colors.muted }]}>
                     {dateText}
                   </Text>
-                </Pressable>
+                </AnimatedPressable>
 
                 <View style={styles.actions}>
-                  <Pressable
+                  <AnimatedPressable
                     accessibilityRole="button"
                     accessibilityLabel={t(language, "reuseExpression")}
                     onPress={() => {
                       reuseExpression(entry);
                       goToCalculator();
                     }}
-                    style={[styles.actionButton, { borderColor: colors.border }]}
+                    style={({ pressed }) => [
+                      styles.actionButton,
+                      {
+                        borderColor: pressed ? colors.primary : colors.border,
+                        backgroundColor: pressed ? colors.primarySoft : "transparent"
+                      }
+                    ]}
                   >
                     <Text style={[styles.actionText, { color: colors.primary }]}>
                       {t(language, "reuseExpression")}
                     </Text>
-                  </Pressable>
+                  </AnimatedPressable>
 
-                  <Pressable
+                  <AnimatedPressable
                     accessibilityRole="button"
                     accessibilityLabel={t(language, "delete")}
                     onPress={() => void deleteHistory(entry.id)}
-                    style={[styles.actionButton, { borderColor: colors.border }]}
+                    style={({ pressed }) => [
+                      styles.actionButton,
+                      {
+                        borderColor: pressed ? colors.primary : colors.border,
+                        backgroundColor: pressed ? colors.primarySoft : "transparent"
+                      }
+                    ]}
                   >
                     <Text style={[styles.actionText, { color: colors.danger }]}>
                       {t(language, "delete")}
                     </Text>
-                  </Pressable>
+                  </AnimatedPressable>
                 </View>
               </View>
             );
