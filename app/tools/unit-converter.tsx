@@ -61,12 +61,12 @@ export default function UnitConverterToolScreen() {
 
   const categoryOptions = unitCategories.map((item) => ({
     id: item.id,
-    label: item.fa
+    label: language === "fa" ? item.fa : item.en
   }));
 
   const unitOptions = category.units.map((unit) => ({
     id: unit.id,
-    label: `${unit.fa} (${unit.symbol})`
+    label: `${language === "fa" ? unit.fa : unit.en} (${unit.symbol})`
   }));
 
   const sourceUnit =
