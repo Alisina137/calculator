@@ -50,13 +50,13 @@ export function AnimatedPressable({
       onPressIn={(event) => {
         if (!disabled) {
           setPressed(true);
-          animateTo(pressedScale, 55);
+          animateTo(pressedScale, 20);
         }
         onPressIn?.(event);
       }}
       onPressOut={(event) => {
         setPressed(false);
-        animateTo(1, 95);
+        animateTo(1, 35);
         onPressOut?.(event);
       }}
       style={[
