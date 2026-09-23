@@ -2,8 +2,7 @@ import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
-  Pressable,
-  ScrollView,
+   ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -17,6 +16,7 @@ import {
 } from "@/context/AppPreferencesContext";
 import type { ToolGuide } from "@/i18n/toolGuidance";
 import { colorsFor } from "@/theme/colors";
+import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { displayDigits, normalizeDigits } from "@/utils/numerals";
 
 export function ToolScreen({
@@ -63,15 +63,15 @@ export function ToolScreen({
             <Text style={[styles.subtitle, { color: colors.muted }]}>{subtitle}</Text>
           ) : null}
         </View>
-        <Pressable
+        <AnimatedPressable
           accessibilityRole="button"
           accessibilityLabel="بازگشت"
           onPress={() => router.back()}
           style={({ pressed }) => [
             styles.backButton,
             {
-              backgroundColor: pressed ? colors.key : colors.surface,
-              borderColor: colors.border
+              backgroundColor: pressed ? colors.primarySoft : colors.surface,
+              borderColor: pressed ? colors.primary : colors.border
             }
           ]}
         >
@@ -80,7 +80,7 @@ export function ToolScreen({
             size={22}
             tintColor={colors.text}
           />
-        </Pressable>
+        </AnimatedPressable>
       </View>
 
       <ScrollView
@@ -89,7 +89,7 @@ export function ToolScreen({
         showsVerticalScrollIndicator={false}
       >
         {guide && guideId ? (
-          <Pressable
+          <AnimatedPressable
             accessibilityRole="checkbox"
             accessibilityState={{ checked: showToolGuidance }}
             accessibilityLabel={
@@ -141,7 +141,7 @@ export function ToolScreen({
                     : "برای دیدن توضیحات این ابزار فعال کنید"}
               </Text>
             </View>
-          </Pressable>
+          </AnimatedPressable>
         ) : null}
 
         {showToolGuidance && guide ? (
@@ -274,7 +274,7 @@ export function ChoiceRow<T extends string>({
       {options.map((option) => {
         const active = option.id === value;
         return (
-          <Pressable
+          <AnimatedPressable
             key={option.id}
             accessibilityRole="button"
             accessibilityLabel={option.label}
@@ -283,9 +283,9 @@ export function ChoiceRow<T extends string>({
             style={({ pressed }) => [
               styles.choice,
               {
-                backgroundColor: active ? colors.primarySoft : colors.surface,
-                borderColor: active ? colors.primary : colors.border,
-                opacity: pressed ? 0.78 : 1
+                backgroundColor: active || pressed ? colors.primarySoft : colors.surface,
+                borderColor: active || pressed ? colors.primary : colors.border,
+                opacity: 1
               }
             ]}
           >
@@ -297,7 +297,7 @@ export function ChoiceRow<T extends string>({
             >
               {active ? `✓ ${option.label}` : option.label}
             </Text>
-          </Pressable>
+          </AnimatedPressable>
         );
       })}
     </ScrollView>
@@ -401,16 +401,16 @@ export function PrimaryButton({
 }) {
   const colors = colorsFor(theme);
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="button"
       onPress={onPress}
       style={({ pressed }) => [
         styles.primaryButton,
-        { backgroundColor: pressed ? "#668A3B" : colors.primary }
+        { backgroundColor: pressed ? colors.primarySoft : colors.primary }
       ]}
     >
       <Text style={styles.primaryButtonText}>{label}</Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
