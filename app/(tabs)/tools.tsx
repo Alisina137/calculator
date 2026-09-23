@@ -4,10 +4,13 @@ import { ToolCard } from "@/components/ToolCard";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
+import { textAlignment, textDirection } from "@/i18n/languages";
 
 export default function ToolsScreen() {
   const { language, resolvedTheme } = useAppPreferences();
   const colors = colorsFor(resolvedTheme);
+  const align = textAlignment(language);
+  const direction = textDirection(language);
 
   const tools = [
     [
@@ -45,8 +48,8 @@ export default function ToolsScreen() {
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={[styles.title, { color: colors.text }]}>{t(language, "tools")}</Text>
-        <Text style={[styles.subtitle, { color: colors.muted }]}>{t(language, "everydayTools")}</Text>
+        <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{t(language, "tools")}</Text>
+        <Text style={[styles.subtitle, { color: colors.muted, textAlign: align, writingDirection: direction }]}>{t(language, "everydayTools")}</Text>
 
         <View style={styles.list}>
           {tools.map(([icon, title, description, href]) => (
