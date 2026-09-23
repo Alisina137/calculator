@@ -75,8 +75,8 @@ function AnimatedNavItem({
   });
 
   const opacity = progress.interpolate({
-    inputRange: [0, 0.72, 1],
-    outputRange: [1, 1, 0]
+    inputRange: [0, 0.08, 0.72, 1],
+    outputRange: [0, 1, 1, 0]
   });
 
   const normalColor = active ? activeColor : inactiveColor;
