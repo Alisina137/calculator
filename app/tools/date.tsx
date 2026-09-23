@@ -93,7 +93,9 @@ export default function DateToolScreen() {
           {
             label: copy.date.exactDifference,
             value: displayDigits(
-              `${diff.years} سال، ${diff.months} ماه، ${diff.days} روز`,
+              language === "fa"
+                ? `${diff.years} سال، ${diff.months} ماه، ${diff.days} روز`
+                : `${diff.years} years, ${diff.months} months, ${diff.days} days`,
               numeralStyle
             ),
             emphasis: true
