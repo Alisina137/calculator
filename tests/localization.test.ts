@@ -74,3 +74,5 @@ test("filters numeral choices by the selected language", () => {
   assert.deepEqual(numeralStylesForLanguage("bn"), ["bengali", "latin"]);
   assert.deepEqual(numeralStylesForLanguage("th"), ["thai", "latin"]);
 });
+
+// Temporary calendar/result layout verification marker.
