@@ -1,110 +1,185 @@
-import type { AppLanguage } from "@/context/AppPreferencesContext";
+import type { AppLanguage } from "@/i18n/languages";
+
+const english = {
+  percent: "Percent",
+  invalidNumber: "Please enter a valid number.",
+  invalidValues: "Please enter valid values.",
+  result: "Result",
+  percentage: {
+    subtitle: "Everyday percentage calculations with instant results",
+    of: "Percent of a number",
+    ratio: "What percent?",
+    increase: "Percentage increase",
+    decrease: "Percentage decrease",
+    base: "Base number",
+    part: "Part",
+    total: "Total",
+    initial: "Initial value",
+    next: "New value",
+    increaseAmount: "Increase amount",
+    decreaseAmount: "Decrease amount",
+    increasePercent: "Increase percent",
+    decreasePercent: "Decrease percent",
+    totalZero: "The total cannot be zero.",
+    initialZero: "The initial value cannot be zero.",
+    prompt: "Enter two values to see the result instantly."
+  },
+  discount: {
+    subtitle: "Quickly calculate final price and savings",
+    originalPrice: "Original price",
+    discountPercent: "Discount percent",
+    quantity: "Quantity (optional)",
+    discountAmount: "Discount amount",
+    finalPrice: "Price after discount",
+    quantityTotal: "Total for quantity",
+    totalSaved: "Total saved",
+    negativePrice: "Original price cannot be negative.",
+    rangeError: "Discount percent must be between 0 and 100.",
+    quantityError: "Quantity must be a whole number greater than zero.",
+    prompt: "Enter the price and discount to see the result."
+  },
+  unit: {
+    subtitle: "Convert common units without internet",
+    category: "Unit category",
+    value: "Amount",
+    from: "From unit",
+    to: "To unit",
+    swap: "Swap",
+    swapLabel: "Swap units",
+    result: "Converted result",
+    impossible: "This value cannot be converted.",
+    prompt: "Enter an amount and choose units; the result updates instantly."
+  },
+  age: {
+    subtitle: "Exact age using Jalali or Gregorian calendar",
+    calendarType: "Calendar type",
+    jalali: "Jalali",
+    gregorian: "Gregorian",
+    birthDate: "Birth date",
+    calculationDate: "Calculation date",
+    exactAge: "Exact age",
+    totalDays: "Total days lived",
+    nextBirthday: "Until next birthday",
+    today: "Today",
+    dateFormatError: "Enter the date as year/month/day.",
+    futureBirthError: "Birth date must be before the calculation date.",
+    prompt: "Enter a birth date to calculate the exact age."
+  },
+  date: {
+    subtitle: "Date difference or add/subtract time",
+    differenceMode: "Difference between dates",
+    arithmeticMode: "Add / subtract",
+    firstDate: "First date",
+    secondDate: "Second date",
+    startDate: "Start date",
+    amount: "Amount",
+    days: "Days",
+    weeks: "Weeks",
+    months: "Months",
+    years: "Years",
+    add: "Add",
+    subtract: "Subtract",
+    exactDifference: "Exact difference",
+    totalDays: "Total days",
+    resultDate: "Result date",
+    dateFormatError: "Enter the date as year/month/day.",
+    secondDateError: "The second date is not valid.",
+    differenceError: "The date difference could not be calculated.",
+    durationError: "Duration must be a non-negative whole number.",
+    prompt: "Enter the required values to see the result."
+  }
+};
+
+const persian: typeof english = {
+  percent: "درصد",
+  invalidNumber: "لطفاً عدد معتبر وارد کنید.",
+  invalidValues: "لطفاً مقدارهای معتبر وارد کنید.",
+  result: "نتیجه",
+  percentage: {
+    subtitle: "محاسبه‌های روزمره درصدی با نتیجه فوری",
+    of: "درصد از عدد",
+    ratio: "چند درصد؟",
+    increase: "افزایش درصدی",
+    decrease: "کاهش درصدی",
+    base: "عدد پایه",
+    part: "بخش",
+    total: "کل",
+    initial: "مقدار اولیه",
+    next: "مقدار جدید",
+    increaseAmount: "میزان افزایش",
+    decreaseAmount: "میزان کاهش",
+    increasePercent: "درصد افزایش",
+    decreasePercent: "درصد کاهش",
+    totalZero: "مقدار کل نمی‌تواند صفر باشد.",
+    initialZero: "مقدار اولیه نمی‌تواند صفر باشد.",
+    prompt: "دو مقدار را وارد کنید تا نتیجه فوراً نمایش داده شود."
+  },
+  discount: {
+    subtitle: "قیمت نهایی و مقدار صرفه‌جویی را سریع ببینید",
+    originalPrice: "قیمت اصلی",
+    discountPercent: "درصد تخفیف",
+    quantity: "تعداد (اختیاری)",
+    discountAmount: "مبلغ تخفیف",
+    finalPrice: "قیمت بعد از تخفیف",
+    quantityTotal: "مجموع برای تعداد",
+    totalSaved: "کل صرفه‌جویی",
+    negativePrice: "قیمت اصلی نمی‌تواند منفی باشد.",
+    rangeError: "درصد تخفیف باید بین ۰ تا ۱۰۰ باشد.",
+    quantityError: "تعداد باید یک عدد صحیح بیشتر از صفر باشد.",
+    prompt: "قیمت و تخفیف را وارد کنید تا نتیجه نمایش داده شود."
+  },
+  unit: {
+    subtitle: "تبدیل سریع واحدها بدون نیاز به اینترنت",
+    category: "نوع واحد",
+    value: "مقدار",
+    from: "از واحد",
+    to: "به واحد",
+    swap: "جابه‌جایی",
+    swapLabel: "جابه‌جایی واحدها",
+    result: "نتیجه تبدیل",
+    impossible: "تبدیل این مقدار ممکن نیست.",
+    prompt: "مقدار و واحدها را انتخاب کنید؛ نتیجه فوراً به‌روز می‌شود."
+  },
+  age: {
+    subtitle: "سن دقیق با تاریخ هجری شمسی یا میلادی",
+    calendarType: "نوع تقویم",
+    jalali: "هجری شمسی",
+    gregorian: "میلادی",
+    birthDate: "تاریخ تولد",
+    calculationDate: "تاریخ محاسبه",
+    exactAge: "سن دقیق",
+    totalDays: "مجموع روزهای عمر",
+    nextBirthday: "تا تولد بعدی",
+    today: "امروز",
+    dateFormatError: "تاریخ را به شکل سال/ماه/روز وارد کنید.",
+    futureBirthError: "تاریخ تولد باید قبل از تاریخ محاسبه باشد.",
+    prompt: "تاریخ تولد را وارد کنید تا سن دقیق نمایش داده شود."
+  },
+  date: {
+    subtitle: "فاصله تاریخ‌ها یا افزودن و کم‌کردن زمان",
+    differenceMode: "فاصله بین دو تاریخ",
+    arithmeticMode: "افزودن / کم‌کردن",
+    firstDate: "تاریخ اول",
+    secondDate: "تاریخ دوم",
+    startDate: "تاریخ شروع",
+    amount: "مقدار",
+    days: "روز",
+    weeks: "هفته",
+    months: "ماه",
+    years: "سال",
+    add: "افزودن",
+    subtract: "کم‌کردن",
+    exactDifference: "فاصله دقیق",
+    totalDays: "مجموع روزها",
+    resultDate: "تاریخ نتیجه",
+    dateFormatError: "تاریخ را به شکل سال/ماه/روز وارد کنید.",
+    secondDateError: "تاریخ دوم معتبر نیست.",
+    differenceError: "امکان محاسبه فاصله وجود ندارد.",
+    durationError: "مدت زمان باید یک عدد صحیح و نامنفی باشد.",
+    prompt: "مقدارهای لازم را وارد کنید تا نتیجه نمایش داده شود."
+  }
+};
 
 export function toolCopy(language: AppLanguage) {
-  const dari = language === "dari";
-  const percent = dari ? "فیصدی" : "درصد";
-
-  return {
-    percent,
-    invalidNumber: dari ? "لطفاً یک عدد معتبر وارد کنید." : "لطفاً عدد معتبر وارد کنید.",
-    invalidValues: dari ? "لطفاً مقدارهای معتبر وارد کنید." : "لطفاً مقدارهای معتبر وارد کنید.",
-    result: "نتیجه",
-    percentage: {
-      subtitle: dari
-        ? "محاسبه‌های روزمره فیصدی با نتیجه فوری"
-        : "محاسبه‌های روزمره درصدی با نتیجه فوری",
-      of: `${percent} از عدد`,
-      ratio: `چند ${percent}؟`,
-      increase: `افزایش ${percent}ی`,
-      decrease: `کاهش ${percent}ی`,
-      base: "عدد پایه",
-      part: "بخش",
-      total: "کل",
-      initial: "مقدار اولیه",
-      next: "مقدار جدید",
-      increaseAmount: "میزان افزایش",
-      decreaseAmount: "میزان کاهش",
-      increasePercent: `${percent} افزایش`,
-      decreasePercent: `${percent} کاهش`,
-      totalZero: "مقدار کل نمی‌تواند صفر باشد.",
-      initialZero: "مقدار اولیه نمی‌تواند صفر باشد.",
-      prompt: dari
-        ? "دو مقدار را وارد کنید تا نتیجه فوراً نشان داده شود."
-        : "دو مقدار را وارد کنید تا نتیجه فوراً نمایش داده شود."
-    },
-    discount: {
-      subtitle: dari
-        ? "قیمت نهایی و مقدار صرفه‌جویی را سریع ببینید"
-        : "قیمت نهایی و مقدار صرفه‌جویی را سریع ببینید",
-      originalPrice: "قیمت اصلی",
-      discountPercent: `${percent} تخفیف`,
-      quantity: "تعداد (اختیاری)",
-      discountAmount: "مبلغ تخفیف",
-      finalPrice: "قیمت بعد از تخفیف",
-      quantityTotal: "مجموع برای تعداد",
-      totalSaved: "کل صرفه‌جویی",
-      negativePrice: "قیمت اصلی نمی‌تواند منفی باشد.",
-      rangeError: `${percent} تخفیف باید بین ۰ تا ۱۰۰ باشد.`,
-      quantityError: "تعداد باید یک عدد صحیح بیشتر از صفر باشد.",
-      prompt: dari
-        ? "قیمت و تخفیف را وارد کنید تا نتیجه نشان داده شود."
-        : "قیمت و تخفیف را وارد کنید تا نتیجه نمایش داده شود."
-    },
-    unit: {
-      subtitle: "تبدیل سریع واحدها بدون نیاز به اینترنت",
-      category: "نوع واحد",
-      value: "مقدار",
-      from: "از واحد",
-      to: "به واحد",
-      swap: "جابه‌جایی",
-      swapLabel: "جابه‌جایی واحدها",
-      result: "نتیجه تبدیل",
-      impossible: "تبدیل این مقدار ممکن نیست.",
-      prompt: dari
-        ? "مقدار و واحدها را انتخاب کنید؛ نتیجه فوراً به‌روز می‌شود."
-        : "مقدار و واحدها را انتخاب کنید؛ نتیجه فوراً به‌روز می‌شود."
-    },
-    age: {
-      subtitle: "سن دقیق با تاریخ هجری شمسی یا میلادی",
-      calendarType: "نوع تقویم",
-      jalali: "هجری شمسی",
-      gregorian: "میلادی",
-      birthDate: "تاریخ تولد",
-      calculationDate: "تاریخ محاسبه",
-      exactAge: "سن دقیق",
-      totalDays: "مجموع روزهای عمر",
-      nextBirthday: "تا تولد بعدی",
-      today: "امروز",
-      dateFormatError: "تاریخ را به شکل سال/ماه/روز وارد کنید.",
-      futureBirthError: "تاریخ تولد باید قبل از تاریخ محاسبه باشد.",
-      prompt: dari
-        ? "تاریخ تولد را وارد کنید تا سن دقیق نشان داده شود."
-        : "تاریخ تولد را وارد کنید تا سن دقیق نمایش داده شود."
-    },
-    date: {
-      subtitle: "فاصله تاریخ‌ها یا افزودن و کم‌کردن زمان",
-      differenceMode: "فاصله بین دو تاریخ",
-      arithmeticMode: "افزودن / کم‌کردن",
-      firstDate: "تاریخ اول",
-      secondDate: "تاریخ دوم",
-      startDate: "تاریخ شروع",
-      amount: "مقدار",
-      days: "روز",
-      weeks: "هفته",
-      months: "ماه",
-      years: "سال",
-      add: "افزودن",
-      subtract: "کم‌کردن",
-      exactDifference: "فاصله دقیق",
-      totalDays: "مجموع روزها",
-      resultDate: "تاریخ نتیجه",
-      dateFormatError: "تاریخ را به شکل سال/ماه/روز وارد کنید.",
-      secondDateError: "تاریخ دوم معتبر نیست.",
-      differenceError: "امکان محاسبه فاصله وجود ندارد.",
-      durationError: "مدت زمان باید یک عدد صحیح و نامنفی باشد.",
-      prompt: dari
-        ? "مقدارهای لازم را وارد کنید تا نتیجه نشان داده شود."
-        : "مقدارهای لازم را وارد کنید تا نتیجه نمایش داده شود."
-    }
-  };
+  return language === "fa" ? persian : english;
 }
