@@ -1,14 +1,14 @@
 import { useMemo, useState } from "react";
 import {
   Modal,
-  Pressable,
-  ScrollView,
+   ScrollView,
   StyleSheet,
   Text,
   View
 } from "react-native";
 import type { AppLanguage, ResolvedTheme } from "@/context/AppPreferencesContext";
 import { colorsFor } from "@/theme/colors";
+import { AnimatedPressable } from "@/components/AnimatedPressable";
 import {
   daysInMonth,
   formatCalendarDate,
@@ -121,15 +121,15 @@ export function CalendarDatePicker({
 
   return (
     <>
-      <Pressable
+      <AnimatedPressable
         accessibilityRole="button"
         accessibilityLabel={`${copy.choose}، ${label}`}
         onPress={open}
         style={({ pressed }) => [
           styles.trigger,
           {
-            backgroundColor: pressed ? colors.key : colors.surface,
-            borderColor: colors.border
+            backgroundColor: pressed ? colors.primarySoft : colors.surface,
+            borderColor: pressed ? colors.primary : colors.border
           }
         ]}
       >
@@ -137,7 +137,7 @@ export function CalendarDatePicker({
           {copy.choose}
         </Text>
         <Text style={[styles.calendarIcon, { color: colors.primary }]}>▣</Text>
-      </Pressable>
+      </AnimatedPressable>
 
       <Modal
         visible={visible}
@@ -159,13 +159,13 @@ export function CalendarDatePicker({
               <Text style={[styles.modalTitle, { color: colors.text }]}>
                 {copy.title}
               </Text>
-              <Pressable
+              <AnimatedPressable
                 accessibilityRole="button"
                 onPress={() => setVisible(false)}
                 style={styles.closeButton}
               >
                 <Text style={[styles.closeText, { color: colors.muted }]}>×</Text>
-              </Pressable>
+              </AnimatedPressable>
             </View>
 
             <View style={styles.summaryRow}>
@@ -185,7 +185,7 @@ export function CalendarDatePicker({
                       : copy.day;
 
                 return (
-                  <Pressable
+                  <AnimatedPressable
                     key={item}
                     accessibilityRole="button"
                     onPress={() => setStep(item)}
@@ -213,7 +213,7 @@ export function CalendarDatePicker({
                     >
                       {displayDigits(String(valueText), numeralStyle)}
                     </Text>
-                  </Pressable>
+                  </AnimatedPressable>
                 );
               })}
             </View>
@@ -237,7 +237,7 @@ export function CalendarDatePicker({
                         : option === draft.day;
 
                   return (
-                    <Pressable
+                    <AnimatedPressable
                       key={option}
                       accessibilityRole="button"
                       accessibilityState={{ selected }}
@@ -252,7 +252,7 @@ export function CalendarDatePicker({
                           backgroundColor: selected
                             ? colors.primary
                             : pressed
-                              ? colors.key
+                              ? colors.primarySoft
                               : colors.surface,
                           borderColor: selected ? colors.primary : colors.border
                         }
@@ -271,13 +271,13 @@ export function CalendarDatePicker({
                           numeralStyle
                         )}
                       </Text>
-                    </Pressable>
+                    </AnimatedPressable>
                   );
                 }
               )}
             </ScrollView>
 
-            <Pressable
+            <AnimatedPressable
               accessibilityRole="button"
               onPress={() => setVisible(false)}
               style={[
@@ -288,7 +288,7 @@ export function CalendarDatePicker({
               <Text style={[styles.cancelText, { color: colors.text }]}>
                 {copy.cancel}
               </Text>
-            </Pressable>
+            </AnimatedPressable>
           </View>
         </View>
       </Modal>
