@@ -39,3 +39,27 @@ export function percentageChange(original: number, next: number): {
   const amount = next - original;
   return { amount, percent: (amount / original) * 100 };
 }
+
+
+export type DiscountCalculation = {
+  savedEach: number;
+  finalEach: number;
+  total: number;
+  totalSaved: number;
+};
+
+export function calculateDiscount(
+  price: number,
+  percent: number,
+  quantity = 1
+): DiscountCalculation {
+  const savedEach = price * (percent / 100);
+  const finalEach = price - savedEach;
+
+  return {
+    savedEach,
+    finalEach,
+    total: finalEach * quantity,
+    totalSaved: savedEach * quantity
+  };
+}
