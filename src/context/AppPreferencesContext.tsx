@@ -32,7 +32,7 @@ const AppPreferencesContext = createContext<PreferencesContextValue | null>(null
 
 export function AppPreferencesProvider({ children }: { children: React.ReactNode }) {
   const systemScheme = useColorScheme();
-  const [language, setLanguage] = useState<AppLanguage>("en");
+  const [language, setLanguageState] = useState<AppLanguage>("en");
   const [numeralStyle, setNumeralStyle] = useState<NumeralStyle>("latin");
   const [themePreference, setThemePreference] = useState<ThemePreference>("system");
   const [hapticsEnabled, setHapticsEnabled] = useState(true);
@@ -55,11 +55,11 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
 
         const savedLanguage = parsed.language as string | undefined;
         if (savedLanguage === "dari" || savedLanguage === "persian") {
-          setLanguage("fa");
+          setLanguageState("fa");
         } else if (
           supportedLanguages.some((item) => item.id === savedLanguage)
         ) {
-          setLanguage(savedLanguage as AppLanguage);
+          setLanguageState(savedLanguage as AppLanguage);
         }
         if (parsed.numeralStyle === "persian" || parsed.numeralStyle === "latin") {
           setNumeralStyle(parsed.numeralStyle);
@@ -111,6 +111,11 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
         ? "dark"
         : "light"
       : themePreference;
+
+  const setLanguage = (value: AppLanguage) => {
+    setLanguageState(value);
+    setNumeralStyle(value === "fa" ? "persian" : "latin");
+  };
 
   const value = useMemo(
     () => ({
