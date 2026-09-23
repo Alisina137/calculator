@@ -54,7 +54,7 @@ export function ToolScreen({
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <View style={[styles.header, { flexDirection: row }]}>
         <View style={styles.headerText}>
-          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{resolvedTitle}</Text>
+          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{title}</Text>
           {subtitle ? (
             <Text style={[styles.subtitle, { color: colors.muted, textAlign: align, writingDirection: direction }]}>{subtitle}</Text>
           ) : null}
@@ -344,7 +344,7 @@ export function ResultCard({
         { backgroundColor: colors.primarySoft, borderColor: colors.primary }
       ]}
     >
-      <Text style={[styles.resultTitle, { color: colors.primary, textAlign: align, writingDirection: direction }]}>{title}</Text>
+      <Text style={[styles.resultTitle, { color: colors.primary, textAlign: align, writingDirection: direction }]}>{resolvedTitle}</Text>
       {rows.map((row, index) => (
         <View
           key={row.label + index}
