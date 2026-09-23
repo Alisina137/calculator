@@ -19,3 +19,18 @@ export function defaultNumeralStyleForLanguage(language: AppLanguage): NumeralSt
   if (language === "th") return "thai";
   return "latin";
 }
+
+
+export function numeralStylesForLanguage(language: AppLanguage): readonly NumeralStyle[] {
+  if (language === "fa" || language === "ur") return ["persian", "latin"];
+  if (language === "ar") return ["arabic", "latin"];
+  if (language === "hi") return ["devanagari", "latin"];
+  if (language === "bn") return ["bengali", "latin"];
+  if (language === "th") return ["thai", "latin"];
+  return ["latin"];
+}
+
+export function numeralStyleOptionsForLanguage(language: AppLanguage) {
+  const allowed = new Set<NumeralStyle>(numeralStylesForLanguage(language));
+  return numeralStyles.filter((item) => allowed.has(item.id));
+}
