@@ -1,11 +1,12 @@
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { useRef, useState, type ReactNode } from "react";
+import { useRef, useState } from "react";
 import {
   Animated,
   Easing,
   Pressable,
   StyleSheet,
+  Text,
   View
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -14,29 +15,40 @@ import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
 
-function AnimatedTabButton({
-  children,
+type TabVisual = {
+  label: string;
+  icon: {
+    ios: string;
+    android: string;
+    web: string;
+  };
+};
+
+function AnimatedNavItem({
+  active,
+  visual,
+  activeColor,
+  inactiveColor,
+  primaryColor,
   onPress,
-  onLongPress,
-  accessibilityState,
-  accessibilityLabel,
-  testID,
-  primaryColor
+  onLongPress
 }: {
-  children: ReactNode;
-  onPress?: (event: any) => void;
-  onLongPress?: (event: any) => void;
-  accessibilityState?: any;
-  accessibilityLabel?: string;
-  testID?: string;
+  active: boolean;
+  visual: TabVisual;
+  activeColor: string;
+  inactiveColor: string;
   primaryColor: string;
+  onPress: () => void;
+  onLongPress: () => void;
 }) {
   const progress = useRef(new Animated.Value(0)).current;
-  const [width, setWidth] = useState(80);
+  const [width, setWidth] = useState(90);
+  const [animating, setAnimating] = useState(false);
 
   const runAnimation = () => {
     progress.stopAnimation();
     progress.setValue(0);
+    setAnimating(true);
 
     Animated.sequence([
       Animated.timing(progress, {
@@ -51,7 +63,10 @@ function AnimatedTabButton({
         easing: Easing.out(Easing.quad),
         useNativeDriver: true
       })
-    ]).start();
+    ]).start(() => {
+      setAnimating(false);
+      progress.setValue(0);
+    });
   };
 
   const scale = progress.interpolate({
@@ -59,162 +74,172 @@ function AnimatedTabButton({
     outputRange: [1, Math.max(width / 20, 1), Math.max(width / 20, 1)]
   });
 
-  const rippleOpacity = progress.interpolate({
-    inputRange: [0, 0.7, 1],
+  const opacity = progress.interpolate({
+    inputRange: [0, 0.72, 1],
     outputRange: [1, 1, 0]
   });
 
-  const contentOpacity = progress.interpolate({
-    inputRange: [0, 0.12, 0.76, 1],
-    outputRange: [1, 0, 0, 1]
-  });
-
-  const whiteContentOpacity = progress.interpolate({
-    inputRange: [0, 0.12, 0.76, 1],
-    outputRange: [0, 1, 1, 0]
-  });
+  const normalColor = active ? activeColor : inactiveColor;
+  const contentColor = animating ? "#FFFFFF" : normalColor;
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityState={accessibilityState}
-      accessibilityLabel={accessibilityLabel}
-      testID={testID}
-      onLongPress={onLongPress}
-      onPress={(event) => {
+      accessibilityState={{ selected: active }}
+      accessibilityLabel={visual.label}
+      onPress={() => {
         runAnimation();
-        onPress?.(event);
+        onPress();
       }}
+      onLongPress={onLongPress}
       onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
       style={styles.tabButton}
     >
-      <View style={styles.animationClip}>
+      <View pointerEvents="none" style={styles.rippleClip}>
         <Animated.View
-          pointerEvents="none"
           style={[
             styles.ripple,
             {
               backgroundColor: primaryColor,
-              opacity: rippleOpacity,
+              opacity,
               transform: [{ scale }]
             }
           ]}
         />
       </View>
 
-      <Animated.View style={[styles.tabContent, { opacity: contentOpacity }]}>
-        {children}
-      </Animated.View>
-
-      <Animated.View
-        pointerEvents="none"
-        style={[styles.whiteFlash, { opacity: whiteContentOpacity }]}
-      />
+      <View style={styles.tabContent}>
+        <SymbolView
+          name={visual.icon}
+          size={active ? 25 : 23}
+          tintColor={contentColor}
+        />
+        <Text style={[styles.tabLabel, { color: contentColor }]}>
+          {visual.label}
+        </Text>
+      </View>
     </Pressable>
   );
 }
 
-export default function TabsLayout() {
+function AnimatedTabBar({ state, descriptors, navigation }: any) {
   const { language, resolvedTheme } = useAppPreferences();
   const { scientificMode } = useCalculator();
   const insets = useSafeAreaInsets();
   const colors = colorsFor(resolvedTheme);
 
+  if (scientificMode) return null;
+
+  const visuals: Record<string, TabVisual> = {
+    index: {
+      label: t(language, "calculator"),
+      icon: {
+        ios: "plus.forwardslash.minus",
+        android: "calculate",
+        web: "calculate"
+      }
+    },
+    tools: {
+      label: t(language, "tools"),
+      icon: {
+        ios: "wrench.and.screwdriver",
+        android: "construction",
+        web: "construction"
+      }
+    },
+    history: {
+      label: t(language, "history"),
+      icon: {
+        ios: "clock.arrow.circlepath",
+        android: "history",
+        web: "history"
+      }
+    }
+  };
+
+  return (
+    <View
+      style={[
+        styles.tabBar,
+        {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
+          height: 62 + Math.max(insets.bottom, 10),
+          paddingBottom: Math.max(insets.bottom, 10),
+          paddingLeft: Math.max(insets.left, 8),
+          paddingRight: Math.max(insets.right, 8)
+        }
+      ]}
+    >
+      {state.routes.map((route: any, index: number) => {
+        const active = state.index === index;
+        const visual = visuals[route.name];
+        if (!visual) return null;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true
+          });
+
+          if (!active && !event.defaultPrevented) {
+            navigation.navigate(route.name, route.params);
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: "tabLongPress",
+            target: route.key
+          });
+        };
+
+        return (
+          <AnimatedNavItem
+            key={route.key}
+            active={active}
+            visual={visual}
+            activeColor={colors.primary}
+            inactiveColor={colors.muted}
+            primaryColor={colors.primary}
+            onPress={onPress}
+            onLongPress={onLongPress}
+          />
+        );
+      })}
+    </View>
+  );
+}
+
+export default function TabsLayout() {
   return (
     <Tabs
+      tabBar={(props) => <AnimatedTabBar {...props} />}
       screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.muted,
-        tabBarButton: (props) => (
-          <AnimatedTabButton
-            {...props}
-            primaryColor={colors.primary}
-          />
-        ),
-        tabBarStyle: scientificMode
-          ? { display: "none" }
-          : {
-              backgroundColor: colors.surface,
-              borderTopColor: colors.border,
-              height: 62 + Math.max(insets.bottom, 10),
-              paddingBottom: Math.max(insets.bottom, 10),
-              paddingTop: 8,
-              paddingLeft: Math.max(insets.left, 8),
-              paddingRight: Math.max(insets.right, 8)
-            },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "700",
-          writingDirection: "rtl"
-        }
+        headerShown: false
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: t(language, "calculator"),
-          tabBarIcon: ({ focused, color }) => (
-            <SymbolView
-              name={{
-                ios: "plus.forwardslash.minus",
-                android: "calculate",
-                web: "calculate"
-              }}
-              size={focused ? 25 : 23}
-              tintColor={color}
-            />
-          )
-        }}
-      />
-
-      <Tabs.Screen
-        name="tools"
-        options={{
-          title: t(language, "tools"),
-          tabBarIcon: ({ focused, color }) => (
-            <SymbolView
-              name={{
-                ios: "wrench.and.screwdriver",
-                android: "construction",
-                web: "construction"
-              }}
-              size={focused ? 25 : 23}
-              tintColor={color}
-            />
-          )
-        }}
-      />
-
-      <Tabs.Screen
-        name="history"
-        options={{
-          title: t(language, "history"),
-          tabBarIcon: ({ focused, color }) => (
-            <SymbolView
-              name={{
-                ios: "clock.arrow.circlepath",
-                android: "history",
-                web: "history"
-              }}
-              size={focused ? 25 : 23}
-              tintColor={color}
-            />
-          )
-        }}
-      />
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="tools" />
+      <Tabs.Screen name="history" />
     </Tabs>
   );
 }
 
 const styles = StyleSheet.create({
+  tabBar: {
+    flexDirection: "row",
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingTop: 8
+  },
   tabButton: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden"
   },
-  animationClip: {
+  rippleClip: {
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
@@ -227,9 +252,12 @@ const styles = StyleSheet.create({
   },
   tabContent: {
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    gap: 2
   },
-  whiteFlash: {
-    ...StyleSheet.absoluteFillObject
+  tabLabel: {
+    fontSize: 12,
+    fontWeight: "700",
+    writingDirection: "rtl"
   }
 });
