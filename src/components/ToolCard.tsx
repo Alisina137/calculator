@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { SymbolView } from "expo-symbols";
 import { colorsFor } from "@/theme/colors";
 import type { ResolvedTheme } from "@/context/AppPreferencesContext";
@@ -23,16 +24,16 @@ export function ToolCard({
   const colors = colorsFor(theme);
 
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole={onPress ? "button" : undefined}
       accessibilityLabel={title}
       onPress={onPress}
       style={({ pressed }) => [
         styles.card,
         {
-          backgroundColor: colors.surface,
-          borderColor: colors.border,
-          opacity: pressed ? 0.75 : 1
+          backgroundColor: pressed ? colors.primarySoft : colors.surface,
+          borderColor: pressed ? colors.primary : colors.border,
+          opacity: 1
         }
       ]}
     >
@@ -48,7 +49,7 @@ export function ToolCard({
         <Text style={[styles.subtitle, { color: colors.muted }]}>{subtitle}</Text>
       </View>
       <Text style={[styles.chevron, { color: colors.muted }]}>‹</Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
