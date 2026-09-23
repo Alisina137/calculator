@@ -18,6 +18,7 @@ import type { ToolGuide } from "@/i18n/toolGuidance";
 import { colorsFor } from "@/theme/colors";
 import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { displayDigits, normalizeDigits } from "@/utils/numerals";
+import { rowDirection, textAlignment, textDirection } from "@/i18n/languages";
 
 export function ToolScreen({
   title,
@@ -41,26 +42,21 @@ export function ToolScreen({
     language
   } = useAppPreferences();
   const showToolGuidance = guideId ? toolGuidance[guideId] : false;
+  const align = textAlignment(language);
+  const direction = textDirection(language);
+  const row = rowDirection(language);
   const guideLabels =
-    language === "dari"
-      ? {
-          title: "راهنمای استفاده",
-          inputs: "چه چیزی وارد کنید",
-          result: "چه نتیجه‌ای می‌گیرید"
-        }
-      : {
-          title: "راهنمای استفاده",
-          inputs: "چه چیزی وارد کنید",
-          result: "چه نتیجه‌ای می‌گیرید"
-        };
+    language === "fa"
+      ? { title: "راهنمای استفاده", inputs: "چه چیزی وارد کنید", result: "چه نتیجه‌ای می‌گیرید" }
+      : { title: "How to use", inputs: "What to enter", result: "What you get" };
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: row }]}>
         <View style={styles.headerText}>
-          <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{title}</Text>
           {subtitle ? (
-            <Text style={[styles.subtitle, { color: colors.muted }]}>{subtitle}</Text>
+            <Text style={[styles.subtitle, { color: colors.muted, textAlign: align, writingDirection: direction }]}>{subtitle}</Text>
           ) : null}
         </View>
         <AnimatedPressable
@@ -76,7 +72,9 @@ export function ToolScreen({
           ]}
         >
           <SymbolView
-            name={{ ios: "chevron.right", android: "arrow_forward", web: "arrow_forward" }}
+            name={direction === "rtl"
+              ? { ios: "chevron.right", android: "arrow_forward", web: "arrow_forward" }
+              : { ios: "chevron.left", android: "arrow_back", web: "arrow_back" }}
             size={22}
             tintColor={colors.text}
           />
@@ -92,11 +90,7 @@ export function ToolScreen({
           <AnimatedPressable
             accessibilityRole="checkbox"
             accessibilityState={{ checked: showToolGuidance }}
-            accessibilityLabel={
-              language === "dari"
-                ? "نمایش راهنمای این ابزار"
-                : "نمایش راهنمای این ابزار"
-            }
+            accessibilityLabel={language === "fa" ? "نمایش راهنمای این ابزار" : "Show tool guide"}
             onPress={() =>
               setToolGuidanceEnabled(guideId, !showToolGuidance)
             }
@@ -124,21 +118,15 @@ export function ToolScreen({
               ) : null}
             </View>
             <View style={styles.guideToggleTextWrap}>
-              <Text style={[styles.guideToggleTitle, { color: colors.text }]}>
-                {language === "dari"
-                  ? "راهنمای این ابزار"
-                  : "راهنمای این ابزار"}
+              <Text style={[styles.guideToggleTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>
+                {language === "fa" ? "راهنمای این ابزار" : "Tool guide"}
               </Text>
               <Text
-                style={[styles.guideToggleSubtitle, { color: colors.muted }]}
+                style={[styles.guideToggleSubtitle, { color: colors.muted, textAlign: align, writingDirection: direction }]}
               >
                 {showToolGuidance
-                  ? language === "dari"
-                    ? "راهنما نمایش داده می‌شود"
-                    : "راهنما نمایش داده می‌شود"
-                  : language === "dari"
-                    ? "برای دیدن توضیحات این ابزار فعال کنید"
-                    : "برای دیدن توضیحات این ابزار فعال کنید"}
+                  ? language === "fa" ? "راهنما نمایش داده می‌شود" : "Guide is visible"
+                  : language === "fa" ? "برای دیدن توضیحات این ابزار فعال کنید" : "Enable to see instructions"}
               </Text>
             </View>
           </AnimatedPressable>
@@ -154,29 +142,29 @@ export function ToolScreen({
               }
             ]}
           >
-            <Text style={[styles.guideTitle, { color: colors.primary }]}>
+            <Text style={[styles.guideTitle, { color: colors.primary, textAlign: align, writingDirection: direction }]}>
               {guideLabels.title}
             </Text>
-            <Text style={[styles.guideBody, { color: colors.text }]}>
+            <Text style={[styles.guideBody, { color: colors.text, textAlign: align, writingDirection: direction }]}>
               {guide.purpose}
             </Text>
 
-            <Text style={[styles.guideSectionTitle, { color: colors.text }]}>
+            <Text style={[styles.guideSectionTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>
               {guideLabels.inputs}
             </Text>
             {guide.inputs.map((item, index) => (
               <Text
                 key={item}
-                style={[styles.guideBody, { color: colors.text }]}
+                style={[styles.guideBody, { color: colors.text, textAlign: align, writingDirection: direction }]}
               >
                 {index + 1}. {item}
               </Text>
             ))}
 
-            <Text style={[styles.guideSectionTitle, { color: colors.text }]}>
+            <Text style={[styles.guideSectionTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>
               {guideLabels.result}
             </Text>
-            <Text style={[styles.guideBody, { color: colors.text }]}>
+            <Text style={[styles.guideBody, { color: colors.text, textAlign: align, writingDirection: direction }]}>
               {guide.result}
             </Text>
           </View>
@@ -204,7 +192,9 @@ export function ToolField({
   keyboardType?: "decimal-pad" | "number-pad" | "default";
 }) {
   const colors = colorsFor(theme);
-  const { numeralStyle } = useAppPreferences();
+  const { numeralStyle, language } = useAppPreferences();
+  const align = textAlignment(language);
+  const direction = textDirection(language);
   const inputRef = useRef<TextInput>(null);
   const [displayValue, setDisplayValue] = useState(() =>
     displayDigits(value, numeralStyle)
@@ -230,7 +220,7 @@ export function ToolField({
 
   return (
     <View style={styles.fieldWrap}>
-      <Text style={[styles.fieldLabel, { color: colors.text }]}>{label}</Text>
+      <Text style={[styles.fieldLabel, { color: colors.text, textAlign: align, writingDirection: direction }]}>{label}</Text>
       <TextInput
         ref={inputRef}
         value={displayValue}
@@ -264,12 +254,15 @@ export function ChoiceRow<T extends string>({
   theme: ResolvedTheme;
 }) {
   const colors = colorsFor(theme);
+  const { language } = useAppPreferences();
+  const row = rowDirection(language);
+  const direction = textDirection(language);
 
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.choiceRow}
+      contentContainerStyle={[styles.choiceRow, { flexDirection: row }]}
     >
       {options.map((option) => {
         const active = option.id === value;
@@ -292,7 +285,7 @@ export function ChoiceRow<T extends string>({
             <Text
               style={[
                 styles.choiceText,
-                { color: active ? colors.primary : colors.text }
+                { color: active ? colors.primary : colors.text, writingDirection: direction }
               ]}
             >
               {active ? `✓ ${option.label}` : option.label}
@@ -317,7 +310,7 @@ export function ToolSection({
   return (
     <View style={[styles.section, { backgroundColor: colors.surface }]}>
       {title ? (
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>{title}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>{title}</Text>
       ) : null}
       {children}
     </View>
@@ -342,7 +335,7 @@ export function ResultCard({
         { backgroundColor: colors.primarySoft, borderColor: colors.primary }
       ]}
     >
-      <Text style={[styles.resultTitle, { color: colors.primary }]}>{title}</Text>
+      <Text style={[styles.resultTitle, { color: colors.primary, textAlign: align, writingDirection: direction }]}>{title}</Text>
       {rows.map((row, index) => (
         <View
           key={row.label + index}
@@ -351,7 +344,7 @@ export function ResultCard({
             index > 0 ? { borderTopColor: colors.border, borderTopWidth: StyleSheet.hairlineWidth } : null
           ]}
         >
-          <Text style={[styles.resultLabel, { color: colors.text }]}>{row.label}</Text>
+          <Text style={[styles.resultLabel, { color: colors.text, textAlign: align, writingDirection: direction }]}>{row.label}</Text>
           <Text
             selectable
             style={[
