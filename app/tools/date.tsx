@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CalendarDatePicker } from "@/components/CalendarDatePicker";
 import {
   ChoiceRow,
@@ -57,14 +57,23 @@ function formatDateInput(nextValue: string, previousValue: string): string {
 export default function DateToolScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
   const copy = toolCopy(language);
-  const [calendar, setCalendar] = useState<CalendarType>("jalali");
-  const initial = formatCalendarDate(todayInCalendar("jalali"));
+  const preferredCalendar: CalendarType =
+    numeralStyle === "latin" ? "gregorian" : "jalali";
+  const [calendar, setCalendar] = useState<CalendarType>(preferredCalendar);
+  const initial = formatCalendarDate(todayInCalendar(preferredCalendar));
   const [mode, setMode] = useState<Mode>("difference");
   const [dateA, setDateA] = useState(initial);
   const [dateB, setDateB] = useState(initial);
   const [amount, setAmount] = useState("");
   const [unit, setUnit] = useState<DurationUnit>("days");
   const [operation, setOperation] = useState<Operation>("add");
+
+  useEffect(() => {
+    const today = formatCalendarDate(todayInCalendar(preferredCalendar));
+    setCalendar(preferredCalendar);
+    setDateA(today);
+    setDateB(today);
+  }, [preferredCalendar]);
 
   const switchCalendar = (next: CalendarType) => {
     const today = formatCalendarDate(todayInCalendar(next));
