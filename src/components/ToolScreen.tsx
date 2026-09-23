@@ -345,25 +345,25 @@ export function ResultCard({
       ]}
     >
       <Text style={[styles.resultTitle, { color: colors.primary, textAlign: align, writingDirection: direction }]}>{resolvedTitle}</Text>
-      {rows.map((row, index) => (
+      {rows.map((resultRow, index) => (
         <View
-          key={row.label + index}
+          key={resultRow.label + index}
           style={[
             styles.resultRow,
             { flexDirection: row },
             index > 0 ? { borderTopColor: colors.border, borderTopWidth: StyleSheet.hairlineWidth } : null
           ]}
         >
-          <Text style={[styles.resultLabel, { color: colors.text, textAlign: align, writingDirection: direction }]}>{row.label}</Text>
+          <Text style={[styles.resultLabel, { color: colors.text, textAlign: align, writingDirection: direction }]}>{resultRow.label}</Text>
           <Text
             selectable
             style={[
               styles.resultValue,
-              row.emphasis ? styles.resultValueEmphasis : null,
+              resultRow.emphasis ? styles.resultValueEmphasis : null,
               { color: colors.text }
             ]}
           >
-            {row.value}
+            {resultRow.value}
           </Text>
         </View>
       ))}
