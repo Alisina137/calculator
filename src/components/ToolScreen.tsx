@@ -96,7 +96,7 @@ export function ToolScreen({
             }
             style={[
               styles.guideToggle,
-              { flexDirection: row },
+              { flexDirection: layoutRow },
               {
                 backgroundColor: colors.surface,
                 borderColor: showToolGuidance ? colors.primary : colors.border
@@ -334,7 +334,7 @@ export function ResultCard({
   const { language } = useAppPreferences();
   const align = textAlignment(language);
   const direction = textDirection(language);
-  const row = rowDirection(language);
+  const layoutRow = rowDirection(language);
   const resolvedTitle = title ?? (language === "fa" ? "نتیجه" : "Result");
 
   return (
