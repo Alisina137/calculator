@@ -32,7 +32,7 @@ export function AnimatedPressable({
 }: AnimatedPressableProps) {
   const scale = useRef(new Animated.Value(1)).current;
   const [pressed, setPressed] = useState(false);
-  const state = { pressed };
+  const state: PressableStateCallbackType = { pressed, hovered: false };
 
   const animateTo = (value: number, duration: number) => {
     Animated.timing(scale, {
