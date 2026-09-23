@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { AnimatedPressable } from "@/components/AnimatedPressable";
 import {
   ChoiceRow,
   ResultCard,
@@ -126,20 +127,20 @@ export default function UnitConverterToolScreen() {
           theme={resolvedTheme}
         />
 
-        <Pressable
+        <AnimatedPressable
           accessibilityRole="button"
           accessibilityLabel={copy.unit.swapLabel}
           onPress={swap}
           style={({ pressed }) => [
             styles.swap,
             {
-              backgroundColor: pressed ? colors.key : colors.primarySoft,
+              backgroundColor: pressed ? colors.primary : colors.primarySoft,
               borderColor: colors.primary
             }
           ]}
         >
           <Text style={[styles.swapText, { color: colors.primary }]}>⇄ {copy.unit.swap}</Text>
-        </Pressable>
+        </AnimatedPressable>
 
         <Text style={[styles.label, { color: colors.text }]}>{copy.unit.to}</Text>
         <ChoiceRow
