@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { SymbolView } from "expo-symbols";
 import { colorsFor } from "@/theme/colors";
 import type { ResolvedTheme } from "@/context/AppPreferencesContext";
 
@@ -9,7 +10,11 @@ export function ToolCard({
   theme,
   onPress
 }: {
-  icon: string;
+  icon: {
+    ios: string;
+    android: string;
+    web: string;
+  };
   title: string;
   subtitle: string;
   theme: ResolvedTheme;
@@ -32,7 +37,11 @@ export function ToolCard({
       ]}
     >
       <View style={[styles.iconWrap, { backgroundColor: colors.primarySoft }]}>
-        <Text style={styles.icon}>{icon}</Text>
+        <SymbolView
+          name={icon}
+          size={25}
+          tintColor={colors.primary}
+        />
       </View>
       <View style={styles.text}>
         <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
@@ -65,7 +74,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  icon: { fontSize: 22 },
   text: { flex: 1 },
   title: { fontSize: 17, fontWeight: "800", textAlign: "right", writingDirection: "rtl" },
   subtitle: { marginTop: 4, fontSize: 14, lineHeight: 20, textAlign: "right", writingDirection: "rtl" },
