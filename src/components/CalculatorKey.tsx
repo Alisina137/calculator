@@ -32,44 +32,33 @@ export function CalculatorKey({
   const triggerOnPressIn = !tooltipEligible;
 
   const tooltipLabel = (() => {
-    const labels: Record<string, string> = {
-      AC: language === "dari" ? "پاک کردن همه" : "پاک کردن همه",
-      "⌫": language === "dari" ? "حذف" : "حذف",
-      "%": language === "dari" ? "فیصدی" : "درصد",
-      "÷": "تقسیم",
-      "×": "ضرب",
-      "−": language === "dari" ? "تفریق" : "منها",
-      "+": "جمع",
-      "=": "مساوی"
-    };
+    const labels: Record<string, string> =
+      language === "fa"
+        ? {
+            AC: "پاک کردن همه",
+            "⌫": "حذف",
+            "%": "درصد",
+            "÷": "تقسیم",
+            "×": "ضرب",
+            "−": "منها",
+            "+": "جمع",
+            "=": "مساوی"
+          }
+        : {
+            AC: "Clear all",
+            "⌫": "Delete",
+            "%": "Percent",
+            "÷": "Divide",
+            "×": "Multiply",
+            "−": "Subtract",
+            "+": "Add",
+            "=": "Equals"
+          };
 
     return labels[label] ?? label;
   })();
 
-  const accessibilityLabel =
-    label === "AC"
-      ? "پاک کردن کامل"
-      : label === "⌫"
-        ? "حذف رقم"
-        : label === "÷"
-          ? "تقسیم"
-          : label === "×"
-            ? "ضرب"
-            : label === "−"
-              ? "منها"
-              : label === "+"
-                ? "جمع"
-                : label === "="
-                  ? "مساوی"
-                  : label === "%"
-                    ? language === "dari"
-                      ? "فیصدی"
-                      : "درصد"
-                    : label === "√π"
-                      ? "حالت علمی"
-                      : label === "↔"
-                        ? "بازگشت به حالت ساده"
-                        : label;
+  const accessibilityLabel = tooltipLabel;
 
   const backgroundColor = emphasized
     ? colors.primary
