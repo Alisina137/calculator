@@ -74,3 +74,5 @@ test("filters numeral choices by the selected language", () => {
   assert.deepEqual(numeralStylesForLanguage("ar"), ["arabic", "latin"]);
   assert.deepEqual(numeralStylesForLanguage("hi"), ["devanagari", "latin"]);
 });
+
+// Temporary tool-guide localization verification marker.
