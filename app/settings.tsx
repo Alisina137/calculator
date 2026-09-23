@@ -1,5 +1,6 @@
 import { router } from "expo-router";
-import { Alert, Pressable, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { Alert, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
@@ -30,14 +31,14 @@ export default function SettingsScreen() {
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
-          <Pressable
+          <AnimatedPressable
             accessibilityRole="button"
             accessibilityLabel="بازگشت"
             onPress={() => router.back()}
-            style={[styles.back, { backgroundColor: colors.surface }]}
+            style={({ pressed }) => [styles.back, { backgroundColor: pressed ? colors.primarySoft : colors.surface }]}
           >
             <Text style={[styles.backText, { color: colors.text }]}>→</Text>
-          </Pressable>
+          </AnimatedPressable>
           <Text style={[styles.title, { color: colors.text }]}>{t(prefs.language, "settings")}</Text>
         </View>
 
@@ -90,22 +91,22 @@ export default function SettingsScreen() {
             {t(prefs.language, "history")}
           </Text>
           <View style={styles.groupBody}>
-            <Pressable
+            <AnimatedPressable
               accessibilityRole="button"
               accessibilityLabel={t(prefs.language, "clearHistory")}
               onPress={confirmClearHistory}
-              style={[
+              style={({ pressed }) => [
                 styles.option,
                 {
-                  backgroundColor: colors.background,
-                  borderColor: colors.border
+                  backgroundColor: pressed ? colors.primarySoft : colors.background,
+                  borderColor: pressed ? colors.primary : colors.border
                 }
               ]}
             >
               <Text style={[styles.optionText, { color: colors.danger }]}>
                 {t(prefs.language, "clearHistory")}
               </Text>
-            </Pressable>
+            </AnimatedPressable>
           </View>
         </View>
 
@@ -144,24 +145,24 @@ function OptionRow<T extends string>({
       {options.map(([optionValue, label]) => {
         const selected = optionValue === value;
         return (
-          <Pressable
+          <AnimatedPressable
             key={optionValue}
             accessibilityRole="button"
             accessibilityLabel={label}
             accessibilityState={{ selected }}
             onPress={() => onChange(optionValue)}
-            style={[
+            style={({ pressed }) => [
               styles.option,
               {
-                backgroundColor: selected ? colors.primarySoft : colors.background,
-                borderColor: selected ? colors.primary : colors.border
+                backgroundColor: selected || pressed ? colors.primarySoft : colors.background,
+                borderColor: selected || pressed ? colors.primary : colors.border
               }
             ]}
           >
             <Text style={[styles.optionText, { color: selected ? colors.primary : colors.text }]}>
               {selected ? `✓ ${label}` : label}
             </Text>
-          </Pressable>
+          </AnimatedPressable>
         );
       })}
     </View>
