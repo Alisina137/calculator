@@ -10,11 +10,36 @@ export default function ToolsScreen() {
   const colors = colorsFor(resolvedTheme);
 
   const tools = [
-    ["٪", "percentage", "percentageDesc", "/tools/percentage"],
-    ["🏷", "discount", "discountDesc", "/tools/discount"],
-    ["⇄", "unitConverter", "unitConverterDesc", "/tools/unit-converter"],
-    ["🎂", "age", "ageDesc", "/tools/age"],
-    ["▣", "date", "dateDesc", "/tools/date"]
+    [
+      { ios: "percent", android: "percent", web: "percent" },
+      "percentage",
+      "percentageDesc",
+      "/tools/percentage"
+    ],
+    [
+      { ios: "tag", android: "sell", web: "sell" },
+      "discount",
+      "discountDesc",
+      "/tools/discount"
+    ],
+    [
+      { ios: "arrow.left.arrow.right", android: "swap_horiz", web: "swap_horiz" },
+      "unitConverter",
+      "unitConverterDesc",
+      "/tools/unit-converter"
+    ],
+    [
+      { ios: "birthday.cake", android: "cake", web: "cake" },
+      "age",
+      "ageDesc",
+      "/tools/age"
+    ],
+    [
+      { ios: "calendar", android: "calendar_month", web: "calendar_month" },
+      "date",
+      "dateDesc",
+      "/tools/date"
+    ]
   ] as const;
 
   return (
