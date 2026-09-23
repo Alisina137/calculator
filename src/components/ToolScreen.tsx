@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Pressable,
   ScrollView,
@@ -205,7 +205,6 @@ export function ToolField({
 }) {
   const colors = colorsFor(theme);
   const { numeralStyle } = useAppPreferences();
-  const inputRef = useRef<TextInput>(null);
   const [displayValue, setDisplayValue] = useState(() =>
     displayDigits(value, numeralStyle)
   );
@@ -214,40 +213,48 @@ export function ToolField({
     : undefined;
 
   useEffect(() => {
-    const localized = displayDigits(value, numeralStyle);
-    setDisplayValue(localized);
-    inputRef.current?.setNativeProps({ text: localized });
+    setDisplayValue(displayDigits(value, numeralStyle));
   }, [value, numeralStyle]);
 
   const handleChangeText = (text: string) => {
     const normalized = normalizeDigits(text);
-    const localized = displayDigits(normalized, numeralStyle);
-
-    setDisplayValue(localized);
-    inputRef.current?.setNativeProps({ text: localized });
+    setDisplayValue(displayDigits(normalized, numeralStyle));
     onChangeText(normalized);
   };
 
   return (
     <View style={styles.fieldWrap}>
       <Text style={[styles.fieldLabel, { color: colors.text }]}>{label}</Text>
-      <TextInput
-        ref={inputRef}
-        value={displayValue}
-        onChangeText={handleChangeText}
-        placeholder={displayPlaceholder}
-        accessibilityLabel={label}
-        placeholderTextColor={colors.muted}
-        keyboardType={keyboardType}
-        style={[
-          styles.input,
-          {
-            backgroundColor: colors.surface,
-            borderColor: colors.border,
-            color: colors.text
-          }
-        ]}
-      />
+      <View style={styles.inputShell}>
+        <TextInput
+          value={value}
+          onChangeText={handleChangeText}
+          placeholder={displayValue ? undefined : displayPlaceholder}
+          accessibilityLabel={label}
+          placeholderTextColor={colors.muted}
+          keyboardType={keyboardType}
+          selectionColor={colors.primary}
+          cursorColor={colors.primary}
+          style={[
+            styles.input,
+            styles.hiddenInputText,
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border
+            }
+          ]}
+        />
+        {displayValue ? (
+          <View pointerEvents="none" style={styles.localizedValueLayer}>
+            <Text
+              numberOfLines={1}
+              style={[styles.localizedValueText, { color: colors.text }]}
+            >
+              {displayValue}
+            </Text>
+          </View>
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -533,11 +540,30 @@ const styles = StyleSheet.create({
     textAlign: "right",
     writingDirection: "rtl"
   },
+  inputShell: {
+    position: "relative"
+  },
   input: {
     minHeight: 50,
     borderWidth: 1,
     borderRadius: 15,
     paddingHorizontal: 14,
+    fontSize: 18,
+    textAlign: "left",
+    writingDirection: "ltr"
+  },
+  hiddenInputText: {
+    color: "transparent"
+  },
+  localizedValueLayer: {
+    position: "absolute",
+    left: 14,
+    right: 14,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center"
+  },
+  localizedValueText: {
     fontSize: 18,
     textAlign: "left",
     writingDirection: "ltr"
