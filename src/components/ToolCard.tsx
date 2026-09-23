@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { AnimatedPressable } from "@/components/AnimatedPressable";
-import { SymbolView } from "expo-symbols";
+import { SymbolView, type SymbolViewProps } from "expo-symbols";
 import { colorsFor } from "@/theme/colors";
 import { useAppPreferences, type ResolvedTheme } from "@/context/AppPreferencesContext";
 import { isRtlLanguage, rowDirection, textAlignment, textDirection } from "@/i18n/languages";
@@ -12,11 +12,7 @@ export function ToolCard({
   theme,
   onPress
 }: {
-  icon: {
-    ios: string;
-    android: string;
-    web: string;
-  };
+  icon: SymbolViewProps["name"];
   title: string;
   subtitle: string;
   theme: ResolvedTheme;
