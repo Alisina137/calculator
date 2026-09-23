@@ -4,6 +4,7 @@ import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
+import { isRtlLanguage, rowDirection, supportedLanguages, textAlignment, textDirection } from "@/i18n/languages";
 import { colorsFor } from "@/theme/colors";
 import type { AppLanguage, NumeralStyle, ThemePreference } from "@/context/AppPreferencesContext";
 
@@ -11,6 +12,10 @@ export default function SettingsScreen() {
   const prefs = useAppPreferences();
   const { clearHistory } = useCalculator();
   const colors = colorsFor(prefs.resolvedTheme);
+  const rtl = isRtlLanguage(prefs.language);
+  const align = textAlignment(prefs.language);
+  const direction = textDirection(prefs.language);
+  const row = rowDirection(prefs.language);
 
   const confirmClearHistory = () => {
     Alert.alert(
@@ -30,31 +35,29 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
+        <View style={[styles.header, { flexDirection: row }]}>
           <AnimatedPressable
             accessibilityRole="button"
             accessibilityLabel="بازگشت"
             onPress={() => router.back()}
             style={({ pressed }) => [styles.back, { backgroundColor: pressed ? colors.primarySoft : colors.surface }]}
           >
-            <Text style={[styles.backText, { color: colors.text }]}>→</Text>
+            <Text style={[styles.backText, { color: colors.text }]}>{rtl ? "→" : "←"}</Text>
           </AnimatedPressable>
-          <Text style={[styles.title, { color: colors.text }]}>{t(prefs.language, "settings")}</Text>
+          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{t(prefs.language, "settings")}</Text>
         </View>
 
-        <SettingGroup title={t(prefs.language, "language")} theme={prefs.resolvedTheme}>
+        <SettingGroup title={t(prefs.language, "language")} theme={prefs.resolvedTheme} language={prefs.language}>
           <OptionRow<AppLanguage>
             value={prefs.language}
-            options={[
-              ["dari", t(prefs.language, "dari")],
-              ["persian", t(prefs.language, "persian")]
-            ]}
+            options={supportedLanguages.map((item) => [item.id, item.nativeName] as const)}
             onChange={prefs.setLanguage}
             theme={prefs.resolvedTheme}
+            language={prefs.language}
           />
         </SettingGroup>
 
-        <SettingGroup title={t(prefs.language, "numerals")} theme={prefs.resolvedTheme}>
+        <SettingGroup title={t(prefs.language, "numerals")} theme={prefs.resolvedTheme} language={prefs.language}>
           <OptionRow<NumeralStyle>
             value={prefs.numeralStyle}
             options={[
@@ -63,10 +66,11 @@ export default function SettingsScreen() {
             ]}
             onChange={prefs.setNumeralStyle}
             theme={prefs.resolvedTheme}
+            language={prefs.language}
           />
         </SettingGroup>
 
-        <SettingGroup title={t(prefs.language, "appearance")} theme={prefs.resolvedTheme}>
+        <SettingGroup title={t(prefs.language, "appearance")} theme={prefs.resolvedTheme} language={prefs.language}>
           <OptionRow<ThemePreference>
             value={prefs.themePreference}
             options={[
@@ -76,18 +80,19 @@ export default function SettingsScreen() {
             ]}
             onChange={prefs.setThemePreference}
             theme={prefs.resolvedTheme}
+            language={prefs.language}
           />
         </SettingGroup>
 
         <View style={[styles.group, { backgroundColor: colors.surface }]}>
-          <View style={styles.switchRow}>
+          <View style={[styles.switchRow, { flexDirection: row }]}>
             <Switch value={prefs.hapticsEnabled} onValueChange={prefs.setHapticsEnabled} />
-            <Text style={[styles.groupTitle, { color: colors.text }]}>{t(prefs.language, "haptics")}</Text>
+            <Text style={[styles.groupTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>{t(prefs.language, "haptics")}</Text>
           </View>
         </View>
 
         <View style={[styles.group, { backgroundColor: colors.surface }]}>
-          <Text style={[styles.groupTitle, { color: colors.text }]}>
+          <Text style={[styles.groupTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>
             {t(prefs.language, "history")}
           </Text>
           <View style={styles.groupBody}>
@@ -103,26 +108,28 @@ export default function SettingsScreen() {
                 }
               ]}
             >
-              <Text style={[styles.optionText, { color: colors.danger }]}>
+              <Text style={[styles.optionText, { color: colors.danger, writingDirection: direction }]}>
                 {t(prefs.language, "clearHistory")}
               </Text>
             </AnimatedPressable>
           </View>
         </View>
 
-        <SettingGroup title={t(prefs.language, "privacy")} theme={prefs.resolvedTheme}>
-          <Text style={[styles.body, { color: colors.muted }]}>{t(prefs.language, "privacyBody")}</Text>
+        <SettingGroup title={t(prefs.language, "privacy")} theme={prefs.resolvedTheme} language={prefs.language}>
+          <Text style={[styles.body, { color: colors.muted, textAlign: align, writingDirection: direction }]}>{t(prefs.language, "privacyBody")}</Text>
         </SettingGroup>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function SettingGroup({ title, theme, children }: { title: string; theme: "light" | "dark"; children: React.ReactNode }) {
+function SettingGroup({ title, theme, language, children }: { title: string; theme: "light" | "dark"; language: AppLanguage; children: React.ReactNode }) {
   const colors = colorsFor(theme);
+  const align = textAlignment(language);
+  const direction = textDirection(language);
   return (
     <View style={[styles.group, { backgroundColor: colors.surface }]}>
-      <Text style={[styles.groupTitle, { color: colors.text }]}>{title}</Text>
+      <Text style={[styles.groupTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>{title}</Text>
       <View style={styles.groupBody}>{children}</View>
     </View>
   );
@@ -132,14 +139,17 @@ function OptionRow<T extends string>({
   value,
   options,
   onChange,
-  theme
+  theme,
+  language
 }: {
   value: T;
   options: readonly (readonly [T, string])[];
   onChange: (value: T) => void;
   theme: "light" | "dark";
+  language: AppLanguage;
 }) {
   const colors = colorsFor(theme);
+  const direction = textDirection(language);
   return (
     <View style={styles.options}>
       {options.map(([optionValue, label]) => {
@@ -159,7 +169,7 @@ function OptionRow<T extends string>({
               }
             ]}
           >
-            <Text style={[styles.optionText, { color: selected ? colors.primary : colors.text }]}>
+            <Text style={[styles.optionText, { color: selected ? colors.primary : colors.text, writingDirection: direction }]}>
               {selected ? `✓ ${label}` : label}
             </Text>
           </AnimatedPressable>
