@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { SymbolView } from "expo-symbols";
 import { colorsFor } from "@/theme/colors";
 import { useAppPreferences, type ResolvedTheme } from "@/context/AppPreferencesContext";
@@ -82,7 +83,7 @@ export function CalculatorKey({
         : colors.text;
 
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       disabled={disabled}
@@ -204,7 +205,7 @@ export function CalculatorKey({
           )}
         </>
       )}
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
