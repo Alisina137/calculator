@@ -7,6 +7,7 @@ import {
   View
 } from "react-native";
 import type { AppLanguage, ResolvedTheme } from "@/context/AppPreferencesContext";
+import type { NumeralStyle } from "@/i18n/numeralStyles";
 import { colorsFor } from "@/theme/colors";
 import { AnimatedPressable } from "@/components/AnimatedPressable";
 import {
@@ -35,7 +36,7 @@ export function CalendarDatePicker({
   value: string;
   calendar: CalendarType;
   language: AppLanguage;
-  numeralStyle: "persian" | "latin";
+  numeralStyle: NumeralStyle;
   theme: ResolvedTheme;
   onSelect: (value: string) => void;
 }) {
