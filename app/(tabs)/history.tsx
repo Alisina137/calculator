@@ -6,6 +6,7 @@ import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
 import { displayDigits } from "@/utils/numerals";
+import { rowDirection, textAlignment, textDirection } from "@/i18n/languages";
 
 export default function HistoryScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
@@ -18,6 +19,9 @@ export default function HistoryScreen() {
   } = useCalculator();
 
   const colors = colorsFor(resolvedTheme);
+  const row = rowDirection(language);
+  const align = textAlignment(language);
+  const direction = textDirection(language);
 
   const goToCalculator = () => {
     router.replace("/");
@@ -42,13 +46,13 @@ export default function HistoryScreen() {
     return (
       <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
         <View style={styles.page}>
-          <Text style={[styles.title, { color: colors.text }]}>{t(language, "history")}</Text>
+          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{t(language, "history")}</Text>
           <View style={[styles.emptyCard, { backgroundColor: colors.surface }]}>
             <Text style={styles.icon}>↺</Text>
-            <Text style={[styles.emptyTitle, { color: colors.text }]}>
+            <Text style={[styles.emptyTitle, { color: colors.text, writingDirection: direction }]}>
               {t(language, "historyEmptyTitle")}
             </Text>
-            <Text style={[styles.emptyBody, { color: colors.muted }]}>
+            <Text style={[styles.emptyBody, { color: colors.muted, writingDirection: direction }]}>
               {t(language, "historyEmptyBody")}
             </Text>
           </View>
@@ -60,8 +64,8 @@ export default function HistoryScreen() {
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <View style={styles.page}>
-        <View style={styles.header}>
-          <Text style={[styles.title, { color: colors.text }]}>{t(language, "history")}</Text>
+        <View style={[styles.header, { flexDirection: row }]}>
+          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{t(language, "history")}</Text>
           <AnimatedPressable
             accessibilityRole="button"
             accessibilityLabel={t(language, "clearAll")}
@@ -75,7 +79,7 @@ export default function HistoryScreen() {
               }
             ]}
           >
-            <Text style={[styles.clearText, { color: colors.danger }]}>
+            <Text style={[styles.clearText, { color: colors.danger, writingDirection: direction }]}>
               {t(language, "clearAll")}
             </Text>
           </AnimatedPressable>
@@ -117,7 +121,7 @@ export default function HistoryScreen() {
                   </Text>
                 </AnimatedPressable>
 
-                <View style={styles.actions}>
+                <View style={[styles.actions, { flexDirection: row }]}>
                   <AnimatedPressable
                     accessibilityRole="button"
                     accessibilityLabel={t(language, "reuseExpression")}
@@ -133,7 +137,7 @@ export default function HistoryScreen() {
                       }
                     ]}
                   >
-                    <Text style={[styles.actionText, { color: colors.primary }]}>
+                    <Text style={[styles.actionText, { color: colors.primary, writingDirection: direction }]}>
                       {t(language, "reuseExpression")}
                     </Text>
                   </AnimatedPressable>
@@ -150,7 +154,7 @@ export default function HistoryScreen() {
                       }
                     ]}
                   >
-                    <Text style={[styles.actionText, { color: colors.danger }]}>
+                    <Text style={[styles.actionText, { color: colors.danger, writingDirection: direction }]}>
                       {t(language, "delete")}
                     </Text>
                   </AnimatedPressable>
