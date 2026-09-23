@@ -31,9 +31,10 @@ test("supports exactly 20 app languages with English first", () => {
   assert.equal(supportedLanguages.some((item) => item.id === "pl"), true);
   assert.equal(supportedLanguages.some((item) => item.id === "ro"), true);
   assert.equal(supportedLanguages.some((item) => item.id === "sv"), true);
-  assert.equal(supportedLanguages.some((item) => item.id === "ko"), false);
-  assert.equal(supportedLanguages.some((item) => item.id === "bn"), false);
-  assert.equal(supportedLanguages.some((item) => item.id === "th"), false);
+  const ids = supportedLanguages.map((item) => String(item.id));
+  assert.equal(ids.includes("ko"), false);
+  assert.equal(ids.includes("bn"), false);
+  assert.equal(ids.includes("th"), false);
 });
 
 test("uses RTL only for RTL languages", () => {
