@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { CalendarDatePicker } from "@/components/CalendarDatePicker";
 import {
   ChoiceRow,
   ResultCard,
@@ -26,6 +27,32 @@ import { displayDigits, normalizeDigits } from "@/utils/numerals";
 type Mode = "difference" | "arithmetic";
 type DurationUnit = "days" | "weeks" | "months" | "years";
 type Operation = "add" | "subtract";
+
+function formatDateInput(nextValue: string, previousValue: string): string {
+  const normalized = normalizeDigits(nextValue);
+  const digits = normalized.replace(/\D/g, "").slice(0, 8);
+  const deleting = normalized.length < previousValue.length;
+
+  if (!digits) return "";
+
+  if (digits.length <= 4) {
+    if (digits.length === 4 && !deleting) return `${digits}/`;
+    return digits;
+  }
+
+  if (digits.length <= 6) {
+    const year = digits.slice(0, 4);
+    const month = digits.slice(4);
+
+    if (digits.length === 6 && !deleting) {
+      return `${year}/${month}/`;
+    }
+
+    return `${year}/${month}`;
+  }
+
+  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6, 8)}`;
+}
 
 export default function DateToolScreen() {
   const { language, numeralStyle, resolvedTheme } = useAppPreferences();
@@ -136,21 +163,41 @@ export default function DateToolScreen() {
         <ToolField
           label={mode === "difference" ? copy.date.firstDate : copy.date.startDate}
           value={dateA}
-          onChangeText={setDateA}
-          placeholder="سال/ماه/روز"
-          keyboardType="default"
+          onChangeText={(value) => setDateA(formatDateInput(value, dateA))}
+          placeholder={calendar === "jalali" ? "1400/01/01" : "2000/01/01"}
+          keyboardType="number-pad"
           theme={resolvedTheme}
+        />
+        <CalendarDatePicker
+          label={mode === "difference" ? copy.date.firstDate : copy.date.startDate}
+          value={dateA}
+          calendar={calendar}
+          language={language}
+          numeralStyle={numeralStyle}
+          theme={resolvedTheme}
+          onSelect={setDateA}
         />
 
         {mode === "difference" ? (
-          <ToolField
-            label={copy.date.secondDate}
-            value={dateB}
-            onChangeText={setDateB}
-            placeholder="سال/ماه/روز"
-            keyboardType="default"
-            theme={resolvedTheme}
-          />
+          <>
+            <ToolField
+              label={copy.date.secondDate}
+              value={dateB}
+              onChangeText={(value) => setDateB(formatDateInput(value, dateB))}
+              placeholder={calendar === "jalali" ? "1400/01/01" : "2000/01/01"}
+              keyboardType="number-pad"
+              theme={resolvedTheme}
+            />
+            <CalendarDatePicker
+              label={copy.date.secondDate}
+              value={dateB}
+              calendar={calendar}
+              language={language}
+              numeralStyle={numeralStyle}
+              theme={resolvedTheme}
+              onSelect={setDateB}
+            />
+          </>
         ) : (
           <>
             <ToolField
