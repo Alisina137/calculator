@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { SymbolView } from "expo-symbols";
+import { SymbolView, type SymbolViewProps } from "expo-symbols";
 import { useRef } from "react";
 import {
   Animated,
@@ -18,11 +18,7 @@ import { colorsFor } from "@/theme/colors";
 
 type TabVisual = {
   label: string;
-  icon: {
-    ios: string;
-    android: string;
-    web: string;
-  };
+  icon: SymbolViewProps["name"];
 };
 
 function AnimatedNavItem({
@@ -33,7 +29,8 @@ function AnimatedNavItem({
   activeBackground,
   pressedBackground,
   onPress,
-  onLongPress
+  onLongPress,
+  direction
 }: {
   active: boolean;
   visual: TabVisual;
@@ -43,6 +40,7 @@ function AnimatedNavItem({
   pressedBackground: string;
   onPress: () => void;
   onLongPress: () => void;
+  direction: "rtl" | "ltr";
 }) {
   const press = useRef(new Animated.Value(0)).current;
 
@@ -216,6 +214,7 @@ function AnimatedTabBar({ state, navigation }: any) {
             pressedBackground={colors.primarySoft}
             onPress={onPress}
             onLongPress={onLongPress}
+            direction={direction}
           />
         );
       })}
