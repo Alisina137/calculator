@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import {
   Animated,
   Easing,
@@ -29,7 +29,8 @@ function AnimatedNavItem({
   visual,
   activeColor,
   inactiveColor,
-  primaryColor,
+  activeBackground,
+  pressedBackground,
   onPress,
   onLongPress
 }: {
@@ -37,92 +38,99 @@ function AnimatedNavItem({
   visual: TabVisual;
   activeColor: string;
   inactiveColor: string;
-  primaryColor: string;
+  activeBackground: string;
+  pressedBackground: string;
   onPress: () => void;
   onLongPress: () => void;
 }) {
-  const progress = useRef(new Animated.Value(0)).current;
-  const [width, setWidth] = useState(90);
-  const [animating, setAnimating] = useState(false);
+  const press = useRef(new Animated.Value(0)).current;
 
-  const runAnimation = () => {
-    progress.stopAnimation();
-    progress.setValue(0);
-    setAnimating(true);
-
-    Animated.sequence([
-      Animated.timing(progress, {
-        toValue: 0.72,
-        duration: 240,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: true
-      }),
-      Animated.timing(progress, {
-        toValue: 1,
-        duration: 180,
-        easing: Easing.out(Easing.quad),
-        useNativeDriver: true
-      })
-    ]).start(() => {
-      setAnimating(false);
-      progress.setValue(0);
-    });
+  const animateTo = (value: 0 | 1) => {
+    Animated.timing(press, {
+      toValue: value,
+      duration: value === 1 ? 110 : 220,
+      easing: value === 1 ? Easing.out(Easing.quad) : Easing.out(Easing.cubic),
+      useNativeDriver: true
+    }).start();
   };
 
-  const scale = progress.interpolate({
-    inputRange: [0, 0.72, 1],
-    outputRange: [1, Math.max(width / 20, 1), Math.max(width / 20, 1)]
+  const contentScale = press.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0.94]
   });
 
-  const opacity = progress.interpolate({
-    inputRange: [0, 0.08, 0.72, 1],
-    outputRange: [0, 1, 1, 0]
+  const contentTranslateY = press.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1]
   });
 
-  const normalColor = active ? activeColor : inactiveColor;
-  const contentColor = animating ? "#FFFFFF" : normalColor;
+  const pressHighlightOpacity = press.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1]
+  });
+
+  const pressHighlightScale = press.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.9, 1]
+  });
+
+  const color = active ? activeColor : inactiveColor;
 
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ selected: active }}
       accessibilityLabel={visual.label}
-      onPress={() => {
-        runAnimation();
-        onPress();
-      }}
+      onPress={onPress}
       onLongPress={onLongPress}
-      onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
+      onPressIn={() => animateTo(1)}
+      onPressOut={() => animateTo(0)}
       style={styles.tabButton}
     >
-      <View pointerEvents="none" style={styles.rippleClip}>
-        <Animated.View
-          style={[
-            styles.ripple,
-            {
-              backgroundColor: primaryColor,
-              opacity,
-              transform: [{ scale }]
-            }
-          ]}
+      {active ? (
+        <View
+          pointerEvents="none"
+          style={[styles.activePill, { backgroundColor: activeBackground }]}
         />
-      </View>
+      ) : null}
 
-      <View style={styles.tabContent}>
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          styles.pressPill,
+          {
+            backgroundColor: pressedBackground,
+            opacity: pressHighlightOpacity,
+            transform: [{ scale: pressHighlightScale }]
+          }
+        ]}
+      />
+
+      <Animated.View
+        style={[
+          styles.tabContent,
+          {
+            transform: [
+              { scale: contentScale },
+              { translateY: contentTranslateY }
+            ]
+          }
+        ]}
+      >
         <SymbolView
           name={visual.icon}
           size={active ? 25 : 23}
-          tintColor={contentColor}
+          tintColor={color}
         />
-        <Text style={[styles.tabLabel, { color: contentColor }]}>
+        <Text style={[styles.tabLabel, { color }]}>
           {visual.label}
         </Text>
-      </View>
+      </Animated.View>
     </Pressable>
   );
 }
 
-function AnimatedTabBar({ state, descriptors, navigation }: any) {
+function AnimatedTabBar({ state, navigation }: any) {
   const { language, resolvedTheme } = useAppPreferences();
   const { scientificMode } = useCalculator();
   const insets = useSafeAreaInsets();
@@ -164,7 +172,7 @@ function AnimatedTabBar({ state, descriptors, navigation }: any) {
         {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
-          height: 62 + Math.max(insets.bottom, 10),
+          height: 64 + Math.max(insets.bottom, 10),
           paddingBottom: Math.max(insets.bottom, 10),
           paddingLeft: Math.max(insets.left, 8),
           paddingRight: Math.max(insets.right, 8)
@@ -202,7 +210,8 @@ function AnimatedTabBar({ state, descriptors, navigation }: any) {
             visual={visual}
             activeColor={colors.primary}
             inactiveColor={colors.muted}
-            primaryColor={colors.primary}
+            activeBackground={colors.primarySoft}
+            pressedBackground={colors.primarySoft}
             onPress={onPress}
             onLongPress={onLongPress}
           />
@@ -216,9 +225,7 @@ export default function TabsLayout() {
   return (
     <Tabs
       tabBar={(props) => <AnimatedTabBar {...props} />}
-      screenOptions={{
-        headerShown: false
-      }}
+      screenOptions={{ headerShown: false }}
     >
       <Tabs.Screen name="index" />
       <Tabs.Screen name="tools" />
@@ -231,24 +238,33 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     borderTopWidth: StyleSheet.hairlineWidth,
-    paddingTop: 8
+    paddingTop: 7,
+    gap: 4
   },
   tabButton: {
     flex: 1,
+    minHeight: 48,
+    marginHorizontal: 2,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden"
   },
-  rippleClip: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden"
+  activePill: {
+    position: "absolute",
+    left: 7,
+    right: 7,
+    top: 2,
+    bottom: 2,
+    borderRadius: 16
   },
-  ripple: {
-    width: 20,
-    height: 20,
-    borderRadius: 10
+  pressPill: {
+    position: "absolute",
+    left: 7,
+    right: 7,
+    top: 2,
+    bottom: 2,
+    borderRadius: 16
   },
   tabContent: {
     alignItems: "center",
