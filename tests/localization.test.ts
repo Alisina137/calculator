@@ -58,3 +58,5 @@ test("chooses the common numeral style for each language", () => {
   assert.equal(defaultNumeralStyleForLanguage("bn"), "bengali");
   assert.equal(defaultNumeralStyleForLanguage("th"), "thai");
 });
+
+// Temporary numeral verification marker.
