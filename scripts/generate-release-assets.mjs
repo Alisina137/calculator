@@ -34,29 +34,34 @@ const masterSvg = `
     </filter>
   </defs>
 
-  <rect x="64" y="64" width="896" height="896" rx="214" fill="url(#bg)"/>
-  <path d="M64 278 Q64 64 278 64 H512 V512 H64 Z" fill="url(#tl)"/>
-  <path d="M512 64 H746 Q960 64 960 278 V512 H512 Z" fill="url(#tr)"/>
-  <path d="M64 512 H512 V960 H278 Q64 960 64 746 Z" fill="url(#bl)"/>
-  <path d="M512 512 H960 V746 Q960 960 746 960 H512 Z" fill="url(#br)"/>
+  <clipPath id="iconClip">
+    <rect x="72" y="72" width="880" height="880" rx="150"/>
+  </clipPath>
+  <g clip-path="url(#iconClip)">
+    <rect x="72" y="72" width="880" height="880" fill="url(#bg)"/>
+    <rect x="72" y="72" width="440" height="440" fill="url(#tl)"/>
+    <rect x="512" y="72" width="440" height="440" fill="url(#tr)"/>
+    <rect x="72" y="512" width="440" height="440" fill="url(#bl)"/>
+    <rect x="512" y="512" width="440" height="440" fill="url(#br)"/>
+  </g>
 
   <rect x="501" y="122" width="22" height="780" rx="11" fill="#FFFFFF" opacity="0.08"/>
   <rect x="122" y="501" width="780" height="22" rx="11" fill="#FFFFFF" opacity="0.08"/>
 
   <g fill="#FFFFFF" filter="url(#shadow)">
-    <rect x="238" y="281" width="202" height="34" rx="17"/>
-    <rect x="322" y="197" width="34" height="202" rx="17"/>
+    <rect x="315" y="368" width="170" height="30" rx="15"/>
+    <rect x="385" y="298" width="30" height="170" rx="15"/>
 
-    <rect x="586" y="281" width="202" height="34" rx="17"/>
+    <rect x="539" y="368" width="170" height="30" rx="15"/>
 
-    <g transform="translate(339 685) rotate(45)">
-      <rect x="-17" y="-112" width="34" height="224" rx="17"/>
-      <rect x="-112" y="-17" width="224" height="34" rx="17"/>
+    <g transform="translate(400 624) rotate(45)">
+      <rect x="-15" y="-92" width="30" height="184" rx="15"/>
+      <rect x="-92" y="-15" width="184" height="30" rx="15"/>
     </g>
 
-    <rect x="586" y="668" width="202" height="34" rx="17"/>
-    <circle cx="687" cy="594" r="22"/>
-    <circle cx="687" cy="776" r="22"/>
+    <rect x="539" y="609" width="170" height="30" rx="15"/>
+    <circle cx="624" cy="555" r="19"/>
+    <circle cx="624" cy="693" r="19"/>
   </g>
 
   <path d="M160 144 C300 96 452 110 560 156" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" opacity="0.14"/>
@@ -65,35 +70,35 @@ const masterSvg = `
 const foregroundSvg = `
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
   <g fill="#FFFFFF">
-    <rect x="250" y="298" width="180" height="30" rx="15"/>
-    <rect x="325" y="223" width="30" height="180" rx="15"/>
+    <rect x="320" y="380" width="160" height="28" rx="14"/>
+    <rect x="386" y="314" width="28" height="160" rx="14"/>
 
-    <rect x="594" y="298" width="180" height="30" rx="15"/>
+    <rect x="544" y="380" width="160" height="28" rx="14"/>
 
-    <g transform="translate(340 688) rotate(45)">
-      <rect x="-15" y="-100" width="30" height="200" rx="15"/>
-      <rect x="-100" y="-15" width="200" height="30" rx="15"/>
+    <g transform="translate(400 624) rotate(45)">
+      <rect x="-14" y="-86" width="28" height="172" rx="14"/>
+      <rect x="-86" y="-14" width="172" height="28" rx="14"/>
     </g>
 
-    <rect x="594" y="674" width="180" height="30" rx="15"/>
-    <circle cx="684" cy="610" r="20"/>
-    <circle cx="684" cy="768" r="20"/>
+    <rect x="544" y="612" width="160" height="28" rx="14"/>
+    <circle cx="624" cy="558" r="18"/>
+    <circle cx="624" cy="690" r="18"/>
   </g>
 </svg>`;
 
 const monochromeSvg = `
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
   <g fill="#000000">
-    <rect x="250" y="298" width="180" height="30" rx="15"/>
-    <rect x="325" y="223" width="30" height="180" rx="15"/>
-    <rect x="594" y="298" width="180" height="30" rx="15"/>
-    <g transform="translate(340 688) rotate(45)">
-      <rect x="-15" y="-100" width="30" height="200" rx="15"/>
-      <rect x="-100" y="-15" width="200" height="30" rx="15"/>
+    <rect x="320" y="380" width="160" height="28" rx="14"/>
+    <rect x="386" y="314" width="28" height="160" rx="14"/>
+    <rect x="544" y="380" width="160" height="28" rx="14"/>
+    <g transform="translate(400 624) rotate(45)">
+      <rect x="-14" y="-86" width="28" height="172" rx="14"/>
+      <rect x="-86" y="-14" width="172" height="28" rx="14"/>
     </g>
-    <rect x="594" y="674" width="180" height="30" rx="15"/>
-    <circle cx="684" cy="610" r="20"/>
-    <circle cx="684" cy="768" r="20"/>
+    <rect x="544" y="612" width="160" height="28" rx="14"/>
+    <circle cx="624" cy="558" r="18"/>
+    <circle cx="624" cy="690" r="18"/>
   </g>
 </svg>`;
 
@@ -117,18 +122,18 @@ const featureGraphicSvg = `
   <circle cx="140" cy="470" r="220" fill="#FFFFFF" opacity="0.05"/>
 
   <g transform="translate(362 100) scale(0.293)">
-    <rect x="64" y="64" width="896" height="896" rx="214" fill="#789C49"/>
+    <rect x="72" y="72" width="880" height="880" rx="150" fill="#789C49"/>
     <g fill="#FFFFFF">
-      <rect x="238" y="281" width="202" height="34" rx="17"/>
-      <rect x="322" y="197" width="34" height="202" rx="17"/>
-      <rect x="586" y="281" width="202" height="34" rx="17"/>
-      <g transform="translate(339 685) rotate(45)">
-        <rect x="-17" y="-112" width="34" height="224" rx="17"/>
-        <rect x="-112" y="-17" width="224" height="34" rx="17"/>
+      <rect x="315" y="368" width="170" height="30" rx="15"/>
+      <rect x="385" y="298" width="30" height="170" rx="15"/>
+      <rect x="539" y="368" width="170" height="30" rx="15"/>
+      <g transform="translate(400 624) rotate(45)">
+        <rect x="-15" y="-92" width="30" height="184" rx="15"/>
+        <rect x="-92" y="-15" width="184" height="30" rx="15"/>
       </g>
-      <rect x="586" y="668" width="202" height="34" rx="17"/>
-      <circle cx="687" cy="594" r="22"/>
-      <circle cx="687" cy="776" r="22"/>
+      <rect x="539" y="609" width="170" height="30" rx="15"/>
+      <circle cx="624" cy="555" r="19"/>
+      <circle cx="624" cy="693" r="19"/>
     </g>
   </g>
 </svg>`;
