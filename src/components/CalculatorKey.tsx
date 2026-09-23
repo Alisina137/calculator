@@ -29,6 +29,7 @@ export function CalculatorKey({
   const isClear = label === "AC";
   const isDelete = label === "⌫";
   const tooltipEligible = operator || emphasized;
+  const triggerOnPressIn = !tooltipEligible;
 
   const tooltipLabel = (() => {
     const labels: Record<string, string> = {
@@ -97,17 +98,26 @@ export function CalculatorKey({
             }
           : undefined
       }
+      onPressIn={() => {
+        if (triggerOnPressIn) {
+          onPress();
+        }
+      }}
       onPressOut={() => {
         setShowTooltip(false);
       }}
-      onPress={() => {
-        if (longPressTriggered.current) {
-          longPressTriggered.current = false;
-          return;
-        }
+      onPress={
+        triggerOnPressIn
+          ? undefined
+          : () => {
+              if (longPressTriggered.current) {
+                longPressTriggered.current = false;
+                return;
+              }
 
-        onPress();
-      }}
+              onPress();
+            }
+      }
       style={({ pressed }) => [
         styles.button,
         compact ? styles.compactButton : styles.roundButton,
