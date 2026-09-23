@@ -5,9 +5,7 @@ const digitSets: Record<NumeralStyle, string> = {
   latin,
   persian: "۰۱۲۳۴۵۶۷۸۹",
   arabic: "٠١٢٣٤٥٦٧٨٩",
-  devanagari: "०१२३४५६७८९",
-  bengali: "০১২৩৪৫৬৭৮৯",
-  thai: "๐๑๒๓๔๕๖๗๘๙"
+  devanagari: "०१२३४५६७८९"
 };
 
 const localizedDecimal = new Set(["٫"]);
