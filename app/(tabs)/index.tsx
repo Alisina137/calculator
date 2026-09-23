@@ -20,6 +20,7 @@ import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
 import { colorsFor } from "@/theme/colors";
 import { displayDigits, normalizeDigits } from "@/utils/numerals";
+import { textAlignment, textDirection } from "@/i18n/languages";
 
 const standardRows = [
   ["AC", "SCI", "%", "÷"],
@@ -108,6 +109,8 @@ export default function CalculatorScreen() {
   } = useCalculator();
 
   const colors = colorsFor(resolvedTheme);
+  const align = textAlignment(language);
+  const direction = textDirection(language);
   const [finalized, setFinalized] = useState<FinalizedCalculation | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
@@ -372,7 +375,7 @@ export default function CalculatorScreen() {
             <Text
               style={[
                 styles.title,
-                { color: colors.text }
+                { color: colors.text, textAlign: align, writingDirection: direction }
               ]}
             >
               {t(language, "calculator")}
