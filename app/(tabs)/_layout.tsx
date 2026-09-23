@@ -48,7 +48,7 @@ function AnimatedNavItem({
   const animateTo = (value: 0 | 1) => {
     Animated.timing(press, {
       toValue: value,
-      duration: value === 1 ? 110 : 220,
+      duration: value === 1 ? 55 : 110,
       easing: value === 1 ? Easing.out(Easing.quad) : Easing.out(Easing.cubic),
       useNativeDriver: true
     }).start();
