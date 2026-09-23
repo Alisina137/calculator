@@ -350,17 +350,39 @@ export function ResultCard({
           key={resultRow.label + index}
           style={[
             styles.resultRow,
-            { flexDirection: layoutRow },
-            index > 0 ? { borderTopColor: colors.border, borderTopWidth: StyleSheet.hairlineWidth } : null
+            resultRow.emphasis
+              ? styles.resultRowEmphasis
+              : { flexDirection: layoutRow },
+            index > 0
+              ? {
+                  borderTopColor: colors.border,
+                  borderTopWidth: StyleSheet.hairlineWidth
+                }
+              : null
           ]}
         >
-          <Text style={[styles.resultLabel, { color: colors.text, textAlign: align, writingDirection: direction }]}>{resultRow.label}</Text>
+          <Text
+            style={[
+              styles.resultLabel,
+              resultRow.emphasis ? styles.resultLabelEmphasis : null,
+              {
+                color: colors.text,
+                textAlign: align,
+                writingDirection: direction
+              }
+            ]}
+          >
+            {resultRow.label}
+          </Text>
           <Text
             selectable
             style={[
               styles.resultValue,
               resultRow.emphasis ? styles.resultValueEmphasis : null,
-              { color: colors.text }
+              {
+                color: colors.text,
+                textAlign: resultRow.emphasis ? align : "left"
+              }
             ]}
           >
             {resultRow.value}
@@ -588,13 +610,26 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 12
   },
+  resultRowEmphasis: {
+    flexDirection: "column",
+    alignItems: "stretch",
+    gap: 4,
+    paddingVertical: 8
+  },
   resultLabel: {
     flex: 1,
+    minWidth: 0,
     fontSize: 14,
     textAlign: "right",
     writingDirection: "rtl"
   },
+  resultLabelEmphasis: {
+    flex: 0,
+    width: "100%"
+  },
   resultValue: {
+    flex: 1,
+    minWidth: 0,
     flexShrink: 1,
     fontSize: 18,
     fontWeight: "700",
