@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppPreferences } from "@/context/AppPreferencesContext";
 import { useCalculator } from "@/context/CalculatorContext";
 import { t } from "@/i18n/translations";
+import { textDirection } from "@/i18n/languages";
 import { colorsFor } from "@/theme/colors";
 
 type TabVisual = {
@@ -122,7 +123,7 @@ function AnimatedNavItem({
           size={active ? 25 : 23}
           tintColor={color}
         />
-        <Text style={[styles.tabLabel, { color }]}>
+        <Text style={[styles.tabLabel, { color, writingDirection: direction }]}>
           {visual.label}
         </Text>
       </Animated.View>
@@ -135,6 +136,7 @@ function AnimatedTabBar({ state, navigation }: any) {
   const { scientificMode } = useCalculator();
   const insets = useSafeAreaInsets();
   const colors = colorsFor(resolvedTheme);
+  const direction = textDirection(language);
 
   if (scientificMode) return null;
 
