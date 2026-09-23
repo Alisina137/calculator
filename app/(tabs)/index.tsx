@@ -42,25 +42,45 @@ const scientificRows = [
 
 function scientificAccessibilityLabel(
   key: string,
-  angleUnit: "DEG" | "RAD"
+  angleUnit: "DEG" | "RAD",
+  language: string
 ): string {
-  const labels: Record<string, string> = {
-    ANGLE: `واحد زاویه، ${angleUnit}`,
-    "(": "پرانتز باز",
-    ")": "پرانتز بسته",
-    sin: "سینوس",
-    cos: "کسینوس",
-    tan: "تانژانت",
-    ln: "لگاریتم طبیعی",
-    log: "لگاریتم ده‌دهی",
-    "1/x": "معکوس",
-    "√": "ریشه دوم",
-    "x²": "توان دو",
-    "xʸ": "توان دلخواه",
-    "!": "فاکتوریل",
-    "π": "عدد پی",
-    e: "عدد اویلر"
-  };
+  const labels: Record<string, string> =
+    language === "fa"
+      ? {
+          ANGLE: `واحد زاویه، ${angleUnit}`,
+          "(": "پرانتز باز",
+          ")": "پرانتز بسته",
+          sin: "سینوس",
+          cos: "کسینوس",
+          tan: "تانژانت",
+          ln: "لگاریتم طبیعی",
+          log: "لگاریتم ده‌دهی",
+          "1/x": "معکوس",
+          "√": "ریشه دوم",
+          "x²": "توان دو",
+          "xʸ": "توان دلخواه",
+          "!": "فاکتوریل",
+          "π": "عدد پی",
+          e: "عدد اویلر"
+        }
+      : {
+          ANGLE: `Angle unit, ${angleUnit}`,
+          "(": "Open parenthesis",
+          ")": "Close parenthesis",
+          sin: "Sine",
+          cos: "Cosine",
+          tan: "Tangent",
+          ln: "Natural logarithm",
+          log: "Base ten logarithm",
+          "1/x": "Reciprocal",
+          "√": "Square root",
+          "x²": "Square",
+          "xʸ": "Power",
+          "!": "Factorial",
+          "π": "Pi",
+          e: "Euler's number"
+        };
 
   return labels[key] ?? key;
 }
@@ -394,7 +414,7 @@ export default function CalculatorScreen() {
           ]}
         >
           <TextInput
-            accessibilityLabel="عبارت محاسبه"
+            accessibilityLabel={language === "fa" ? "عبارت محاسبه" : "Calculation expression"}
             accessibilityLiveRegion="polite"
             value={displayExpression}
             onChangeText={(value) => {
@@ -465,7 +485,7 @@ export default function CalculatorScreen() {
                       <AnimatedPressable
                         key={key}
                         accessibilityRole="button"
-                        accessibilityLabel={scientificAccessibilityLabel(key, angleUnit)}
+                        accessibilityLabel={scientificAccessibilityLabel(key, angleUnit, language)}
                         hitSlop={8}
                         onPress={() => handleScientificKey(key)}
                         style={({ pressed }) => [
