@@ -54,7 +54,7 @@ export function ToolScreen({
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
       <View style={[styles.header, { flexDirection: row }]}>
         <View style={styles.headerText}>
-          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{title}</Text>
+          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{resolvedTitle}</Text>
           {subtitle ? (
             <Text style={[styles.subtitle, { color: colors.muted, textAlign: align, writingDirection: direction }]}>{subtitle}</Text>
           ) : null}
@@ -96,6 +96,7 @@ export function ToolScreen({
             }
             style={[
               styles.guideToggle,
+              { flexDirection: row },
               {
                 backgroundColor: colors.surface,
                 borderColor: showToolGuidance ? colors.primary : colors.border
@@ -307,6 +308,9 @@ export function ToolSection({
   children: ReactNode;
 }) {
   const colors = colorsFor(theme);
+  const { language } = useAppPreferences();
+  const align = textAlignment(language);
+  const direction = textDirection(language);
   return (
     <View style={[styles.section, { backgroundColor: colors.surface }]}>
       {title ? (
@@ -318,7 +322,7 @@ export function ToolSection({
 }
 
 export function ResultCard({
-  title = "نتیجه",
+  title,
   rows,
   theme
 }: {
@@ -327,6 +331,11 @@ export function ResultCard({
   theme: ResolvedTheme;
 }) {
   const colors = colorsFor(theme);
+  const { language } = useAppPreferences();
+  const align = textAlignment(language);
+  const direction = textDirection(language);
+  const row = rowDirection(language);
+  const resolvedTitle = title ?? (language === "fa" ? "نتیجه" : "Result");
 
   return (
     <View
@@ -341,6 +350,7 @@ export function ResultCard({
           key={row.label + index}
           style={[
             styles.resultRow,
+            { flexDirection: row },
             index > 0 ? { borderTopColor: colors.border, borderTopWidth: StyleSheet.hairlineWidth } : null
           ]}
         >
@@ -371,11 +381,14 @@ export function ToolMessage({
   danger?: boolean;
 }) {
   const colors = colorsFor(theme);
+  const { language } = useAppPreferences();
+  const align = textAlignment(language);
+  const direction = textDirection(language);
   return (
     <Text
       style={[
         styles.message,
-        { color: danger ? colors.danger : colors.muted }
+        { color: danger ? colors.danger : colors.muted, textAlign: align, writingDirection: direction }
       ]}
     >
       {text}
@@ -393,6 +406,8 @@ export function PrimaryButton({
   theme: ResolvedTheme;
 }) {
   const colors = colorsFor(theme);
+  const { language } = useAppPreferences();
+  const direction = textDirection(language);
   return (
     <AnimatedPressable
       accessibilityRole="button"
@@ -402,7 +417,7 @@ export function PrimaryButton({
         { backgroundColor: pressed ? colors.primarySoft : colors.primary }
       ]}
     >
-      <Text style={styles.primaryButtonText}>{label}</Text>
+      <Text style={[styles.primaryButtonText, { writingDirection: direction }]}>{label}</Text>
     </AnimatedPressable>
   );
 }
