@@ -1,20 +1,28 @@
-import type { NumeralStyle } from "@/context/AppPreferencesContext";
+import type { NumeralStyle } from "@/i18n/numeralStyles";
 
 const latin = "0123456789";
-const persian = "۰۱۲۳۴۵۶۷۸۹";
-const arabicIndic = "٠١٢٣٤٥٦٧٨٩";
+const digitSets: Record<NumeralStyle, string> = {
+  latin,
+  persian: "۰۱۲۳۴۵۶۷۸۹",
+  arabic: "٠١٢٣٤٥٦٧٨٩",
+  devanagari: "०१२३४५६७८९",
+  bengali: "০১২৩৪৫৬৭৮৯",
+  thai: "๐๑๒๓๔๕๖๗๘๙"
+};
+
+const localizedDecimal = new Set(["٫"]);
+const localizedGroup = new Set(["٬"]);
 
 export function normalizeDigits(input: string): string {
   return [...input]
     .map((character) => {
-      const persianIndex = persian.indexOf(character);
-      if (persianIndex >= 0) return latin[persianIndex];
+      for (const digits of Object.values(digitSets)) {
+        const index = digits.indexOf(character);
+        if (index >= 0) return latin[index];
+      }
 
-      const arabicIndex = arabicIndic.indexOf(character);
-      if (arabicIndex >= 0) return latin[arabicIndex];
-
-      if (character === "٫") return ".";
-      if (character === "٬") return ",";
+      if (localizedDecimal.has(character)) return ".";
+      if (localizedGroup.has(character)) return ",";
 
       return character;
     })
@@ -25,12 +33,20 @@ export function displayDigits(input: string, style: NumeralStyle): string {
   const normalized = normalizeDigits(input);
   if (style === "latin") return normalized;
 
+  const target = digitSets[style];
+
   return [...normalized]
     .map((character) => {
       const index = latin.indexOf(character);
-      if (index >= 0) return persian[index];
-      if (character === ".") return "٫";
-      if (character === ",") return "٬";
+      if (index >= 0) return target[index];
+
+      if ((style === "persian" || style === "arabic") && character === ".") {
+        return "٫";
+      }
+      if ((style === "persian" || style === "arabic") && character === ",") {
+        return "٬";
+      }
+
       return character;
     })
     .join("");
