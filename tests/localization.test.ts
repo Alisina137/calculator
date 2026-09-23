@@ -3,7 +3,11 @@ import test from "node:test";
 import { displayDigits, normalizeDigits } from "../src/utils/numerals";
 import { isRtlLanguage, supportedLanguages, textDirection } from "../src/i18n/languages";
 import { t } from "../src/i18n/translations";
-import { defaultNumeralStyleForLanguage, numeralStyles } from "../src/i18n/numeralStyles";
+import {
+  defaultNumeralStyleForLanguage,
+  numeralStyles,
+  numeralStylesForLanguage
+} from "../src/i18n/numeralStyles";
 
 test("normalizes all supported numeral systems", () => {
   assert.equal(normalizeDigits("۱۲3٤٥"), "12345");
@@ -57,4 +61,16 @@ test("chooses the common numeral style for each language", () => {
   assert.equal(defaultNumeralStyleForLanguage("hi"), "devanagari");
   assert.equal(defaultNumeralStyleForLanguage("bn"), "bengali");
   assert.equal(defaultNumeralStyleForLanguage("th"), "thai");
+});
+
+
+test("filters numeral choices by the selected language", () => {
+  assert.deepEqual(numeralStylesForLanguage("en"), ["latin"]);
+  assert.deepEqual(numeralStylesForLanguage("es"), ["latin"]);
+  assert.deepEqual(numeralStylesForLanguage("fa"), ["persian", "latin"]);
+  assert.deepEqual(numeralStylesForLanguage("ur"), ["persian", "latin"]);
+  assert.deepEqual(numeralStylesForLanguage("ar"), ["arabic", "latin"]);
+  assert.deepEqual(numeralStylesForLanguage("hi"), ["devanagari", "latin"]);
+  assert.deepEqual(numeralStylesForLanguage("bn"), ["bengali", "latin"]);
+  assert.deepEqual(numeralStylesForLanguage("th"), ["thai", "latin"]);
 });
