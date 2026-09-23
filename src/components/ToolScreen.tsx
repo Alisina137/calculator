@@ -52,13 +52,7 @@ export function ToolScreen({
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
-      <View style={[styles.header, { flexDirection: row }]}>
-        <View style={styles.headerText}>
-          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{title}</Text>
-          {subtitle ? (
-            <Text style={[styles.subtitle, { color: colors.muted, textAlign: align, writingDirection: direction }]}>{subtitle}</Text>
-          ) : null}
-        </View>
+      <View style={styles.header}>
         <AnimatedPressable
           accessibilityRole="button"
           accessibilityLabel="بازگشت"
@@ -72,13 +66,17 @@ export function ToolScreen({
           ]}
         >
           <SymbolView
-            name={direction === "rtl"
-              ? { ios: "chevron.right", android: "arrow_forward", web: "arrow_forward" }
-              : { ios: "chevron.left", android: "arrow_back", web: "arrow_back" }}
+            name={{ ios: "chevron.left", android: "arrow_back", web: "arrow_back" }}
             size={22}
             tintColor={colors.text}
           />
         </AnimatedPressable>
+        <View style={styles.headerText}>
+          <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{title}</Text>
+          {subtitle ? (
+            <Text style={[styles.subtitle, { color: colors.muted, textAlign: align, writingDirection: direction }]}>{subtitle}</Text>
+          ) : null}
+        </View>
       </View>
 
       <ScrollView
