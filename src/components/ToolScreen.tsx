@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Pressable,
   ScrollView,
@@ -205,17 +205,36 @@ export function ToolField({
 }) {
   const colors = colorsFor(theme);
   const { numeralStyle } = useAppPreferences();
-  const displayValue = displayDigits(value, numeralStyle);
+  const inputRef = useRef<TextInput>(null);
+  const [displayValue, setDisplayValue] = useState(() =>
+    displayDigits(value, numeralStyle)
+  );
   const displayPlaceholder = placeholder
     ? displayDigits(placeholder, numeralStyle)
     : undefined;
+
+  useEffect(() => {
+    const localized = displayDigits(value, numeralStyle);
+    setDisplayValue(localized);
+    inputRef.current?.setNativeProps({ text: localized });
+  }, [value, numeralStyle]);
+
+  const handleChangeText = (text: string) => {
+    const normalized = normalizeDigits(text);
+    const localized = displayDigits(normalized, numeralStyle);
+
+    setDisplayValue(localized);
+    inputRef.current?.setNativeProps({ text: localized });
+    onChangeText(normalized);
+  };
 
   return (
     <View style={styles.fieldWrap}>
       <Text style={[styles.fieldLabel, { color: colors.text }]}>{label}</Text>
       <TextInput
+        ref={inputRef}
         value={displayValue}
-        onChangeText={(text) => onChangeText(normalizeDigits(text))}
+        onChangeText={handleChangeText}
         placeholder={displayPlaceholder}
         accessibilityLabel={label}
         placeholderTextColor={colors.muted}
