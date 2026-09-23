@@ -3,11 +3,15 @@ import test from "node:test";
 import { displayDigits, normalizeDigits } from "../src/utils/numerals";
 import { isRtlLanguage, supportedLanguages, textDirection } from "../src/i18n/languages";
 import { t } from "../src/i18n/translations";
+import { defaultNumeralStyleForLanguage, numeralStyles } from "../src/i18n/numeralStyles";
 
-test("normalizes Persian, Arabic-Indic and Latin digits", () => {
+test("normalizes all supported numeral systems", () => {
   assert.equal(normalizeDigits("۱۲3٤٥"), "12345");
   assert.equal(normalizeDigits("۱۲٫۵"), "12.5");
   assert.equal(normalizeDigits("۱٬۲۳۴"), "1,234");
+  assert.equal(normalizeDigits("१२३"), "123");
+  assert.equal(normalizeDigits("১২৩"), "123");
+  assert.equal(normalizeDigits("๑๒๓"), "123");
 });
 
 test("Persian display changes presentation only", () => {
@@ -31,4 +35,26 @@ test("uses RTL only for RTL languages", () => {
   assert.equal(isRtlLanguage("es"), false);
   assert.equal(textDirection("fa"), "rtl");
   assert.equal(textDirection("en"), "ltr");
+});
+
+
+test("renders every supported numeral system", () => {
+  assert.equal(numeralStyles.length, 6);
+  assert.equal(displayDigits("123", "latin"), "123");
+  assert.equal(displayDigits("123", "persian"), "۱۲۳");
+  assert.equal(displayDigits("123", "arabic"), "١٢٣");
+  assert.equal(displayDigits("123", "devanagari"), "१२३");
+  assert.equal(displayDigits("123", "bengali"), "১২৩");
+  assert.equal(displayDigits("123", "thai"), "๑๒๓");
+});
+
+test("chooses the common numeral style for each language", () => {
+  assert.equal(defaultNumeralStyleForLanguage("en"), "latin");
+  assert.equal(defaultNumeralStyleForLanguage("es"), "latin");
+  assert.equal(defaultNumeralStyleForLanguage("fa"), "persian");
+  assert.equal(defaultNumeralStyleForLanguage("ur"), "persian");
+  assert.equal(defaultNumeralStyleForLanguage("ar"), "arabic");
+  assert.equal(defaultNumeralStyleForLanguage("hi"), "devanagari");
+  assert.equal(defaultNumeralStyleForLanguage("bn"), "bengali");
+  assert.equal(defaultNumeralStyleForLanguage("th"), "thai");
 });
