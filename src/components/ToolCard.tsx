@@ -2,7 +2,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { SymbolView } from "expo-symbols";
 import { colorsFor } from "@/theme/colors";
-import type { ResolvedTheme } from "@/context/AppPreferencesContext";
+import { useAppPreferences, type ResolvedTheme } from "@/context/AppPreferencesContext";
+import { isRtlLanguage, rowDirection, textAlignment, textDirection } from "@/i18n/languages";
 
 export function ToolCard({
   icon,
@@ -22,6 +23,11 @@ export function ToolCard({
   onPress?: () => void;
 }) {
   const colors = colorsFor(theme);
+  const { language } = useAppPreferences();
+  const row = rowDirection(language);
+  const align = textAlignment(language);
+  const direction = textDirection(language);
+  const rtl = isRtlLanguage(language);
 
   return (
     <AnimatedPressable
@@ -30,6 +36,7 @@ export function ToolCard({
       onPress={onPress}
       style={({ pressed }) => [
         styles.card,
+        { flexDirection: row },
         {
           backgroundColor: pressed ? colors.primarySoft : colors.surface,
           borderColor: pressed ? colors.primary : colors.border,
@@ -45,10 +52,10 @@ export function ToolCard({
         />
       </View>
       <View style={styles.text}>
-        <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
-        <Text style={[styles.subtitle, { color: colors.muted }]}>{subtitle}</Text>
+        <Text style={[styles.title, { color: colors.text, textAlign: align, writingDirection: direction }]}>{title}</Text>
+        <Text style={[styles.subtitle, { color: colors.muted, textAlign: align, writingDirection: direction }]}>{subtitle}</Text>
       </View>
-      <Text style={[styles.chevron, { color: colors.muted }]}>‹</Text>
+      <Text style={[styles.chevron, { color: colors.muted }]}>{rtl ? "‹" : "›"}</Text>
     </AnimatedPressable>
   );
 }
