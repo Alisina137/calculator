@@ -3,14 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import {
-  Pressable,
-  StyleSheet,
+   StyleSheet,
   Text,
   TextInput,
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CalculatorKey } from "@/components/CalculatorKey";
+import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { isExpressionReadyForEquals } from "@/calculation/calculatorInput";
 import { canPreviewExpression, evaluateExpression } from "@/calculation/calculatorEngine";
 import { calculationErrorMessage } from "@/calculation/errorMessages";
@@ -332,14 +332,14 @@ export default function CalculatorScreen() {
 
   const settingsButton = (
     <Link href="/settings" asChild>
-      <Pressable
+      <AnimatedPressable
         accessibilityRole="button"
         accessibilityLabel={t(language, "settings")}
         style={({ pressed }) => [
           styles.settingsButton,
           {
-            backgroundColor: colors.surface,
-            opacity: pressed ? 0.65 : 1
+            backgroundColor: pressed ? colors.primarySoft : colors.surface,
+            opacity: 1
           }
         ]}
       >
@@ -348,7 +348,7 @@ export default function CalculatorScreen() {
           size={24}
           tintColor={colors.text}
         />
-      </Pressable>
+      </AnimatedPressable>
     </Link>
   );
 
@@ -459,7 +459,7 @@ export default function CalculatorScreen() {
                     const label = key === "ANGLE" ? angleUnit : key;
 
                     return (
-                      <Pressable
+                      <AnimatedPressable
                         key={key}
                         accessibilityRole="button"
                         accessibilityLabel={scientificAccessibilityLabel(key, angleUnit)}
@@ -469,9 +469,7 @@ export default function CalculatorScreen() {
                           styles.scientificKey,
                           {
                             backgroundColor: pressed
-                              ? resolvedTheme === "dark"
-                                ? "#1B292F"
-                                : "#DCE7ED"
+                              ? colors.primarySoft
                               : key === "ANGLE"
                                 ? colors.primarySoft
                                 : colors.key,
@@ -500,7 +498,7 @@ export default function CalculatorScreen() {
                             {label}
                           </Text>
                         )}
-                      </Pressable>
+                      </AnimatedPressable>
                     );
                   })}
                 </View>
