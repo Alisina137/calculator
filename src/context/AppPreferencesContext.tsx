@@ -2,9 +2,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useColorScheme } from "react-native";
 import { supportedLanguages, type AppLanguage } from "@/i18n/languages";
+import {
+  defaultNumeralStyleForLanguage,
+  numeralStyles,
+  type NumeralStyle
+} from "@/i18n/numeralStyles";
 
 export type { AppLanguage } from "@/i18n/languages";
-export type NumeralStyle = "persian" | "latin";
+export type { NumeralStyle } from "@/i18n/numeralStyles";
 export type ThemePreference = "system" | "light" | "dark";
 export type ResolvedTheme = "light" | "dark";
 export type ToolGuidanceId = "percentage" | "discount" | "unit" | "age" | "date";
@@ -61,8 +66,10 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
         ) {
           setLanguageState(savedLanguage as AppLanguage);
         }
-        if (parsed.numeralStyle === "persian" || parsed.numeralStyle === "latin") {
-          setNumeralStyle(parsed.numeralStyle);
+        if (
+          numeralStyles.some((item) => item.id === parsed.numeralStyle)
+        ) {
+          setNumeralStyle(parsed.numeralStyle as NumeralStyle);
         }
         if (
           parsed.themePreference === "system" ||
@@ -114,7 +121,7 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
 
   const setLanguage = (value: AppLanguage) => {
     setLanguageState(value);
-    setNumeralStyle(value === "fa" ? "persian" : "latin");
+    setNumeralStyle(defaultNumeralStyleForLanguage(value));
   };
 
   const value = useMemo(
