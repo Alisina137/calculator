@@ -121,12 +121,6 @@ const overrides: Record<AppLanguage, TranslationOverrides> = {
     delete:"削除",clearAll:"すべて消去",clearHistory:"履歴を消去",cancel:"キャンセル",confirm:"消去",language:"言語",numerals:"数字",
     appearance:"外観",haptics:"触覚フィードバック",system:"システム",light:"ライト",dark:"ダーク",privacy:"プライバシー",reuseResult:"結果を使用",reuseExpression:"式を使用"
   },
-  ko: {
-    calculator:"계산기",tools:"도구",history:"기록",settings:"설정",scientific:"공학용",basicMode:"기본",angle:"각도",
-    everydayTools:"일상 도구",percentage:"백분율",discount:"할인",unitConverter:"단위 변환",age:"나이 계산",date:"날짜 계산",
-    delete:"삭제",clearAll:"모두 지우기",clearHistory:"기록 지우기",cancel:"취소",confirm:"지우기",language:"언어",numerals:"숫자",
-    appearance:"화면",haptics:"햅틱 피드백",system:"시스템",light:"라이트",dark:"다크",privacy:"개인정보",reuseResult:"결과 사용",reuseExpression:"식 사용"
-  },
   hi: {
     calculator:"कैलकुलेटर",tools:"उपकरण",history:"इतिहास",settings:"सेटिंग्स",scientific:"वैज्ञानिक",basicMode:"सामान्य",angle:"कोण",
     everydayTools:"दैनिक उपकरण",percentage:"प्रतिशत",discount:"छूट",unitConverter:"इकाई परिवर्तक",age:"आयु कैलकुलेटर",date:"तिथि कैलकुलेटर",
@@ -157,29 +151,35 @@ const overrides: Record<AppLanguage, TranslationOverrides> = {
     delete:"Hapus",clearAll:"Hapus semua",clearHistory:"Hapus riwayat",cancel:"Batal",confirm:"Hapus",language:"Bahasa",numerals:"Angka",
     appearance:"Tampilan",haptics:"Umpan balik haptik",system:"Sistem",light:"Terang",dark:"Gelap",privacy:"Privasi",reuseResult:"Gunakan hasil",reuseExpression:"Gunakan ekspresi"
   },
-  bn: {
-    calculator:"ক্যালকুলেটর",tools:"টুলস",history:"ইতিহাস",settings:"সেটিংস",scientific:"বৈজ্ঞানিক",basicMode:"সাধারণ",angle:"কোণ",
-    everydayTools:"দৈনন্দিন টুলস",percentage:"শতকরা",discount:"ছাড়",unitConverter:"একক রূপান্তর",age:"বয়স ক্যালকুলেটর",date:"তারিখ ক্যালকুলেটর",
-    delete:"মুছুন",clearAll:"সব মুছুন",clearHistory:"ইতিহাস মুছুন",cancel:"বাতিল",confirm:"মুছুন",language:"ভাষা",numerals:"সংখ্যা",
-    appearance:"চেহারা",haptics:"হ্যাপটিক প্রতিক্রিয়া",system:"সিস্টেম",light:"হালকা",dark:"গাঢ়",privacy:"গোপনীয়তা",reuseResult:"ফল ব্যবহার করুন",reuseExpression:"এক্সপ্রেশন ব্যবহার করুন"
-  },
   vi: {
     calculator:"Máy tính",tools:"Công cụ",history:"Lịch sử",settings:"Cài đặt",scientific:"Khoa học",basicMode:"Cơ bản",angle:"Góc",
     everydayTools:"Công cụ hằng ngày",percentage:"Phần trăm",discount:"Giảm giá",unitConverter:"Đổi đơn vị",age:"Tính tuổi",date:"Tính ngày",
     delete:"Xóa",clearAll:"Xóa tất cả",clearHistory:"Xóa lịch sử",cancel:"Hủy",confirm:"Xóa",language:"Ngôn ngữ",numerals:"Chữ số",
     appearance:"Giao diện",haptics:"Phản hồi rung",system:"Hệ thống",light:"Sáng",dark:"Tối",privacy:"Quyền riêng tư",reuseResult:"Dùng kết quả",reuseExpression:"Dùng biểu thức"
   },
-  th: {
-    calculator:"เครื่องคิดเลข",tools:"เครื่องมือ",history:"ประวัติ",settings:"การตั้งค่า",scientific:"วิทยาศาสตร์",basicMode:"พื้นฐาน",angle:"มุม",
-    everydayTools:"เครื่องมือประจำวัน",percentage:"เปอร์เซ็นต์",discount:"ส่วนลด",unitConverter:"แปลงหน่วย",age:"คำนวณอายุ",date:"คำนวณวันที่",
-    delete:"ลบ",clearAll:"ล้างทั้งหมด",clearHistory:"ล้างประวัติ",cancel:"ยกเลิก",confirm:"ล้าง",language:"ภาษา",numerals:"ตัวเลข",
-    appearance:"รูปลักษณ์",haptics:"การสั่นตอบสนอง",system:"ระบบ",light:"สว่าง",dark:"มืด",privacy:"ความเป็นส่วนตัว",reuseResult:"ใช้ผลลัพธ์",reuseExpression:"ใช้นิพจน์"
-  },
   nl: {
     calculator:"Rekenmachine",tools:"Hulpmiddelen",history:"Geschiedenis",settings:"Instellingen",scientific:"Wetenschappelijk",basicMode:"Basis",angle:"Hoek",
     everydayTools:"Dagelijkse hulpmiddelen",percentage:"Percentage",discount:"Korting",unitConverter:"Eenheden omrekenen",age:"Leeftijd berekenen",date:"Datum berekenen",
     delete:"Verwijderen",clearAll:"Alles wissen",clearHistory:"Geschiedenis wissen",cancel:"Annuleren",confirm:"Wissen",language:"Taal",numerals:"Cijfers",
     appearance:"Weergave",haptics:"Haptische feedback",system:"Systeem",light:"Licht",dark:"Donker",privacy:"Privacy",reuseResult:"Resultaat gebruiken",reuseExpression:"Expressie gebruiken"
+  },
+  pl: {
+    calculator:"Kalkulator",tools:"Narzędzia",history:"Historia",settings:"Ustawienia",scientific:"Naukowy",basicMode:"Podstawowy",angle:"Kąt",
+    everydayTools:"Narzędzia codzienne",percentage:"Procent",discount:"Rabat",unitConverter:"Przelicznik jednostek",age:"Kalkulator wieku",date:"Kalkulator dat",
+    delete:"Usuń",clearAll:"Wyczyść wszystko",clearHistory:"Wyczyść historię",cancel:"Anuluj",confirm:"Wyczyść",language:"Język",numerals:"Cyfry",
+    appearance:"Wygląd",haptics:"Wibracje dotykowe",system:"System",light:"Jasny",dark:"Ciemny",privacy:"Prywatność",reuseResult:"Użyj wyniku",reuseExpression:"Użyj wyrażenia"
+  },
+  ro: {
+    calculator:"Calculator",tools:"Instrumente",history:"Istoric",settings:"Setări",scientific:"Științific",basicMode:"De bază",angle:"Unghi",
+    everydayTools:"Instrumente zilnice",percentage:"Procent",discount:"Reducere",unitConverter:"Convertor de unități",age:"Calculator de vârstă",date:"Calculator de date",
+    delete:"Șterge",clearAll:"Șterge tot",clearHistory:"Șterge istoricul",cancel:"Anulează",confirm:"Șterge",language:"Limbă",numerals:"Cifre",
+    appearance:"Aspect",haptics:"Feedback haptic",system:"Sistem",light:"Luminos",dark:"Întunecat",privacy:"Confidențialitate",reuseResult:"Folosește rezultatul",reuseExpression:"Folosește expresia"
+  },
+  sv: {
+    calculator:"Kalkylator",tools:"Verktyg",history:"Historik",settings:"Inställningar",scientific:"Vetenskaplig",basicMode:"Grundläggande",angle:"Vinkel",
+    everydayTools:"Vardagsverktyg",percentage:"Procent",discount:"Rabatt",unitConverter:"Enhetsomvandlare",age:"Ålderskalkylator",date:"Datumkalkylator",
+    delete:"Ta bort",clearAll:"Rensa allt",clearHistory:"Rensa historik",cancel:"Avbryt",confirm:"Rensa",language:"Språk",numerals:"Siffror",
+    appearance:"Utseende",haptics:"Haptisk återkoppling",system:"System",light:"Ljust",dark:"Mörkt",privacy:"Sekretess",reuseResult:"Använd resultat",reuseExpression:"Använd uttryck"
   }
 };
 
