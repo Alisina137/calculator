@@ -18,6 +18,7 @@ import {
   type CalendarType
 } from "@/tools/dateUtils";
 import { displayDigits, normalizeDigits } from "@/utils/numerals";
+import { rowDirection, textAlignment, textDirection } from "@/i18n/languages";
 
 type PickerStep = "year" | "month" | "day";
 
@@ -39,6 +40,9 @@ export function CalendarDatePicker({
   onSelect: (value: string) => void;
 }) {
   const colors = colorsFor(theme);
+  const row = rowDirection(language);
+  const align = textAlignment(language);
+  const direction = textDirection(language);
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState<PickerStep>("year");
   const today = todayInCalendar(calendar);
@@ -49,23 +53,9 @@ export function CalendarDatePicker({
   const [draft, setDraft] = useState<CalendarDate>(parsed);
 
   const copy =
-    language === "dari"
-      ? {
-          choose: "انتخاب از تقویم",
-          year: "سال",
-          month: "ماه",
-          day: "روز",
-          cancel: "لغو",
-          title: "انتخاب تاریخ"
-        }
-      : {
-          choose: "انتخاب از تقویم",
-          year: "سال",
-          month: "ماه",
-          day: "روز",
-          cancel: "لغو",
-          title: "انتخاب تاریخ"
-        };
+    language === "fa"
+      ? { choose: "انتخاب از تقویم", year: "سال", month: "ماه", day: "روز", cancel: "لغو", title: "انتخاب تاریخ" }
+      : { choose: "Choose from calendar", year: "Year", month: "Month", day: "Day", cancel: "Cancel", title: "Choose date" };
 
   const years = useMemo(() => {
     const currentYear = today.year;
@@ -127,13 +117,14 @@ export function CalendarDatePicker({
         onPress={open}
         style={({ pressed }) => [
           styles.trigger,
+          { flexDirection: row },
           {
             backgroundColor: pressed ? colors.primarySoft : colors.surface,
             borderColor: pressed ? colors.primary : colors.border
           }
         ]}
       >
-        <Text style={[styles.triggerText, { color: colors.primary }]}>
+        <Text style={[styles.triggerText, { color: colors.primary, writingDirection: direction }]}>
           {copy.choose}
         </Text>
         <Text style={[styles.calendarIcon, { color: colors.primary }]}>▣</Text>
@@ -155,8 +146,8 @@ export function CalendarDatePicker({
               }
             ]}
           >
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.text }]}>
+            <View style={[styles.modalHeader, { flexDirection: row }]}>
+              <Text style={[styles.modalTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>
                 {copy.title}
               </Text>
               <AnimatedPressable
@@ -168,7 +159,7 @@ export function CalendarDatePicker({
               </AnimatedPressable>
             </View>
 
-            <View style={styles.summaryRow}>
+            <View style={[styles.summaryRow, { flexDirection: row }]}>
               {(["year", "month", "day"] as PickerStep[]).map((item) => {
                 const active = step === item;
                 const valueText =
@@ -218,13 +209,13 @@ export function CalendarDatePicker({
               })}
             </View>
 
-            <Text style={[styles.stepTitle, { color: colors.text }]}>
+            <Text style={[styles.stepTitle, { color: colors.text, textAlign: align, writingDirection: direction }]}>
               {stepLabel}
             </Text>
 
             <ScrollView
               style={styles.optionsScroll}
-              contentContainerStyle={styles.optionsGrid}
+              contentContainerStyle={[styles.optionsGrid, { flexDirection: row }]}
               showsVerticalScrollIndicator={false}
             >
               {(step === "year" ? years : step === "month" ? months : days).map(
@@ -285,7 +276,7 @@ export function CalendarDatePicker({
                 { backgroundColor: colors.surface, borderColor: colors.border }
               ]}
             >
-              <Text style={[styles.cancelText, { color: colors.text }]}>
+              <Text style={[styles.cancelText, { color: colors.text, writingDirection: direction }]}>
                 {copy.cancel}
               </Text>
             </AnimatedPressable>
