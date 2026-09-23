@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "حساب فارسی",
+    "name": "Calculator",
     "slug": "hesab-farsi",
     "version": "1.0.0",
     "orientation": "default",
@@ -40,7 +40,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/release/adaptive-foreground.png",
         "monochromeImage": "./assets/release/adaptive-monochrome.png",
-        "backgroundColor": "#0F74C8"
+        "backgroundColor": "#789C49"
       }
     },
     "experiments": {
