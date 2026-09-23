@@ -68,6 +68,25 @@ export default function UnitConverterToolScreen() {
     label: `${unit.fa} (${unit.symbol})`
   }));
 
+  const sourceUnit =
+    category.units.find((unit) => unit.id === fromId) ?? category.units[0];
+
+  const placeholderExample: Record<UnitCategoryId, number> = {
+    length: 10,
+    mass: 5,
+    area: 100,
+    volume: 2,
+    temperature: 25,
+    speed: 60,
+    data: 1,
+    time: 30
+  };
+
+  const amountPlaceholder = displayDigits(
+    `${placeholderExample[categoryId]} ${sourceUnit.symbol}`,
+    numeralStyle
+  );
+
   const swap = () => {
     setFromId(toId);
     setToId(fromId);
@@ -95,7 +114,7 @@ export default function UnitConverterToolScreen() {
           label={copy.unit.value}
           value={value}
           onChangeText={setValue}
-          placeholder="0"
+          placeholder={amountPlaceholder}
           theme={resolvedTheme}
         />
 
