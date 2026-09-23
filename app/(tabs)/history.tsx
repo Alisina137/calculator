@@ -89,7 +89,7 @@ export default function HistoryScreen() {
           {history.map((entry) => {
             const dateText = displayDigits(
               new Date(entry.createdAt).toLocaleString(
-                language === "dari" ? "fa-AF-u-nu-latn" : "fa-IR-u-nu-latn"
+                language === "fa" ? "fa-IR-u-nu-latn" : "en-US-u-nu-latn"
               ),
               numeralStyle
             );
@@ -116,7 +116,7 @@ export default function HistoryScreen() {
                   <Text style={[styles.result, { color: colors.text }]}>
                     = {displayDigits(entry.result, numeralStyle)}
                   </Text>
-                  <Text style={[styles.date, { color: colors.muted }]}>
+                  <Text style={[styles.date, { color: colors.muted, textAlign: align, writingDirection: direction }]}>
                     {dateText}
                   </Text>
                 </AnimatedPressable>
