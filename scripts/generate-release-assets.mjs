@@ -67,26 +67,7 @@ const masterSvg = `
   <path d="M160 144 C300 96 452 110 560 156" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" opacity="0.14"/>
 </svg>`;
 
-const foregroundSvg = `
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <g fill="#FFFFFF">
-    <rect x="320" y="380" width="160" height="28" rx="14"/>
-    <rect x="386" y="314" width="28" height="160" rx="14"/>
-
-    <rect x="544" y="380" width="160" height="28" rx="14"/>
-
-    <g transform="translate(400 624) rotate(45)">
-      <rect x="-14" y="-86" width="28" height="172" rx="14"/>
-      <rect x="-86" y="-14" width="172" height="28" rx="14"/>
-    </g>
-
-    <rect x="544" y="612" width="160" height="28" rx="14"/>
-    <circle cx="624" cy="558" r="18"/>
-    <circle cx="624" cy="690" r="18"/>
-  </g>
-</svg>`;
-
-const monochromeSvg = `
+const foregroundSvg = masterSvg;\n\nconst monochromeSvg = `
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
   <g fill="#000000">
     <rect x="320" y="380" width="160" height="28" rx="14"/>
