@@ -67,7 +67,9 @@ const masterSvg = `
   <path d="M160 144 C300 96 452 110 560 156" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" opacity="0.14"/>
 </svg>`;
 
-const foregroundSvg = masterSvg;\n\nconst monochromeSvg = `
+const foregroundSvg = masterSvg;
+
+const monochromeSvg = `
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
   <g fill="#000000">
     <rect x="320" y="380" width="160" height="28" rx="14"/>
